@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title -->
+    <title>Meny | Página Pessoal</title>
+
+    <!-- Font-Awesome CSS -->
+    <link rel="stylesheet" href="assets/vendors/font-awesome/css/all.min.css" />
+
+    <!-- Font-Awesome CSS versão nova-->
+    <link rel="stylesheet" href="assets\vendors\fontawesome-free-7.1.0-web\fontawesome-free-7.1.0-web\css\all.css">
+
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="assets/vendors/swiper/swiper.css" />
+
+    <!-- Magnific-Popup CSS -->
+    <link rel="stylesheet" href="assets/vendors/magnific-popup/magnific-popup.css" />
+
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/responsive.css" />
+
+    <!-- calendario -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar/locales-all.global.min.js"></script>
+
+
+</head>
+
+<body>
+
+
+    <!-------------------- Scroll-Top Area (Start) -------------------->
+    <a href="#home" class="scroll-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    <!-------------------- Scroll-Top Area (End) -------------------->
+
+
+
+    <!-------------------- Header Area (Start) -------------------->
+    <header class="header">
+
+        <!-- Logo -->
+        <!--<a class="logo" href="#home">
+            <h2> Meny </h2>
+            --> <img src="assets/images/logo.png" alt="logo" /> 
+        </a>
+        <!-- Logo End -->
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <a href="#home">Página inicial</a>
+            <a href="#about">Sobre</a>
+            <a href="#portfolio">momentos</a>
+            <a href="#blog">blog</a>
+            <a href="#agenda">eventos</a>
+            <a href="#contact">contatos</a>
+        </nav>
+
+        <!-- Menubar -->
+        <div class="fas fa-bars" id="menu-btn"></div>
+
+    </header>
+    <!-------------------- Header Area (End) -------------------->
+
+
+
+    <!-------------------- Home Area (Start) -------------------->
+    <section class="home" id="home">
+
+        <div class="box-container">
+
+            <div class="content">
+                <div class="text">
+                    <h2>olá!</h1>
+                        <h1>Eu sou <span class="typing-text"></span></h1>
+                        <p>Há mais de 20 anos empreendendo e encantando as pessoas com a minha voz, dedico-me também ao
+                            streaming há quatro anos, onde transformo transmissões em momentos de pura alegria para o
+                            público.</p>
+                        <a href="#about" class="btn">sobre mim <i class="fas fa-user"></i></a>
+                </div>
+            </div>
+
+            <div class="image">
+                <img src="assets/images/Home/Home-Image.png" alt="Home-Image">
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-------------------- Home Area (End) -------------------->
+
+
+
+    <!-------------------- About Area (Start) -------------------->
+    <section class="about" id="about">
+
+        <div class="box-container">
+
+            <div class="image">
+                <img src="assets/images/About/About-Image.png" alt="About-Image" />
+            </div>
+
+            <div class="content">
+
+                <h2>Meu nome é meny mendonça.</h2>
+                <p>Recifense de coração vibrante, há mais de 20 anos transformo sonhos em realidade como empreendedora e
+                    encantando as pessoas com a minha voz nos momentos vagos. Mãe dedicada e apaixonada pela vida,
+                    encontrei no streaming — onde estou há mais 4 anos — uma nova forma de espalhar leveza. Minha
+                    missão?
+                    Levar alegria a cada tela e mostrar que a vida, quando vivida com um sorriso, é muito mais bonita.
+                </p>
+
+                <div class="about-info">
+
+                    <div class="info">
+                        <h4>idade: <span id="idade"></span></h4>
+                        <h4>Sexo: <span>Feminino</span></h4>
+                        <h4>Idioma: <span>português</span></h4>
+                        <h4>Trabalho: <span>Streaming, empreendedora</span></h4>
+                    </div>
+
+                    <div class="counting">
+
+                        <div class="box">
+                            <h1 class="count" data-count="4">4+</h1>
+                            <h3>anos de<br /> Streaming </h3>
+                        </div>
+
+                        <div class="box">
+                            <h1 class="count" data-count="20">20+</h1>
+                            <h3>anos de<br /> empreendedora e cantora</h3>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <!-------------------- About Area (end) -------------------->
+
+
+        <!-------------------- Portfolio Area (Start) -------------------->
+        <section class="portfolio" id="portfolio">
+
+            <div class="heading">
+                <h2>meus <span>momentos</span></h2>
+            </div>
+
+            <div class="gallery">
+
+                <ul class="controls">
+                    <li class="button btn active" data-filter="all">Todos</li>
+                    <li class="button btn" data-filter="web">semanal</li>
+                    <li class="button btn" data-filter="design">mensal</li>
+                    <li class="button btn" data-filter="photography">anual</li>
+                </ul>
+
+                <div class="box-container">
+
+                    <div class="portfolio-item image web">
+                        <img src="assets/images/Portfolio/momentos-1.png" alt="Portfolio-Image" />
+                        <div class="content">
+                            <h4>Festa de 15 anos</h4>
+                            <p>categoria</p>
+                            <a data-effect="mfp-newspaper" href="assets/images/Portfolio/momentos-1.png"
+                                class="view-btn"><i class="fas fa-search-plus"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-item image web">
+                        <img src="assets/images/Portfolio/momentos-2.png" alt="Portfolio-Image" />
+                        <div class="content">
+                            <h4>casmento da filha</h4>
+                            <p>categoria</p>
+                            <a data-effect="mfp-newspaper" href="assets/images/Portfolio/momentos-2.png"
+                                class="view-btn"><i class="fas fa-search-plus"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-item image design">
+                        <img src="assets/images/Portfolio/momentos-3.png" alt="Portfolio-Image" />
+                        <div class="content">
+                            <h4>casmento da filha</h4>
+                            <p>categoria</p>
+                            <a data-effect="mfp-newspaper" href="assets/images/Portfolio/momentos-3.png"
+                                class="view-btn"><i class="fas fa-search-plus"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-item image design">
+                        <img src="assets/images/Portfolio/momentos-4.png" alt="Portfolio-Image" />
+                        <div class="content">
+                            <h4>casmento da filha</h4>
+                            <p>categoria</p>
+                            <a data-effect="mfp-newspaper" href="assets/images/Portfolio/momentos-4.png"
+                                class="view-btn"><i class="fas fa-search-plus"></i></a>
+                        </div>
+                    </div>
+                    <div class="portfolio-item image photography">
+                        <img src="assets/images/Portfolio/momentos-5.png" alt="Portfolio-Image" />
+                        <div class="content">
+                            <h4>um dia normal</h4>
+                            <p>categoria</p>
+                            <a data-effect="mfp-newspaper" href="assets/images/Portfolio/momentos-5.png"
+                                class="view-btn"><i class="fas fa-search-plus"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-item image photography">
+                        <img src="assets/images/Portfolio/momentos-6.png" alt="Portfolio-Image" />
+                        <div class="content">
+                            <h4>passeio</h4>
+                            <p>categoria</p>
+                            <a data-effect="mfp-newspaper" href="assets/images/Portfolio/momentos-6.png"
+                                class="view-btn"><i class="fas fa-search-plus"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+        <!-------------------- Portfolio Area (End) -------------------->
+
+
+
+        <!-------------------- Blog Area (Start) -------------------->
+        <section class="blog" id="blog">
+
+            <div class="heading">
+                <h2>meu <span>blog</span></h2>
+            </div>
+
+            <div class="swiper-container blog-slider">
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide blog-item">
+                        <div class="image">
+                            <img src="assets/images/Blogs/blog-1.png" alt="Blog-Image" />
+                        </div>
+                        <div class="content">
+                            <div class="intro">
+                                <h5><i class="fas fa-calendar-alt"></i><span>29 nov, 2029</span></h5>
+                                <h5><i class="fas fa-user"></i><span>por admin</span></h5>
+                            </div>
+                            <a class="main-heading" target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita/video/7578257543147932936?is_from_webapp=1&sender_device=pc">Louca
+                                de saudade</a>
+                            <p>Sábadouuu!! Louca de saudade!! ##tiktoklive #livegift #menycomio #live
+                                #batalhadelive💪🎉👏
+                            </p>
+                            <a target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita?is_from_webapp=1&sender_device=pc"
+                                class="btn">Veja mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide blog-item">
+                        <div class="image">
+                            <img src="assets/images/Blogs/blog-2.png" alt="Blog-Image" />
+                        </div>
+                        <div class="content">
+                            <div class="intro">
+                                <h5><i class="fas fa-calendar-alt"></i><span>08 jul, 2025</span></h5>
+                                <h5><i class="fas fa-user"></i><span>por admin</span></h5>
+                            </div>
+                            <a class="main-heading" target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita/video/7524882033085009157?is_from_webapp=1&sender_device=pc">Pronto!</a>
+                            <p>#Multiaverso <br />#CapCut <br />Pronto!
+                            </p>
+                            <a target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita?is_from_webapp=1&sender_device=pc"
+                                class="btn">Veja mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide blog-item">
+                        <div class="image">
+                            <img src="assets/images/Blogs/blog-3.png" alt="Blog-Image" />
+                        </div>
+                        <div class="content">
+                            <div class="intro">
+                                <h5><i class="fas fa-calendar-alt"></i><span>03 jun, 2025</span></h5>
+                                <h5><i class="fas fa-user"></i><span>por admin</span></h5>
+                            </div>
+                            <a class="main-heading" target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita/video/7511755232477596934?is_from_webapp=1&sender_device=pc">Junhooo
+                                meu amorrr</a>
+                            <p>Junhooo meu amorrr #batalhadetiktok #LIVE #tiktoklive #TikTokLIVE #menycomio
+                            </p>
+                            <a target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita?is_from_webapp=1&sender_device=pc"
+                                class="btn">Veja mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide blog-item">
+                        <div class="image">
+                            <img src="assets/images/Blogs/blog-4.png" alt="Blog-Image" />
+                        </div>
+                        <div class="content">
+                            <div class="intro">
+                                <h5><i class="fas fa-calendar-alt"></i><span>20 mai, 2025</span></h5>
+                                <h5><i class="fas fa-user"></i><span>por admin</span></h5>
+                            </div>
+                            <a class="main-heading" target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita/video/7506580945290480952?is_from_webapp=1&sender_device=pc">Boa
+                                tarde meu povo</a>
+                            <p>Boa tarde meu povo <br /> #tiktoklive #menycomio #batalhadetiktok #LIVE #
+                            </p>
+                            <a target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita?is_from_webapp=1&sender_device=pc"
+                                class="btn">Veja mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide blog-item">
+                        <div class="image">
+                            <img src="assets/images/Blogs/blog-5.png" alt="Blog-Image" />
+                        </div>
+                        <div class="content">
+                            <div class="intro">
+                                <h5><i class="fas fa-calendar-alt"></i><span>28 nov, 2025</span></h5>
+                                <h5><i class="fas fa-user"></i><span>por admin</span></h5>
+                            </div>
+                            <a class="main-heading" target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita/video/7577796669341830418?is_from_webapp=1&sender_device=pc">Sextou
+                                garellaa!!</a>
+                            <p>Sextou garellaa!! <br />#tiktoklive #menycomio #live #batalhadelive💪🎉👏
+                            </p>
+                            <a target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita?is_from_webapp=1&sender_device=pc"
+                                class="btn">Veja mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+
+                    </div>
+
+                    <div class="swiper-slide blog-item">
+                        <div class="image">
+                            <img src="assets/images/Blogs/blog-6.png" alt="Blog-Image" />
+                        </div>
+                        <div class="content">
+                            <div class="intro">
+                                <h5><i class="fas fa-calendar-alt"></i><span>04 dez, 2025</span></h5>
+                                <h5><i class="fas fa-user"></i><span>por admin</span></h5>
+                            </div>
+                            <a class="main-heading" target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita/video/7580036138715352328?is_from_webapp=1&sender_device=pc">Será???</a>
+                            <p>Será??? <br />#menycomio #batalhadelive💪🎉👏 #cover #tiktoklive #livehighlights
+                            </p>
+                            <a target="_blank"
+                                href="https://www.tiktok.com/@meny.menycita?is_from_webapp=1&sender_device=pc"
+                                class="btn">Veja mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="swiper-pagination swiper-pagination2"></div>
+
+            </div>
+
+        </section>
+        <!-------------------- Blog Area (End) -------------------->
+
+
+        <!-------------------- Agenda Area (Start) -------------------->
+        <section class="agenda" id="agenda">
+
+            <div class="heading">
+                <h2 id="tituloSite">meu <span>Eventos</span></h2>
+            </div>
+
+            <div class="calendar-wrapper">
+                <div class="calendar" id="calendar"></div>
+            </div>
+
+            <div class="modalEvento" id="modalEvento">
+
+                <div class="modal-conteudo">
+                    <button class="fecharModal" id="fecharModal">×</button>
+                    <h3 id="modalTitulo">&times;</h3>
+                    <p class="modalData" id="modalData"></p>
+                    <p class="modalDescricao" id="modalDescricao"></p>
+                </div>
+
+                <!--AÇÕES DO ADMIN (só aparece se estiver logado) -->
+                <div class="acoesAdmin" id="acoesAdmin">
+                    <button class="btnEditar" id="btnEditar">Editar</button>
+                    <button class="btnExcluir" id="btnExcluir">Excluir</button>
+                </div>
+            </div>
+            <!-- MODAL SENHA -->
+            <div class="modalSenha" id="modalSenha">
+                <div class="modal-conteudo">
+                    <button class="fecharSenha" id="fecharSenha">×</button>
+                    <h3>Modo administrador</h3>
+
+                    <input type="password" id="inputSenha" placeholder="Digite a senha">
+                    <button class="btnEntrarAdmin" id="btnEntrarAdmin">Entrar</button>
+
+                    <p id="erroSenha" style="color:#ff6b6b; display:none;">
+                        Senha incorreta
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- MODAL ADMIN -->
+            <div class="modalAdmin" id="modalAdmin">
+                <div class="modal-conteudo">
+                    <button class="fecharAdmin" id="fecharAdmin">×</button>
+                    <h3>Adicionar evento</h3>
+
+                    <input id="admTitulo" placeholder="Título do evento">
+                    <input id="admData" type="datetime-local">
+                    <textarea id="admDescricao" placeholder="Descrição"></textarea>
+
+                    <button class="salvarEvento" id="salvarEvento">Salvar evento</button>
+                </div>
+            </div>
+        </section>
+        <!-------------------- Agenda Area (End) -------------------->
+
+
+
+        <!-------------------- Contact Area (Start) -------------------->
+        <section class="contact" id="contact">
+
+            <div class="heading">
+                <h2>Meus <span>contatos</span></h2>
+            </div>
+
+            <div class="box-container">
+
+                <div class="contact-info">
+
+                    <h3>entre em contato</h3>
+
+                    <p>Acesse também minhas redes sociais.</p>
+
+                    <div class="info-item">
+                        <h4>Telefone:</h4>
+                        <div class="detail">
+                            <div class="fas fa-phone"></div>
+                            <p>+55-0000-0000</p>
+                        </div>
+                        <div class="detail">
+                            <div class="fas fa-phone"></div>
+                            <p>+55-0000-0000</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <h4>email:</h4>
+                        <div class="detail">
+                            <div class="fas fa-envelope"></div>
+                            <p class="gmail">abc@gmail.com</p>
+                        </div>
+                        <div class="detail">
+                            <div class="fas fa-envelope"></div>
+                            <p class="gmail">xyz@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <h4>Tiktok:</h4>
+                        <div class="detail">
+                            <div class="fab fa-tiktok"></div>
+                            <p class="linkedin">https://www.tiktok.com/@meny.menycita</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <h4>Instagram:</h4>
+                        <div class="detail">
+                            <div class="fab fa-instagram"></div>
+                            <p class="github">https://www.instagram.com/meny.meny.meny</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <h4>Youtube:</h4>
+                        <div class="detail">
+                            <div class="fab fa-youtube"></div>
+                            <p class="github">https://www.youtube.com/@menymendonca4269</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post" class="contact-form" id="contactUs-Form">
+
+                    <input type="text" name="name" class="box" id="name" placeholder="nome" required />
+                    <input type="email" name="email" class="box" id="email" placeholder="email" required />
+                    <input type="text" name="subject" class="box" id="subject" placeholder="assunto" required />
+                    <textarea cols="30" rows="10" name="comment" id="comment" class="box"
+                        placeholder="mensagem"></textarea>
+                    <button type="submit" class="btn" name="submit" id="submit">enviar mensagem</button>
+
+                    <span class="alert" id="msg"></span>
+
+                </form>
+
+            </div>
+
+        </section>
+        <!-------------------- Contact Area (End) -------------------->
+
+
+
+        <!-------------------- Footer Area (Start) -------------------->
+        <footer>
+            <div class="social">
+                <a target="_blank" href="https://www.tiktok.com/@meny.menycita" class="fab fa-tiktok"></a>
+                <a target="_blank" href="https://www.youtube.com/@menymendonca4269" class="fab fa-youtube"></a>
+                <a target="_blank" href="https://www.instagram.com/meny.meny.meny" class="fab fa-instagram"></a>
+            </div>
+
+            <div class="content">
+                <p>created by <span>FSO</span> | all rights reserved</p>
+            </div>
+        </footer>
+        <!-------------------- Footer Area (End) -------------------->
+
+
+
+        <!-- JQuery -->
+        <script src="assets/vendors/jquery/jquery-3.6.0.js"></script>
+
+        <!-- SWIPER JS -->
+        <script src="assets/vendors/swiper/swiper.js"></script>
+
+        <!-- Magnific-Popup JS -->
+        <script src="assets/vendors/magnific-popup/jquery.magnific-popup.js"></script>
+
+        <!-- Typed JS -->
+        <script src="assets/vendors/typed/typed.js"></script>
+
+        <!-- Custom Script File -->
+        <script src="assets/js/script.js"></script>
+        <script src="assets/js/scroll-spy.js"></script>
+        <script src="assets/js/counter-up.js"></script>
+        <script src="assets/js/portfolio.js"></script>
+        <script src="assets/js/testi-slider.js"></script>
+        <script src="assets/js/blog-slider.js"></script>
+        <script src="assets/js/eventos.js"></script>
+
+
+        <!---------------- Custom Script ---------------->
+
+        <!-- Typed Script -->
+        <script>
+            var typed = new Typed('.typing-text', {
+
+                strings: ['cantora', 'empreendedora', 'streaming ', 'mãe'],
+                typeSpeed: 120,
+                loop: true
+            });
+        </script>
+
+        <!-- agenda Script -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+
+                const TEMPO_ADMIN_MINUTOS = 10;
+
+                const HASH_SENHA = "c63fa58d96675e5e168ff43ed95aa317851e1e500f41c9b05368da4dae4689b2";
+
+                let eventoSelecionado = null;
+                let eventoEditando = null;
+
+
+                const modalEvento = document.getElementById("modalEvento");
+                const modalSenha = document.getElementById("modalSenha");
+                const modalAdmin = document.getElementById("modalAdmin");
+
+                const fecharModal = document.getElementById("fecharModal");
+                const fecharSenha = document.getElementById("fecharSenha");
+                const fecharAdmin = document.getElementById("fecharAdmin");
+
+                const admTitulo = document.getElementById("admTitulo");
+                const admData = document.getElementById("admData");
+                const admDescricao = document.getElementById("admDescricao");
+
+                const btnSalvar = document.getElementById("salvarEvento");
+
+                function salvarEventos(calendar) {
+                    const eventos = calendar.getEvents().map(ev => ({
+                        id: ev.id,
+                        title: ev.title,
+                        start: ev.start,
+                        description: ev.extendedProps.description || ""
+                    }));
+
+                    localStorage.setItem("eventosAgenda", JSON.stringify(eventos));
+                }
+
+                function carregarEventos() {
+                    return JSON.parse(localStorage.getItem("eventosAgenda") || "[]");
+                }
+
+
+                // carregar eventos salvos
+                const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+
+
+                // calendário
+                const calendar = new FullCalendar.Calendar(
+                    document.getElementById("calendar"),
+                    {
+                        locale: "pt-br",
+
+                        buttonText: {
+                            today: "Hoje",
+                            month: "Mês",
+                            week: "Semana",
+                            day: "Dia"
+                        },
+
+                        headerToolbar: {
+                            left: "prev,next today",
+                            center: "title",
+                            right: "dayGridMonth,timeGridWeek,timeGridDay"
+                        },
+
+                        initialView: "dayGridMonth",
+                        firstDay: 0, // semana começa no domingo
+                        height: "auto",
+                        events: carregarEventos(),
+                        dayHeaderFormat: { weekday: "short" },
+
+                        headerToolbar: {
+                            left: "prev,next today",
+                            center: "title",
+                            right: "dayGridMonth,timeGridWeek,timeGridDay"
+                        },
+
+                        eventClick(info) {
+
+                            eventoSelecionado = info.event;
+
+                            if (adminAtivo()) {
+                                document.getElementById("acoesAdmin").style.display = "block";
+                            } else {
+                                document.getElementById("acoesAdmin").style.display = "none";
+                            }
+
+                            document.getElementById("modalTitulo").innerText = info.event.title;
+
+                            document.getElementById("modalDescricao").innerText =
+                                info.event.extendedProps.description || "Sem descrição";
+
+                            document.getElementById("modalData").innerText =
+                                info.event.start.toLocaleString("pt-BR", {
+                                    dateStyle: "full",
+                                    timeStyle: "short"
+                                });
+
+                            modalEvento.style.display = "block";
+                        }
+
+                    }
+                );
+
+                calendar.render();
+
+                // fechar modais
+                fecharModal.onclick = () => modalEvento.style.display = "none";
+                fecharSenha.onclick = () => modalSenha.style.display = "none";
+                fecharAdmin.onclick = () => modalAdmin.style.display = "none";
+
+
+                let cliques = 0;
+                document.getElementById("tituloSite").addEventListener("click", () => {
+                    cliques++;
+                    if (cliques === 5) {
+                        modalSenha.style.display = "block";
+                        cliques = 0;
+                    }
+                    setTimeout(() => cliques = 0, 2000);
+                });
+
+                // validar senha
+                async function gerarHash(texto) {
+                    const msgUint8 = new TextEncoder().encode(texto);
+                    const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+                    return Array.from(new Uint8Array(hashBuffer))
+                        .map(b => b.toString(16).padStart(2, "0"))
+                        .join("");
+                }
+
+                btnEntrarAdmin.addEventListener("click", async () => {
+                    const senhaDigitada = document.getElementById("inputSenha").value;
+                    const hashDigitado = await gerarHash(senhaDigitada);
+
+                    if (hashDigitado === HASH_SENHA) {
+                        const agora = Date.now();
+                        localStorage.setItem("adminLogadoEm", agora.toString());
+
+                        modalSenha.style.display = "none";
+                        modalAdmin.style.display = "block";
+
+                        document.getElementById("erroSenha").style.display = "none";
+                        document.getElementById("inputSenha").value = "";
+                    } else {
+                        document.getElementById("erroSenha").style.display = "block";
+                    }
+                });
+
+
+                //salvar evento
+                document.getElementById("salvarEvento").onclick = () => {
+                    const titulo = admTitulo.value.trim();
+                    const data = admData.value;
+                    const descricao = admDescricao.value;
+
+                    if (!titulo || !data) {
+                        alert("Preencha título e data");
+                        return;
+                    }
+
+                    if (eventoEditando) {
+                        eventoEditando.setProp("title", titulo);
+                        eventoEditando.setStart(new Date(data));
+                        eventoEditando.setExtendedProp("description", descricao);
+
+                        //LIMPA ESTADO DE SELEÇÃO
+                        eventoEditando = null;
+                        eventoSelecionado = null;
+                    } else {
+                        calendar.addEvent({
+                            title: titulo,
+                            start: new Date(data),
+                            extendedProps: {
+                                description: descricao
+                            }
+                        });
+                    }
+
+                    salvarEventos(calendar);
+
+                    modalAdmin.style.display = "none";
+                    modalEvento.style.display = "none";
+
+                    //força o FullCalendar a recalcular layout
+                    calendar.unselect?.();
+                    calendar.updateSize();
+                };
+
+                document.getElementById("btnEditar").onclick = () => {
+                    modalEvento.style.display = "none";
+                    modalAdmin.style.display = "block";
+
+                    eventoEditando = eventoSelecionado; // A CHAVE
+
+                    document.getElementById("admTitulo").value =
+                        eventoSelecionado.title;
+
+                    document.getElementById("admData").value =
+                        eventoSelecionado.start.toISOString().slice(0, 16);
+
+                    document.getElementById("admDescricao").value =
+                        eventoSelecionado.extendedProps.description || "";
+                };
+
+                document.getElementById("btnExcluir").onclick = () => {
+                    if (!eventoSelecionado) return;
+
+                    if (confirm("Deseja realmente excluir este evento?")) {
+                        eventoSelecionado.remove();
+
+                        salvarEventos(calendar);
+
+                        eventoSelecionado = null;
+                        eventoEditando = null;
+                        modalEvento.style.display = "none";
+                    }
+                };
+
+                function adminAtivo() {
+                    const logadoEm = localStorage.getItem("adminLogadoEm");
+                    if (!logadoEm) return false;
+
+                    const agora = Date.now();
+                    const diffMin = (agora - Number(logadoEm)) / 1000 / 60;
+
+                    if (diffMin > TEMPO_ADMIN_MINUTOS) {
+                        localStorage.removeItem("adminLogadoEm");
+                        return false;
+                    }
+                    return true;
+                }
+
+            });
+        </script>
+
+
+        <!-- Contact-Form Script -->
+        <script>
+            const form = document.getElementById("contactUs-Form");
+            const msg = document.getElementById("msg");
+
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch("https://formspree.io/f/mnjbnqpe", {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        msg.textContent = "Mensagem enviada com sucesso";
+                        form.reset();
+
+                        setTimeout(() => {
+                            msg.textContent = "";
+                        }, 4000);
+                    } else {
+                        msg.textContent = "Erro ao enviar. Tente novamente mais tarde.";
+
+                        setTimeout(() => {
+                            msg.textContent = "";
+                        }, 4000);
+                    }
+                } catch (error) {
+                    msg.textContent = "Erro de conexão.";
+                }
+
+            });
+        </script>
+
+        <script>
+            function calcularIdade(dataNascimento) {
+                const hoje = new Date();
+                const nascimento = new Date(dataNascimento);
+
+                let idade = hoje.getFullYear() - nascimento.getFullYear();
+                const mes = hoje.getMonth() - nascimento.getMonth();
+
+                if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+                    idade--;
+                }
+
+                return idade;
+            }
+
+
+            const dataNascimento = "1983-07-28";
+
+            document.getElementById("idade").textContent =
+                calcularIdade(dataNascimento);
+        </script>
+
+</body>
+
+</html>
