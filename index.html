@@ -53,7 +53,7 @@
         <!-- Logo -->
         <!--<a class="logo" href="#home">
             <h2> Meny </h2>
-            --> <img src="assets/images/logo.png" alt="logo" /> 
+            --> <img src="assets/images/logo.png" alt="logo" />
         </a>
         <!-- Logo End -->
 
@@ -736,31 +736,35 @@
                     }
 
                     if (eventoEditando) {
+                        const novaData = new Date(data);
+
                         eventoEditando.setProp("title", titulo);
-                        eventoEditando.setStart(new Date(data));
                         eventoEditando.setExtendedProp("description", descricao);
 
-                        //LIMPA ESTADO DE SELEÇÃO
+                        // Atualiza a data do evento
+                        eventoEditando.setDates(
+                            novaData,
+                            new Date(novaData.getTime() + 1 * 60 * 1000)
+                        );
+
                         eventoEditando = null;
-                        eventoSelecionado = null;
                     } else {
                         calendar.addEvent({
                             title: titulo,
                             start: new Date(data),
+                            end: new Date(new Date(data).getTime() + 1 * 60 * 1000),
                             extendedProps: {
                                 description: descricao
+
                             }
                         });
                     }
 
                     salvarEventos(calendar);
-
                     modalAdmin.style.display = "none";
-                    modalEvento.style.display = "none";
+                    document.activeElement?.blur();
+                    calendar.render();
 
-                    //força o FullCalendar a recalcular layout
-                    calendar.unselect?.();
-                    calendar.updateSize();
                 };
 
                 document.getElementById("btnEditar").onclick = () => {

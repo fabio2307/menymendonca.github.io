@@ -430,6 +430,7 @@ header #menu-btn:hover {
     font-size: 1.8rem;
     color: var(--white);
 }
+
 /*--------------------- 5- About Area CSS (End) ---------------------*/
 
 
@@ -978,7 +979,25 @@ header #menu-btn:hover {
     max-width: 500px;
 }
 
+/* Remove QUALQUER estado de seleção/foco visual */
+.fc-event,
+.fc-event:focus,
+.fc-event:active,
+.fc-event.fc-event-selected,
+.fc-daygrid-event.fc-event-selected {
+    outline: none !important;
+    box-shadow: none !important;
+}
 
+/* Impede fundo azul aplicado internamente */
+.fc .fc-daygrid-event.fc-event-selected {
+    background-color: var(--fc-event-bg-color, inherit) !important;
+}
+
+/* Evita que o navegador mantenha foco ao clicar */
+.fc-event {
+    user-select: none;
+}
 
 
 
