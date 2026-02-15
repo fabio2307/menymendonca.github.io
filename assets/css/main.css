@@ -933,6 +933,10 @@ header #menu-btn:hover {
     gap: 2rem;
 }
 
+.heading{
+    margin-bottom: 0.5rem;
+}
+
 .contact-info {
     -webkit-box-flex: 1;
     -ms-flex: 1 1 42rem;
@@ -945,7 +949,7 @@ header #menu-btn:hover {
 }
 
 .contact-info>p {
-    font-size: 1.6rem;
+    font-size: 2rem;
     color: var(--grey);
     padding: 0.5rem 0;
 }
@@ -953,16 +957,16 @@ header #menu-btn:hover {
 .linkedin {
     text-decoration: none;
     color: var(--grey);
-    font-size: 18px;
-    padding: 0.5rem 0;
+    font-size: 24px;
+    padding: 1rem 0;
     margin-left: 1rem;
 }
 
 .github {
     text-decoration: none;
     color: var(--grey);
-    font-size: 18px;
-    padding: 0.5rem 0;
+    font-size: 24px;
+    padding: 1rem 0;
     margin-left: 1rem;
 }
 
@@ -1004,7 +1008,13 @@ header #menu-btn:hover {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    font-size: 1.5rem;
+    font-size: 2rem;
+}
+
+#msg {
+    font-size: 1.8rem;
+    color: white;
+    padding-bottom: 1rem;
 }
 
 .contact-info .info-item .detail p {

@@ -32,7 +32,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.11/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales-all.global.min.js"></script>
 
 
@@ -67,7 +66,7 @@
             <a href="#portfolio">momentos</a>
             <a href="#blog">blog</a>
             <a href="#agenda">eventos</a>
-            <a href="#contact">contatos</a>
+            <a href="#contact">Redes Sociais</a>
         </nav>
 
         <!-- Menubar -->
@@ -419,16 +418,14 @@
         <section class="contact" id="contact">
 
             <div class="heading">
-                <h2>Meus <span>contatos</span></h2>
+                <h2>Minhas <span>Redes sociais</span></h2>
             </div>
 
             <div class="box-container">
 
                 <div class="contact-info">
 
-                    <h3>entre em contato</h3>
-
-                    <p>Acesse também minhas redes sociais.</p>
+                    <h3>aonde me encontrar</h3>
 
                     <!-- <div class="info-item">
                         <h4>Telefone:</h4>
@@ -483,6 +480,7 @@
                 </div>
 
                 <form method="post" class="contact-form" id="contactUs-Form">
+                    <h3 id="msg">Deixe sua mensagem por aqui que eu te respondo logo, logo.</h3>
 
                     <input type="text" name="name" class="box" id="name" placeholder="nome" required />
                     <input type="email" name="email" class="box" id="email" placeholder="email" required />
@@ -582,12 +580,31 @@
 
                         dayHeaderFormat: { weekday: "short" },
 
-                        eventSources: [
-                            {
-                                googleCalendarApiKey: "AIzaSyA6iiScNCuSZ8oudjYuwitV_mp-iYyazhg",
-                                googleCalendarId: "c56f0345c8a935d9d4c595146ab880a8a72983c0196a5b35428c292f3e74eb9b@group.calendar.google.com"
+                        events: async function (fetchInfo, successCallback, failureCallback) {
+
+                            try {
+
+                                const response = await fetch("/.netlify/functions/calendar");
+
+                                const data = await response.json();
+
+                                const events = data.items.map(event => ({
+                                    title: event.summary,
+                                    start: event.start.dateTime || event.start.date,
+                                    end: event.end?.dateTime || event.end?.date,
+                                    description: event.description,
+                                    url: event.htmlLink
+                                }));
+
+                                successCallback(events);
+
+                            } catch (error) {
+
+                                failureCallback(error);
+
                             }
-                        ],
+
+                        },
 
                         eventClick(info) {
                             info.jsEvent.preventDefault();
