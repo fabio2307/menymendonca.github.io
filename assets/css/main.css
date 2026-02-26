@@ -642,6 +642,8 @@ header #menu-btn:hover {
 }
 
 .blog-item {
+    height: 60rem;
+    min-height: 60rem;
     background-color: #2222223c;
     border: 0.1rem solid rgba(0, 0, 0, 0.1);
     border-radius: 0.5rem;
@@ -650,7 +652,10 @@ header #menu-btn:hover {
 
 .blog-item .image {
     height: 25rem;
+    margin: auto;
+    margin-top: 15px;
     overflow: hidden;
+
 }
 
 .blog-item:hover .image img {
@@ -662,6 +667,7 @@ header #menu-btn:hover {
     height: 100%;
     width: 100%;
     object-fit: cover;
+
 }
 
 .blog-item .content {
@@ -705,8 +711,19 @@ header #menu-btn:hover {
     color: var(--grey);
 }
 
+/* isso vai ser add no novo modelo*/
 .blog-item .btn {
-    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 160px;
+    min-width: 140px;
+    height: 40px;
+    position: fixed;
+    bottom: 20px;
+    font-size: 16px;
+    padding: 0 15px;
+    border-radius: 6px;
 }
 
 /*--------------------- 10- Blog Area CSS (End) ---------------------*/
@@ -933,7 +950,7 @@ header #menu-btn:hover {
     gap: 2rem;
 }
 
-.heading{
+.heading {
     margin-bottom: 0.5rem;
 }
 
