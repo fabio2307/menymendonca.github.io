@@ -64,11 +64,11 @@ async function carregarBlog() {
         // 🚀 Recria o Swiper
         blogSwiper = new Swiper(".blog-slider", {
             spaceBetween: 20,
-            loop: true,
-            autoplay: {
+            loop: posts.length > 3, // 🔥 só ativa loop se tiver mais de 3 posts
+            autoplay: posts.length > 1 ? {
                 delay: 3000,
                 disableOnInteraction: false,
-            },
+            } : false,
             pagination: {
                 el: ".swiper-pagination2",
                 clickable: true,
