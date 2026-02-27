@@ -1127,6 +1127,7 @@ footer .social .fab:hover {
 }
 
 footer .content p {
+    margin-top: 4rem;
     font-size: 2rem;
     color: var(--white);
 }

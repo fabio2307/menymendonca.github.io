@@ -60,33 +60,23 @@ async function carregarBlog() {
     }
 
     // 🔥 Cria novamente após os slides existirem
-    /*blogSwiper = new Swiper(".blog-slider", {
+    blogSwiper = new Swiper(".blog-slider", {
       spaceBetween: 20,
-      speed: 600, // movimento mais suave
+      loop: true,
       autoplay: {
-        delay: 4000,
+        delay: 2500,
         disableOnInteraction: false,
       },
       pagination: {
         el: ".swiper-pagination2",
         clickable: true,
       },
-
       breakpoints: {
-        0: {
-          slidesPerView: 1,
-          loop: false, // 🔥 desativa loop no mobile
-        },
-        768: {
-          slidesPerView: 2,
-          loop: true,
-        },
-        1024: {
-          slidesPerView: 3,
-          loop: true,
-        },
+        0: { slidesPerView: 1 },
+        768: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 },
       },
-    });*/
+    });
 
   } catch (error) {
     console.error("Erro ao carregar blog:", error);
