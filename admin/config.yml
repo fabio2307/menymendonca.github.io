@@ -1,11 +1,23 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
 collections:
   - name: "momentos"
     label: "Momentos"
     folder: "content/momentos"
-    format: "json"
     create: true
     slug: "{{slug}}"
+    format: "json"
     fields:
       - { label: "Título", name: "titulo", widget: "string" }
-      - { label: "Categoria", name: "categoria", widget: "select", options: ["web", "design", "photography"] }
+      - { 
+          label: "Categoria", 
+          name: "categoria", 
+          widget: "select",
+          options: ["web", "design", "photography"]
+        }
       - { label: "Imagem", name: "imagem", widget: "image" }
