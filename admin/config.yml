@@ -1,0 +1,11 @@
+collections:
+  - name: "momentos"
+    label: "Momentos"
+    folder: "content/momentos"
+    format: "json"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Título", name: "titulo", widget: "string" }
+      - { label: "Categoria", name: "categoria", widget: "select", options: ["web", "design", "photography"] }
+      - { label: "Imagem", name: "imagem", widget: "image" }
