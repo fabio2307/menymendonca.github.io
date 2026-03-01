@@ -18,13 +18,20 @@
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
   <script>
     const hash = window.location.hash;
+    const path = window.location.pathname;
 
+    // Só redireciona se NÃO estiver já em /admin
     if (
-      hash.includes("invite_token") ||
-      hash.includes("recovery_token") ||
-      hash.includes("confirmation_token")
+      path !== "/admin/" &&
+      (
+        hash.includes("invite_token") ||
+        hash.includes("recovery_token") ||
+        hash.includes("confirmation_token")
+      )
     ) {
       window.location.replace("/admin/" + hash);
     }
