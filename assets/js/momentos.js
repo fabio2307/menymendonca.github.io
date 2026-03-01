@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
 
-            const container = document.getElementById("box-container");
+            const container = document.getElementById("portfolio-container");
             container.innerHTML = "";
 
             data.items.forEach(item => {
