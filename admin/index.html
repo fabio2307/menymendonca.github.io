@@ -14,9 +14,24 @@
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
   <script>
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
+
+        const hash = window.location.hash;
+
+        // Redireciona tokens do Identity para /admin
+        if (
+          hash.includes("invite_token") ||
+          hash.includes("recovery_token") ||
+          hash.includes("confirmation_token")
+        ) {
+          window.location.href = "/admin/" + hash;
+        }
+
+        // Após login normal
         if (!user) {
           window.netlifyIdentity.on("login", () => {
             document.location.href = "/admin/";
