@@ -8,9 +8,7 @@ public_folder: "/assets/images/uploads"
 collections:
   - name: "momentos"
     label: "Momentos"
-    folder: "content/momentos"
-    create: true
-    slug: "{{slug}}"
+    file: "assets/data/momentos.json"
     format: "json"
     fields:
       - { label: "Título", name: "titulo", widget: "string" }
