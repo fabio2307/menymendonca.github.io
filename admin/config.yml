@@ -8,14 +8,21 @@ public_folder: "/assets/images/uploads"
 collections:
   - name: "momentos"
     label: "Momentos"
-    file: "assets/data/momentos.json"
-    format: "json"
-    fields:
-      - { label: "Título", name: "titulo", widget: "string" }
-      - { 
-          label: "Categoria", 
-          name: "categoria", 
-          widget: "select",
-          options: ["web", "design", "photography"]
-        }
-      - { label: "Imagem", name: "imagem", widget: "image" }
+    files:
+      - label: "Lista de Momentos"
+        name: "momentos"
+        file: "assets/data/momentos.json"
+        format: "json"
+        fields:
+          - label: "Momentos"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "Título", name: "titulo", widget: "string" }
+              - { 
+                  label: "Categoria", 
+                  name: "categoria", 
+                  widget: "select",
+                  options: ["web", "design", "photography"]
+                }
+              - { label: "Imagem", name: "imagem", widget: "image" }

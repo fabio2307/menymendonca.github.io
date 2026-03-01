@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const container = document.getElementById("portfolio-container");
             container.innerHTML = "";
 
-            data.forEach(item => {
+            data.items.forEach(item => {
 
                 const div = document.createElement("div");
                 div.className = `portfolio-item image ${item.categoria}`;
