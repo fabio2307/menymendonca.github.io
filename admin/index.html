@@ -11,15 +11,15 @@
   <div id="nc-root"></div>
 
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <script>
     const hash = window.location.hash;
     const path = window.location.pathname;
 
+    // Só executa redirecionamento se estiver EXATAMENTE na raiz
     if (
-      path !== "/admin/" &&
+      path === "/" &&
       (
         hash.includes("invite_token") ||
         hash.includes("recovery_token") ||
