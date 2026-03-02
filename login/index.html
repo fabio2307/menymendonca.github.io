@@ -59,28 +59,33 @@
         </button>
     </div>
 
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
     <script>
-        const hash = window.location.hash;
+        document.addEventListener("DOMContentLoaded", function () {
 
-        // Se vier token do email, abre automaticamente
-        if (
-            hash.includes("invite_token") ||
-            hash.includes("recovery_token") ||
-            hash.includes("confirmation_token")
-        ) {
-            netlifyIdentity.open();
-        }
+            if (!window.netlifyIdentity) return;
 
-        // Se logar, vai para admin
-        netlifyIdentity.on("login", () => {
-            window.location.href = "/admin/";
-        });
+            window.netlifyIdentity.on("init", user => {
+                const hash = window.location.hash;
 
-        // Se já estiver logado
-        netlifyIdentity.on("init", user => {
-            if (user) {
+                if (
+                    hash.includes("invite_token") ||
+                    hash.includes("recovery_token") ||
+                    hash.includes("confirmation_token")
+                ) {
+                    window.netlifyIdentity.open();
+                }
+
+                if (user) {
+                    window.location.href = "/admin/";
+                }
+            });
+
+            window.netlifyIdentity.on("login", () => {
                 window.location.href = "/admin/";
-            }
+            });
+
         });
     </script>
 
