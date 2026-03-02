@@ -1,47 +1,117 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Painel Administrativo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <meta charset="UTF-8">
+  <title>Painel Administrativo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #111, #1a1a1a, #222);
+      overflow: hidden;
+    }
+
+    .login-container {
+      position: relative;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      padding: 50px 40px;
+      border-radius: 15px;
+      text-align: center;
+      width: 350px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .login-container h2 {
+      color: #fff;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .login-container p {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(45deg, #ff4d4d, #ff0000);
+      color: #fff;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255,0,0,0.4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        width: 90%;
+        padding: 40px 25px;
+      }
+    }
+  </style>
 </head>
 
-<body style="display:flex;align-items:center;justify-content:center;height:100vh;background:#111;">
+<body>
 
-    <div class="login-box">
-        <h2>Área Administrativa</h2>
-        <button onclick="netlifyIdentity.open()">Entrar</button>
-    </div>
+  <div class="login-container">
+    <h2>Área Administrativa</h2>
+    <p>Acesse o painel para gerenciar seus conteúdos</p>
+    <button class="btn-login" onclick="netlifyIdentity.open()">
+      Entrar no Painel
+    </button>
+  </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
 
-            window.netlifyIdentity.on("init", user => {
-                const hash = window.location.hash;
+      window.netlifyIdentity.on("init", user => {
+        const hash = window.location.hash;
 
-                if (
-                    hash.includes("invite_token") ||
-                    hash.includes("recovery_token") ||
-                    hash.includes("confirmation_token")
-                ) {
-                    window.netlifyIdentity.open();
-                }
+        if (
+          hash.includes("invite_token") ||
+          hash.includes("recovery_token") ||
+          hash.includes("confirmation_token")
+        ) {
+          window.netlifyIdentity.open();
+        }
 
-                if (user) {
-                    window.location.href = "/admin/";
-                }
-            });
+        if (user) {
+          window.location.href = "/admin/";
+        }
+      });
 
-            window.netlifyIdentity.on("login", () => {
-                window.location.href = "/admin/";
-            });
+      window.netlifyIdentity.on("login", () => {
+        window.location.href = "/admin/";
+      });
 
-        });
-    </script>
+    });
+  </script>
 
 </body>
-
 </html>
