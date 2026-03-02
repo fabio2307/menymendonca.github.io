@@ -1,5 +1,5 @@
 /*--------------- Blog Slider ---------------*/
-blogSwiper = new Swiper(".blog-slider", {
+/*blogSwiper = new Swiper(".blog-slider", {
   spaceBetween: 20,
   loop: true,
   autoplay: {
@@ -15,4 +15,4 @@ blogSwiper = new Swiper(".blog-slider", {
     768: { slidesPerView: 2 },
     1024: { slidesPerView: 3 },
   },
-});
+});*/
