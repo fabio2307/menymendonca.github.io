@@ -2,8 +2,20 @@ backend:
   name: git-gateway
   branch: main
 
+# Opcional para desenvolvimento local
+local_backend: false
+
+# Onde as imagens serão salvas
 media_folder: "assets/images/uploads"
 public_folder: "/assets/images/uploads"
+
+# Informações do site
+display_url: https://menymendonca.netlify.app
+logo_url: /assets/images/logo.png
+
+# Remove preview (evita conflitos em site estático)
+editor:
+  preview: false
 
 collections:
   - name: "momentos"
@@ -18,11 +30,23 @@ collections:
             name: "items"
             widget: "list"
             fields:
-              - { label: "Título", name: "titulo", widget: "string" }
-              - { 
-                  label: "Categoria", 
-                  name: "categoria", 
-                  widget: "select",
-                  options: ["família", "passeio", "lives", "inesquecíveis", "anual", "amigos", "viagens", "diversos"]
-                }
-              - { label: "Imagem", name: "imagem", widget: "image" }
+              - label: "Título"
+                name: "titulo"
+                widget: "string"
+
+              - label: "Categoria"
+                name: "categoria"
+                widget: "select"
+                options:
+                  - família
+                  - passeio
+                  - lives
+                  - inesquecíveis
+                  - anual
+                  - amigos
+                  - viagens
+                  - diversos
+
+              - label: "Imagem"
+                name: "imagem"
+                widget: "image"
