@@ -9,6 +9,11 @@
       "titulo": "casamento",
       "categoria": "família",
       "imagem": "/assets/images/uploads/momentos-3.png"
+    },
+    {
+      "categoria": "inesquecíveis",
+      "titulo": "Meu momento",
+      "imagem": "/assets/images/uploads/momentos-1.png"
     }
   ]
 }
