@@ -561,6 +561,20 @@
             calcularIdade(dataNascimento);
     </script>
 
+    <script>
+        (function () {
+            const hash = window.location.hash;
+
+            if (
+                hash.includes("invite_token") ||
+                hash.includes("recovery_token") ||
+                hash.includes("confirmation_token")
+            ) {
+                window.location.href = "/login/" + hash;
+            }
+        })();
+    </script>
+
 </body>
 
 </html>
