@@ -1,87 +1,74 @@
 const Parser = require("rss-parser");
 const fs = require("fs");
+const path = require("path");
 
 const parser = new Parser();
 
 const YOUTUBE_CHANNEL_ID = "UCM2AMeG9bKNvzAn2eiHzMOQ";
 const TIKTOK_RSS = "https://rss.app/feeds/uYUK36o1Mf3brhnv.xml";
+const OUTPUT_FILE = path.join(__dirname, "blog.json");
+
+function normalizeThumbnail(item) {
+  if (item.enclosure?.url) return item.enclosure.url;
+  if (item["media:content"]?.url) return item["media:content"].url;
+  if (item["media:thumbnail"]?.url) return item["media:thumbnail"].url;
+
+  if (item.content) {
+    const match = item.content.match(/<img.*?src="(.*?)"/);
+    if (match?.[1]) {
+      return match[1];
+    }
+  }
+
+  return "";
+}
+
+function extractYouTubeId(item) {
+  const rawId = String(item.id || "");
+  const idFromFeed = rawId.includes(":") ? rawId.split(":").pop() : rawId;
+  return idFromFeed || "";
+}
+
+function buildYouTubeThumbnail(item) {
+  const videoId = extractYouTubeId(item);
+  return videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : "";
+}
+
+async function readFeed(source, platform) {
+  try {
+    const feed = await parser.parseURL(source);
+    return (feed.items || []).slice(0, 6).map(item => ({
+      platform,
+      title: item.title || platform,
+      url: item.link || "",
+      thumbnail: platform === "YouTube"
+        ? buildYouTubeThumbnail(item)
+        : normalizeThumbnail(item),
+      description: item.contentSnippet || item.content || "",
+      date: new Date(item.pubDate || Date.now()).toISOString()
+    }));
+  } catch (error) {
+    console.error(`Falha ao ler o feed de ${platform}:`, error.message);
+    return [];
+  }
+}
 
 async function updateBlog() {
   try {
-    // 🔴 1. YouTube
-    const ytFeed = await parser.parseURL(
-      `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`
-    );
+    const [youtubePosts, tiktokPosts] = await Promise.all([
+      readFeed(`https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`, "YouTube"),
+      readFeed(TIKTOK_RSS, "TikTok")
+    ]);
 
-    const youtubePosts = ytFeed.items.slice(0, 6).map(item => {
-      const videoId = item.id.split(":").pop();
+    const allPosts = [...youtubePosts, ...tiktokPosts]
+      .filter(post => post.url)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 12);
 
-      return {
-        platform: "YouTube",
-        title: item.title,
-        url: item.link,
-        thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-        description: item.contentSnippet || item.content || "",
-        date: new Date(item.pubDate).toISOString()
-      };
-    });
-
-    // 🔵 2. TikTok (RSS.app XML)
-    const tkFeed = await parser.parseURL(TIKTOK_RSS);
-
-    const tiktokPosts = tkFeed.items.slice(0, 6).map(item => {
-
-      let thumbnail = "";
-
-      if (item.enclosure && item.enclosure.url) {
-        thumbnail = item.enclosure.url;
-      } else if (item["media:content"] && item["media:content"].url) {
-        thumbnail = item["media:content"].url;
-      } else if (item["media:thumbnail"] && item["media:thumbnail"].url) {
-        thumbnail = item["media:thumbnail"].url;
-      } else if (item.content) {
-        const match = item.content.match(/<img.*?src="(.*?)"/);
-        if (match && match[1]) {
-          thumbnail = match[1];
-        }
-      }
-
-      return {
-        platform: "TikTok",
-        title: item.title,
-        url: item.link,
-        thumbnail: thumbnail,
-        description: item.contentSnippet || item.content || "",
-        date: new Date(item.pubDate).toISOString()
-      };
-    });
-
-    // 🟣 3. Juntar
-    let allPosts = [...youtubePosts, ...tiktokPosts];
-
-    // 🟢 4. Remover duplicados
-    const uniquePosts = [];
-    const urls = new Set();
-
-    for (const post of allPosts) {
-      if (!urls.has(post.url)) {
-        urls.add(post.url);
-        uniquePosts.push(post);
-      }
-    }
-
-    // 🟡 5. Ordenar por data
-    uniquePosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    // 🟠 6. Limitar total do carrossel
-    const finalPosts = uniquePosts.slice(0, 6);
-
-    // 🔵 7. Gerar blog.json
-    fs.writeFileSync("blog.json", JSON.stringify(finalPosts, null, 2));
-
-    console.log("Blog atualizado com sucesso!");
+    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(allPosts, null, 2));
+    console.log(`Blog atualizado com sucesso em ${OUTPUT_FILE}`);
   } catch (error) {
-    console.error("Erro:", error.message);
+    console.error("Erro ao atualizar blog:", error.message);
   }
 }
 

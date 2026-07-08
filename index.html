@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -81,11 +81,13 @@
 
             <div class="content">
                 <div class="text">
-                    <h2>olá!</h1>
-                        <h1>Eu sou <span class="typing-text"></span></h1>
+                    <span class="hero-badge">streaming • música • presença</span>
+                    <h2>olá!</h2>
+                        <h1>Eu sou <span class="typing-frame"><span class="typing-text"></span></span></h1>
                         <p>Com mais de 40 anos vividos, encantando as pessoas com a minha voz nos momentos, dedico-me
                             também ao streaming há quatro anos, onde transformo transmissões em momentos de pura alegria
                             para o público.</p>
+                        <p class="hero-line">Uma presença acolhedora, voz marcante e conteúdo pensado para aproximar pessoas.</p>
                         <a href="#about" class="btn">sobre mim <i class="fas fa-user"></i></a>
                 </div>
             </div>
@@ -99,6 +101,51 @@
     </section>
 
     <!-------------------- Home Area (End) -------------------->
+
+
+    <!-------------------- Social Highlight (Start) -------------------->
+    <section class="social-spotlight" id="social-spotlight">
+
+        <div class="heading">
+            <h2>acompanhe <span>ao vivo</span></h2>
+            <p class="section-lead">Entradas rápidas para os canais mais ativos, com foco em vídeos curtos, lives e conteúdos completos.</p>
+        </div>
+
+        <div class="spotlight-grid">
+            <a class="spotlight-card spotlight-card--tiktok" target="_blank" rel="noopener noreferrer"
+                href="https://www.tiktok.com/@meny.menycita">
+                <span class="spotlight-card__icon fab fa-tiktok"></span>
+                <h3>TikTok</h3>
+                <p>Clipes curtos, bastidores e chamadas para as lives.</p>
+                <strong>abrir perfil</strong>
+            </a>
+
+            <a class="spotlight-card spotlight-card--youtube" target="_blank" rel="noopener noreferrer"
+                href="https://www.youtube.com/@menymendonca4269">
+                <span class="spotlight-card__icon fab fa-youtube"></span>
+                <h3>YouTube</h3>
+                <p>Conteúdos completos, vídeos fixos e materiais mais longos.</p>
+                <strong>abrir canal</strong>
+            </a>
+
+            <a class="spotlight-card spotlight-card--instagram" target="_blank" rel="noopener noreferrer"
+                href="https://www.instagram.com/meny.meny.meny">
+                <span class="spotlight-card__icon fab fa-instagram"></span>
+                <h3>Instagram</h3>
+                <p>Atualizações rápidas, fotos e destaques do dia a dia.</p>
+                <strong>ver stories</strong>
+            </a>
+
+            <a class="spotlight-card spotlight-card--blog" href="#blog">
+                <span class="spotlight-card__icon fas fa-bolt"></span>
+                <h3>Destaques</h3>
+                <p>Veja os carrosseis atualizados do TikTok e do YouTube.</p>
+                <strong>ir para o blog</strong>
+            </a>
+        </div>
+
+    </section>
+    <!-------------------- Social Highlight (End) -------------------->
 
 
 
@@ -116,7 +163,7 @@
                 <h2>Meu nome é meny mendonça.</h2>
                 <p>Recifense de coração vibrante, há mais de 20 anos transformo sonhos em realidade como empreendedora e
                     encantando as pessoas com a minha voz nos momentos vagos. Mãe dedicada e apaixonada pela vida,
-                    encontrei no streaming — onde estou há mais 4 anos — uma nova forma de espalhar leveza. Minha
+                    encontrei no streaming - onde estou há mais 4 anos - uma nova forma de espalhar leveza. Minha
                     missão?
                     Levar alegria a cada tela e mostrar que a vida, quando vivida com um sorriso, é muito mais bonita.
                 </p>
@@ -158,6 +205,7 @@
 
         <div class="heading">
             <h2>meus <span>momentos</span></h2>
+            <p class="section-lead">Memórias, bastidores e registros que ajudam a contar minha história com mais contexto visual.</p>
         </div>
 
         <div class="gallery">
@@ -247,15 +295,52 @@
     <section class="blog" id="blog">
 
         <div class="heading">
-            <h2>meu <span>blog</span></h2>
+            <h2>meus <span>conteudos</span></h2>
+            <p class="section-lead">Atualizações pensadas para levar o público do blog para o TikTok e o YouTube.</p>
         </div>
 
-        <div class="swiper-container blog-slider">
-            <div class="swiper-wrapper" id="blog-dinamico">
-                <!-- Slides serão inseridos aqui via JS -->
-            </div>
+        <div class="social-grid">
+            <article class="social-panel social-panel--tiktok">
+                <div class="social-panel__header">
+                    <div>
+                        <span class="platform-tag platform-tag--tiktok">TikTok</span>
+                        <h3>cortes curtos e virais</h3>
+                        <p>Posts rápidos com bastidores, lives e chamadas para ação.</p>
+                    </div>
 
-            <div class="swiper-pagination swiper-pagination2"></div>
+                    <a class="btn social-panel__btn" target="_blank" rel="noopener noreferrer"
+                        href="https://www.tiktok.com/@meny.menycita">seguir no tiktok</a>
+                </div>
+
+                <div class="swiper-container blog-slider blog-slider--tiktok">
+                    <div class="swiper-wrapper" id="blog-tiktok-dinamico">
+                        <!-- Slides serao inseridos aqui via JS -->
+                    </div>
+
+                    <div class="swiper-pagination swiper-pagination-tiktok"></div>
+                </div>
+            </article>
+
+            <article class="social-panel social-panel--youtube">
+                <div class="social-panel__header">
+                    <div>
+                        <span class="platform-tag platform-tag--youtube">YouTube</span>
+                        <h3>vídeos completos e compilados</h3>
+                        <p>Espaço ideal para conteúdos mais longos, séries e vídeos fixos.</p>
+                    </div>
+
+                    <a class="btn social-panel__btn" target="_blank" rel="noopener noreferrer"
+                        href="https://www.youtube.com/@menymendonca4269">seguir no youtube</a>
+                </div>
+
+                <div class="swiper-container blog-slider blog-slider--youtube">
+                    <div class="swiper-wrapper" id="blog-youtube-dinamico">
+                        <!-- Slides serao inseridos aqui via JS -->
+                    </div>
+
+                    <div class="swiper-pagination swiper-pagination-youtube"></div>
+                </div>
+            </article>
         </div>
 
     </section>
@@ -267,11 +352,33 @@
     <section class="agenda" id="agenda">
 
         <div class="heading">
-            <h2 id="tituloSite">meu <span>Eventos</span></h2>
+            <h2 id="tituloSite">minha <span>agenda</span></h2>
+            <p class="section-lead">Veja os próximos compromissos, transmissões e datas importantes em um calendário mais fácil de acompanhar.</p>
         </div>
 
-        <div class="calendar-wrapper">
-            <div class="calendar" id="calendar"></div>
+        <div class="agenda-layout">
+            <aside class="agenda-sidebar">
+                <div class="agenda-card agenda-card--accent">
+                    <span class="agenda-card__eyebrow">Próxima agenda</span>
+                    <h3>Transmissões, eventos e encontros</h3>
+                    <p>Use esta área para organizar lives, participações especiais e datas de divulgação.</p>
+                </div>
+
+                <div class="agenda-card">
+                    <h4>O que você encontra aqui</h4>
+                    <ul>
+                        <li>Datas de lives e eventos</li>
+                        <li>Compromissos com o público</li>
+                        <li>Atualizações integradas ao Google Agenda</li>
+                    </ul>
+                </div>
+
+                <a class="btn agenda-cta" href="#contact">quero acompanhar</a>
+            </aside>
+
+            <div class="calendar-wrapper">
+                <div class="calendar" id="calendar"></div>
+            </div>
         </div>
 
         <div class="modalEvento" id="modalEvento">
@@ -306,10 +413,10 @@
 
             <div class="contact-info">
 
-                <h3>aonde me encontrar</h3>
+                <h3>onde me encontrar</h3>
 
                 <div class="info-item">
-                    <h4>Tiktok:</h4>
+                    <h4>TikTok:</h4>
                     <div class="detail">
                         <div class="fab fa-tiktok"></div>
                         <a class="linkedin" target="_blank"
@@ -318,7 +425,7 @@
                 </div>
 
                 <div class="info-item">
-                    <h4>Youtube:</h4>
+                    <h4>YouTube:</h4>
                     <div class="detail">
                         <div class="fab fa-youtube"></div>
                         <a class="github" target="_blank"
@@ -365,7 +472,7 @@
         </div>
 
         <div class="content">
-            <p>created by <span>FSO</span> | all rights reserved</p>
+            <p>desenvolvido por <span>FSO</span> | todos os direitos reservados</p>
         </div>
     </footer>
     <!-------------------- Footer Area (End) -------------------->
@@ -514,7 +621,7 @@
             const formData = new FormData(form);
 
             try {
-                const response = await fetch("https://formspree.io/f/mnjbnqpe", {
+                const response = await fetch("https://formspree.io/f/meelonvr", {
                     method: "POST",
                     body: formData,
                     headers: {
@@ -582,3 +689,5 @@
 </body>
 
 </html>
+
+

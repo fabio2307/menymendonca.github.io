@@ -59,6 +59,62 @@
         padding: 2rem;
     }
 
+    .home .content .text{
+        padding: 2.4rem;
+    }
+
+    .home .image{
+        padding: 1.8rem;
+    }
+
+    .home .image img{
+        width: min(36rem, 100%);
+    }
+
+    .spotlight-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .social-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .social-panel__header{
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .social-panel__btn{
+        width: 100%;
+    }
+
+    .blog-slider{
+        padding-bottom: 3rem;
+    }
+
+    .agenda-layout{
+        grid-template-columns: 1fr;
+    }
+
+    .calendar-wrapper{
+        min-height: auto;
+    }
+
+    #calendar{
+        min-height: 52rem;
+    }
+
+    .about .content,
+    .about .image,
+    .contact-info,
+    .contact-form{
+        padding: 1.6rem;
+    }
+
+    .contact-info .info-item .detail{
+        align-items: flex-start;
+    }
+
 }
 
 @media (max-width: 450px){
@@ -70,7 +126,88 @@
         padding: 1rem;
     }
 
+    .home .content .text{
+        padding: 2rem;
+    }
 
+    .home .content h1{
+        font-size: 3.8rem;
+        min-height: 6.4rem;
+    }
+
+    .home .content .typing-frame{
+        width: 11ch;
+        min-width: 11ch;
+    }
+
+    .home .image{
+        padding: 1.2rem;
+    }
+
+    .home .image img{
+        width: min(30rem, 100%);
+    }
+
+    .spotlight-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .portfolio .heading .section-lead,
+    .blog .heading .section-lead,
+    .agenda .heading .section-lead{
+        font-size: 1.5rem;
+    }
+
+    .controls{
+        gap: 0.8rem;
+    }
+
+    .controls .button.btn{
+        padding: 0.8rem 1.2rem;
+        font-size: 1.3rem;
+    }
+
+    .social-panel{
+        padding: 1.5rem;
+    }
+
+    .blog-item{
+        min-height: 52rem;
+    }
+
+    .about .content h2{
+        font-size: 3rem;
+    }
+
+    .contact-info h3{
+        font-size: 2.4rem;
+    }
+
+    .agenda-card,
+    .calendar-wrapper{
+        padding: 1.4rem;
+    }
+
+    .agenda-card h3{
+        font-size: 2rem;
+    }
+
+    .agenda-card h4{
+        font-size: 1.7rem;
+    }
+
+    .portfolio-item{
+        height: 24rem;
+    }
+
+    #calendar{
+        padding: 1.2rem;
+        min-height: 48rem;
+    }
+
+    .agenda .fc .fc-toolbar-title{
+        font-size: 2rem;
+    }
 
 }
 
