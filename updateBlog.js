@@ -2,34 +2,22 @@ const Parser = require("rss-parser");
 const fs = require("fs");
 const path = require("path");
 
-// customFields é necessário para o rss-parser entender tags com namespace
-// (media:content, media:thumbnail) — sem isso elas ficam undefined.
-const parser = new Parser({
-  customFields: {
-    item: [
-      ["media:content", "mediaContent", { keepArray: true }],
-      ["media:thumbnail", "mediaThumbnail"],
-    ],
-  },
-});
+const parser = new Parser();
 
 const YOUTUBE_CHANNEL_ID = "UCM2AMeG9bKNvzAn2eiHzMOQ";
-const TIKTOK_RSS = "https://tiktok-rss-api.onrender.com/rss/meny.menycita";
+const TIKTOK_RSS = "https://rss.app/feeds/uYUK36o1Mf3brhnv.xml";
 const OUTPUT_FILE = path.join(__dirname, "blog.json");
 
 function normalizeThumbnail(item) {
   if (item.enclosure?.url) return item.enclosure.url;
-
-  // Atributos XML (como "url") vêm dentro de "$" quando parseados.
-  // mediaContent é array por causa do keepArray configurado acima.
-  const mediaContent = Array.isArray(item.mediaContent) ? item.mediaContent[0] : item.mediaContent;
-  if (mediaContent?.$?.url) return mediaContent.$.url;
-
-  if (item.mediaThumbnail?.$?.url) return item.mediaThumbnail.$.url;
+  if (item["media:content"]?.url) return item["media:content"].url;
+  if (item["media:thumbnail"]?.url) return item["media:thumbnail"].url;
 
   if (item.content) {
     const match = item.content.match(/<img.*?src="(.*?)"/);
-    if (match?.[1]) return match[1];
+    if (match?.[1]) {
+      return match[1];
+    }
   }
 
   return "";
@@ -78,10 +66,9 @@ async function updateBlog() {
       .slice(0, 12);
 
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(allPosts, null, 2));
-    console.log(`Blog atualizado com sucesso em ${OUTPUT_FILE} (${allPosts.length} posts)`);
+    console.log(`Blog atualizado com sucesso em ${OUTPUT_FILE}`);
   } catch (error) {
     console.error("Erro ao atualizar blog:", error.message);
-    process.exitCode = 1; // importante: faz o GitHub Action marcar como falho se der erro
   }
 }
 
