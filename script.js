@@ -27,7 +27,9 @@ function criarSlideVazio(mensagem, linkTexto, linkUrl) {
 function renderizarSlides(container, posts, fallbackConfig) {
   if (!container) return [];
 
-  if (!posts.length) {
+  const items = Array.isArray(posts) ? posts : [];
+
+  if (!items.length) {
     container.innerHTML = criarSlideVazio(
       fallbackConfig.emptyTitle,
       fallbackConfig.ctaLabel,
@@ -36,7 +38,7 @@ function renderizarSlides(container, posts, fallbackConfig) {
     return [];
   }
 
-  container.innerHTML = posts.map(post => {
+  container.innerHTML = items.map(post => {
     const date = post.date ? new Date(post.date).toLocaleDateString("pt-BR") : "";
     const description = truncarTexto(limparTexto(post.description || post.content || ""));
     const platformClass = (post.platform || fallbackConfig.platform).toLowerCase().replace(/\s+/g, "-");
@@ -101,11 +103,33 @@ function iniciarSwiper(selector, paginationSelector) {
 }
 
 async function carregarBlog() {
+  const configTikTok = {
+    platform: "TikTok",
+    emptyTitle: "Ainda não há posts de TikTok carregados.",
+    ctaLabel: "abrir perfil",
+    ctaUrl: "https://www.tiktok.com/@meny.menycita",
+    fallbackImage: "assets/images/Blogs/blog-1.png",
+  };
+
+  const configYouTube = {
+    platform: "YouTube",
+    emptyTitle: "Ainda não há vídeos do YouTube carregados.",
+    ctaLabel: "abrir canal",
+    ctaUrl: "https://www.youtube.com/@menymendonca4269",
+    fallbackImage: "assets/images/Blogs/blog-2.png",
+  };
+
   try {
     const response = await fetch("blog.json", { cache: "no-store" });
-    const posts = await response.json();
 
-    const grupos = posts.reduce((acc, post) => {
+    if (!response.ok) {
+      throw new Error(`Falha ao carregar blog.json (${response.status})`);
+    }
+
+    const posts = await response.json();
+    const postsValidos = Array.isArray(posts) ? posts : [];
+
+    const grupos = postsValidos.reduce((acc, post) => {
       const key = (post.platform || "").toLowerCase();
       if (!acc[key]) acc[key] = [];
       acc[key].push(post);
@@ -115,26 +139,15 @@ async function carregarBlog() {
     const tiktokPosts = (grupos.tiktok || []).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
     const youtubePosts = (grupos.youtube || []).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
 
-    renderizarSlides(document.getElementById("blog-tiktok-dinamico"), tiktokPosts, {
-      platform: "TikTok",
-      emptyTitle: "Ainda não há posts de TikTok carregados.",
-      ctaLabel: "abrir perfil",
-      ctaUrl: "https://www.tiktok.com/@meny.menycita",
-      fallbackImage: "assets/images/Blogs/blog-1.png",
-    });
-
-    renderizarSlides(document.getElementById("blog-youtube-dinamico"), youtubePosts, {
-      platform: "YouTube",
-      emptyTitle: "Ainda não há vídeos do YouTube carregados.",
-      ctaLabel: "abrir canal",
-      ctaUrl: "https://www.youtube.com/@menymendonca4269",
-      fallbackImage: "assets/images/Blogs/blog-2.png",
-    });
-
-    iniciarSwiper(".blog-slider--tiktok", ".swiper-pagination-tiktok");
-    iniciarSwiper(".blog-slider--youtube", ".swiper-pagination-youtube");
+    renderizarSlides(document.getElementById("blog-tiktok-dinamico"), tiktokPosts, configTikTok);
+    renderizarSlides(document.getElementById("blog-youtube-dinamico"), youtubePosts, configYouTube);
   } catch (error) {
     console.error("Erro ao carregar blog:", error);
+    renderizarSlides(document.getElementById("blog-tiktok-dinamico"), [], configTikTok);
+    renderizarSlides(document.getElementById("blog-youtube-dinamico"), [], configYouTube);
+  } finally {
+    iniciarSwiper(".blog-slider--tiktok", ".swiper-pagination-tiktok");
+    iniciarSwiper(".blog-slider--youtube", ".swiper-pagination-youtube");
   }
 }
 

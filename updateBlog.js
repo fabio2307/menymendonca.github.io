@@ -5,7 +5,7 @@ const path = require("path");
 const parser = new Parser();
 
 const YOUTUBE_CHANNEL_ID = "UCM2AMeG9bKNvzAn2eiHzMOQ";
-const TIKTOK_RSS = "https://rss.app/feeds/uYUK36o1Mf3brhnv.xml";
+const TIKTOK_RSS = "https://tiktok-rss-api.onrender.com/rss/meny.menycita";
 const OUTPUT_FILE = path.join(__dirname, "blog.json");
 
 function normalizeThumbnail(item) {
