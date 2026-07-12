@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Painel Administrativo</title>
+  <title>Painel TikTok</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -20,6 +20,7 @@
       display: none;
     }
 
+    /* LOGIN */
     .login-container {
       height: 100vh;
       display: flex;
@@ -36,6 +37,7 @@
       text-align: center;
     }
 
+    /* BOTÕES */
     .btn {
       width: 100%;
       padding: 12px;
@@ -44,41 +46,56 @@
       background: red;
       color: #fff;
       cursor: pointer;
+      margin-top: 10px;
     }
 
-    /* painel */
+    /* PAINEL */
     .admin-panel {
       padding: 20px;
     }
 
+    /* MENU */
+    .menu {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* INPUT */
     textarea {
       width: 100%;
-      height: 80px;
+      height: 100px;
       border-radius: 8px;
       padding: 10px;
       margin-bottom: 10px;
+      border: none;
     }
 
+    /* CAROUSEL */
     .carousel {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 15px;
+      overflow-x: auto;
     }
 
+    /* CARD */
     .card {
+      min-width: 300px;
       background: #000;
       padding: 10px;
       border-radius: 10px;
-      width: 300px;
+      position: relative;
     }
 
     .remove {
+      position: absolute;
+      top: 5px;
+      right: 5px;
       background: red;
       border: none;
       color: white;
       padding: 5px;
       cursor: pointer;
-      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -99,10 +116,10 @@
 
     <h2>Painel TikTok</h2>
 
-    <!-- MENU -->
-    <div style="display:flex; gap:10px; margin-bottom:20px;">
+    <div class="menu">
       <button class="btn" onclick="trocarAba('cadastro')">Cadastrar</button>
       <button class="btn" onclick="trocarAba('momentos')">Momentos</button>
+      <button class="btn" onclick="netlifyIdentity.logout()">Sair</button>
     </div>
 
     <!-- CADASTRO -->
@@ -124,14 +141,12 @@
     const painelDiv = document.getElementById("painel");
     const carousel = document.getElementById("carousel");
 
-    // 🔥 IMPORTANTE: iniciar o Netlify Identity
+    // 🔥 INICIAR NETLIFY
     window.netlifyIdentity.init();
 
     // LOGIN
     window.netlifyIdentity.on("init", user => {
-      if (user) {
-        mostrarPainel();
-      }
+      if (user) mostrarPainel();
     });
 
     window.netlifyIdentity.on("login", () => {
@@ -147,7 +162,7 @@
     function mostrarPainel() {
       loginDiv.classList.add("hidden");
       painelDiv.classList.remove("hidden");
-      carregarVideos();
+      atualizarLista();
     }
 
     // TROCAR ABA
@@ -157,23 +172,7 @@
 
       document.getElementById("aba-" + aba).classList.remove("hidden");
 
-      if (aba === "momentos") {
-        atualizarLista();
-      }
-    }
-
-    // CARREGAR
-    function carregarVideos() {
-      atualizarLista();
-    }
-
-    // ATUALIZAR LISTA
-    function atualizarLista() {
-      carousel.innerHTML = "";
-
-      const salvos = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
-
-      salvos.forEach(url => criarCard(url));
+      if (aba === "momentos") atualizarLista();
     }
 
     // ADICIONAR
@@ -195,13 +194,19 @@
       });
 
       document.getElementById("inputLinks").value = "";
-
-      alert("Vídeos adicionados com sucesso!");
-
+      alert("Vídeos adicionados!");
       trocarAba("momentos");
     }
 
-    // CRIAR CARD
+    // LISTA
+    function atualizarLista() {
+      carousel.innerHTML = "";
+      const lista = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
+
+      lista.forEach(url => criarCard(url));
+    }
+
+    // CARD
     function criarCard(url) {
       const card = document.createElement("div");
       card.className = "card";
@@ -244,9 +249,7 @@
     function salvar(url) {
       let lista = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
 
-      if (!lista.includes(url)) {
-        lista.push(url);
-      }
+      if (!lista.includes(url)) lista.push(url);
 
       localStorage.setItem("videosTikTok", JSON.stringify(lista));
     }
