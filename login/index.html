@@ -124,15 +124,26 @@
     const painelDiv = document.getElementById("painel");
     const carousel = document.getElementById("carousel");
 
+    // 🔥 IMPORTANTE: iniciar o Netlify Identity
+    window.netlifyIdentity.init();
+
     // LOGIN
     window.netlifyIdentity.on("init", user => {
-      if (user) mostrarPainel();
+      if (user) {
+        mostrarPainel();
+      }
     });
 
     window.netlifyIdentity.on("login", () => {
       mostrarPainel();
     });
 
+    window.netlifyIdentity.on("logout", () => {
+      painelDiv.classList.add("hidden");
+      loginDiv.classList.remove("hidden");
+    });
+
+    // MOSTRAR PAINEL
     function mostrarPainel() {
       loginDiv.classList.add("hidden");
       painelDiv.classList.remove("hidden");
@@ -233,7 +244,6 @@
     function salvar(url) {
       let lista = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
 
-      // evitar duplicado
       if (!lista.includes(url)) {
         lista.push(url);
       }
