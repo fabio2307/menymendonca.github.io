@@ -1,263 +1,117 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-<meta charset="UTF-8">
-<title>Painel TikTok</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Painel Administrativo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
-<style>
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #111, #1a1a1a, #222);
-  color: #fff;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #111, #1a1a1a, #222);
+      overflow: hidden;
+    }
 
-.hidden { display: none; }
+    .login-container {
+      position: relative;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      padding: 50px 40px;
+      border-radius: 15px;
+      text-align: center;
+      width: 350px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: fadeIn 0.6s ease-in-out;
+    }
 
-/* LOGIN */
-.login-container {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    .login-container h2 {
+      color: #fff;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
 
-.box {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(15px);
-  padding: 40px;
-  border-radius: 15px;
-  width: 350px;
-  text-align: center;
-}
+    .login-container p {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
 
-/* BOTÕES */
-.btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: red;
-  color: #fff;
-  cursor: pointer;
-  margin-top: 10px;
-}
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(45deg, #ff4d4d, #ff0000);
+      color: #fff;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
 
-/* PAINEL */
-.admin-panel {
-  padding: 20px;
-}
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255,0,0,0.4);
+    }
 
-/* MENU */
-.menu {
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-/* INPUT */
-textarea {
-  width: 100%;
-  height: 100px;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: none;
-}
-
-/* CAROUSEL */
-.carousel {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-}
-
-/* CARD */
-.card {
-  min-width: 300px;
-  background: #000;
-  padding: 10px;
-  border-radius: 10px;
-  position: relative;
-}
-
-.remove {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background: red;
-  border: none;
-  color: white;
-  padding: 5px;
-  cursor: pointer;
-}
-</style>
+    @media (max-width: 480px) {
+      .login-container {
+        width: 90%;
+        padding: 40px 25px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div class="login-container" id="login">
-  <div class="box">
+  <div class="login-container">
     <h2>Área Administrativa</h2>
-    <p>Acesse o painel</p>
-    <button class="btn" onclick="netlifyIdentity.open()">Entrar</button>
-  </div>
-</div>
-
-<!-- PAINEL -->
-<div class="admin-panel hidden" id="painel">
-
-  <h2>Painel TikTok</h2>
-
-  <div class="menu">
-    <button class="btn" onclick="trocarAba('cadastro')">Cadastrar</button>
-    <button class="btn" onclick="trocarAba('momentos')">Momentos</button>
-    <button class="btn" onclick="netlifyIdentity.logout()">Sair</button>
+    <p>Acesse o painel para gerenciar seus conteúdos</p>
+    <button class="btn-login" onclick="netlifyIdentity.open()">
+      Entrar no Painel
+    </button>
   </div>
 
-  <!-- CADASTRO -->
-  <div id="aba-cadastro">
-    <textarea id="inputLinks" placeholder="Cole links do TikTok (1 por linha)"></textarea>
-    <button class="btn" onclick="adicionarVideos()">Adicionar vídeos</button>
-  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
 
-  <!-- MOMENTOS -->
-  <div id="aba-momentos" class="hidden">
-    <h3>Seus vídeos</h3>
-    <div class="carousel" id="carousel"></div>
-  </div>
+      window.netlifyIdentity.on("init", user => {
+        const hash = window.location.hash;
 
-</div>
+        if (
+          hash.includes("invite_token") ||
+          hash.includes("recovery_token") ||
+          hash.includes("confirmation_token")
+        ) {
+          window.netlifyIdentity.open();
+        }
 
-<script>
-const loginDiv = document.getElementById("login");
-const painelDiv = document.getElementById("painel");
-const carousel = document.getElementById("carousel");
+        if (user) {
+          window.location.href = "/admin/";
+        }
+      });
 
-// 🔥 INICIAR NETLIFY
-window.netlifyIdentity.init();
+      window.netlifyIdentity.on("login", () => {
+        window.location.href = "/admin/";
+      });
 
-// LOGIN
-window.netlifyIdentity.on("init", user => {
-  if (user) mostrarPainel();
-});
-
-window.netlifyIdentity.on("login", () => {
-  mostrarPainel();
-});
-
-window.netlifyIdentity.on("logout", () => {
-  painelDiv.classList.add("hidden");
-  loginDiv.classList.remove("hidden");
-});
-
-// MOSTRAR PAINEL
-function mostrarPainel() {
-  loginDiv.classList.add("hidden");
-  painelDiv.classList.remove("hidden");
-  atualizarLista();
-}
-
-// TROCAR ABA
-function trocarAba(aba) {
-  document.getElementById("aba-cadastro").classList.add("hidden");
-  document.getElementById("aba-momentos").classList.add("hidden");
-
-  document.getElementById("aba-" + aba).classList.remove("hidden");
-
-  if (aba === "momentos") atualizarLista();
-}
-
-// ADICIONAR
-function adicionarVideos() {
-  const input = document.getElementById("inputLinks").value.trim();
-  if (!input) return;
-
-  const urls = input.split("\n");
-
-  urls.forEach(url => {
-    url = url.trim();
-
-    if (!url.includes("tiktok.com")) {
-      alert("Link inválido: " + url);
-      return;
-    }
-
-    salvar(url);
-  });
-
-  document.getElementById("inputLinks").value = "";
-  alert("Vídeos adicionados!");
-  trocarAba("momentos");
-}
-
-// LISTA
-function atualizarLista() {
-  carousel.innerHTML = "";
-  const lista = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
-
-  lista.forEach(url => criarCard(url));
-}
-
-// CARD
-function criarCard(url) {
-  const card = document.createElement("div");
-  card.className = "card";
-
-  const btn = document.createElement("button");
-  btn.innerText = "Remover";
-  btn.className = "remove";
-  btn.onclick = () => {
-    remover(url);
-    atualizarLista();
-  };
-
-  const block = document.createElement("blockquote");
-  block.className = "tiktok-embed";
-  block.setAttribute("cite", url);
-
-  const section = document.createElement("section");
-  block.appendChild(section);
-
-  card.appendChild(btn);
-  card.appendChild(block);
-  carousel.appendChild(card);
-
-  carregarScriptTikTok();
-}
-
-// SCRIPT TIKTOK
-function carregarScriptTikTok() {
-  if (window.tiktokEmbed) {
-    window.tiktokEmbed.load();
-  } else {
-    const script = document.createElement("script");
-    script.src = "https://www.tiktok.com/embed.js";
-    script.onload = () => window.tiktokEmbed.load();
-    document.body.appendChild(script);
-  }
-}
-
-// STORAGE
-function salvar(url) {
-  let lista = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
-
-  if (!lista.includes(url)) lista.push(url);
-
-  localStorage.setItem("videosTikTok", JSON.stringify(lista));
-}
-
-function remover(url) {
-  let lista = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
-  lista = lista.filter(v => v !== url);
-  localStorage.setItem("videosTikTok", JSON.stringify(lista));
-}
-</script>
+    });
+  </script>
 
 </body>
 </html>
