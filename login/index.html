@@ -96,12 +96,27 @@
 
   <!-- PAINEL -->
   <div class="admin-panel hidden" id="painel">
+
     <h2>Painel TikTok</h2>
 
-    <textarea id="inputLinks" placeholder="Cole links do TikTok (1 por linha)"></textarea>
-    <button class="btn" onclick="adicionarVideos()">Adicionar vídeos</button>
+    <!-- MENU -->
+    <div style="display:flex; gap:10px; margin-bottom:20px;">
+      <button class="btn" onclick="trocarAba('cadastro')">Cadastrar</button>
+      <button class="btn" onclick="trocarAba('momentos')">Momentos</button>
+    </div>
 
-    <div class="carousel" id="carousel"></div>
+    <!-- CADASTRO -->
+    <div id="aba-cadastro">
+      <textarea id="inputLinks" placeholder="Cole links do TikTok (1 por linha)"></textarea>
+      <button class="btn" onclick="adicionarVideos()">Adicionar vídeos</button>
+    </div>
+
+    <!-- MOMENTOS -->
+    <div id="aba-momentos" class="hidden">
+      <h3>Seus vídeos</h3>
+      <div class="carousel" id="carousel"></div>
+    </div>
+
   </div>
 
   <script>
@@ -124,9 +139,29 @@
       carregarVideos();
     }
 
+    // TROCAR ABA
+    function trocarAba(aba) {
+      document.getElementById("aba-cadastro").classList.add("hidden");
+      document.getElementById("aba-momentos").classList.add("hidden");
+
+      document.getElementById("aba-" + aba).classList.remove("hidden");
+
+      if (aba === "momentos") {
+        atualizarLista();
+      }
+    }
+
     // CARREGAR
     function carregarVideos() {
+      atualizarLista();
+    }
+
+    // ATUALIZAR LISTA
+    function atualizarLista() {
+      carousel.innerHTML = "";
+
       const salvos = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
+
       salvos.forEach(url => criarCard(url));
     }
 
@@ -145,11 +180,14 @@
           return;
         }
 
-        criarCard(url);
         salvar(url);
       });
 
       document.getElementById("inputLinks").value = "";
+
+      alert("Vídeos adicionados com sucesso!");
+
+      trocarAba("momentos");
     }
 
     // CRIAR CARD
@@ -161,8 +199,8 @@
       btn.innerText = "Remover";
       btn.className = "remove";
       btn.onclick = () => {
-        card.remove();
         remover(url);
+        atualizarLista();
       };
 
       const block = document.createElement("blockquote");
@@ -194,7 +232,12 @@
     // STORAGE
     function salvar(url) {
       let lista = JSON.parse(localStorage.getItem("videosTikTok") || "[]");
-      lista.push(url);
+
+      // evitar duplicado
+      if (!lista.includes(url)) {
+        lista.push(url);
+      }
+
       localStorage.setItem("videosTikTok", JSON.stringify(lista));
     }
 
