@@ -1150,6 +1150,32 @@ header #menu-btn:hover {
     align-self: flex-start;
 }
 
+.blog-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px;
+}
+
+.blog-card {
+  min-width: 280px;
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.blog-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 10px;
+  color: white;
+}
+
 /*--------------------- 10- Blog Area CSS (End) ---------------------*/
 
 
