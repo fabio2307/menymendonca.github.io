@@ -8,8 +8,6 @@ const YOUTUBE_CHANNEL_ID = "UCM2AMeG9bKNvzAn2eiHzMOQ";
 const TIKTOK_RSS = "https://rss.app/feeds/uYUK36o1Mf3brhnv.xml";
 
 const OUTPUT_FILE = path.join(__dirname, "blog.json");
-
-// 👇 NOVO: arquivo opcional vindo do painel
 const MANUAL_TIKTOK_FILE = path.join(__dirname, "tiktok-manual.json");
 
 function normalizeThumbnail(item) {
@@ -32,30 +30,78 @@ function extractYouTubeId(item) {
 
 function buildYouTubeThumbnail(item) {
   const videoId = extractYouTubeId(item);
-  return videoId
-    ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
-    : "";
+  return videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : "";
 }
 
-// 👇 NOVO: tratar TikTok manual
-function parseManualTikTok() {
+function lerBlogAnterior() {
+  try {
+    if (!fs.existsSync(OUTPUT_FILE)) return [];
+    const data = JSON.parse(fs.readFileSync(OUTPUT_FILE, "utf8"));
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error("Erro ao ler blog.json anterior:", err.message);
+    return [];
+  }
+}
+
+function lerLinksManuais() {
   try {
     if (!fs.existsSync(MANUAL_TIKTOK_FILE)) return [];
 
-    const data = JSON.parse(fs.readFileSync(MANUAL_TIKTOK_FILE));
+    const data = JSON.parse(fs.readFileSync(MANUAL_TIKTOK_FILE, "utf8"));
 
-    return data.map(url => ({
-      platform: "TikTok",
-      title: "TikTok",
-      url,
-      thumbnail: "", // TikTok embed resolve depois
-      description: "",
-      date: new Date().toISOString()
-    }));
+    if (Array.isArray(data)) {
+      return data.map(item => (typeof item === "string" ? { url: item } : item));
+    }
+
+    return Array.isArray(data.videos) ? data.videos : [];
   } catch (err) {
     console.error("Erro ao ler TikTok manual:", err.message);
     return [];
   }
+}
+
+async function buscarMetaTikTok(url) {
+  try {
+    const response = await fetch(
+      `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`
+    );
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    return {
+      title: data.title || "TikTok",
+      thumbnail: data.thumbnail_url || "",
+      author: data.author_name || "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function parseManualTikTok() {
+  const links = lerLinksManuais().filter(item => item?.url?.includes("tiktok.com"));
+  const anteriores = lerBlogAnterior();
+
+  const posts = await Promise.all(
+    links.map(async item => {
+      const url = item.url.trim();
+      const anterior = anteriores.find(p => p.url === url);
+      const meta = await buscarMetaTikTok(url);
+
+      return {
+        platform: "TikTok",
+        title: item.titulo || meta?.title || anterior?.title || "TikTok",
+        url,
+        thumbnail: meta?.thumbnail || anterior?.thumbnail || "",
+        description: meta?.author ? `@${meta.author}` : (anterior?.description || ""),
+        date: item.date || anterior?.date || new Date().toISOString(),
+      };
+    })
+  );
+
+  return posts;
 }
 
 async function readFeed(source, platform) {
@@ -71,7 +117,7 @@ async function readFeed(source, platform) {
           ? buildYouTubeThumbnail(item)
           : normalizeThumbnail(item),
       description: item.contentSnippet || item.content || "",
-      date: new Date(item.pubDate || Date.now()).toISOString()
+      date: new Date(item.pubDate || Date.now()).toISOString(),
     }));
   } catch (error) {
     console.error(`Falha ao ler o feed de ${platform}:`, error.message);
@@ -81,36 +127,28 @@ async function readFeed(source, platform) {
 
 async function updateBlog() {
   try {
-    const [youtubePosts, tiktokPosts] = await Promise.all([
+    const [youtubePosts, tiktokPosts, manualTikTok] = await Promise.all([
       readFeed(
         `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`,
         "YouTube"
       ),
-      readFeed(TIKTOK_RSS, "TikTok")
+      readFeed(TIKTOK_RSS, "TikTok"),
+      parseManualTikTok(),
     ]);
 
-    // 👇 NOVO: juntar manual + RSS
-    const manualTikTok = parseManualTikTok();
-
-    const allPosts = [
-      ...youtubePosts,
-      ...tiktokPosts,
-      ...manualTikTok
-    ]
+    const allPosts = [...youtubePosts, ...tiktokPosts, ...manualTikTok]
       .filter(post => post.url)
-
-      // 👇 NOVO: remover duplicados
       .filter(
         (post, index, self) =>
           index === self.findIndex(p => p.url === post.url)
       )
-
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 12);
 
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(allPosts, null, 2));
 
     console.log("Blog atualizado com sucesso 🚀");
+    console.log(`  YouTube: ${youtubePosts.length} | TikTok RSS: ${tiktokPosts.length} | TikTok manual: ${manualTikTok.length}`);
   } catch (error) {
     console.error("Erro ao atualizar blog:", error.message);
   }

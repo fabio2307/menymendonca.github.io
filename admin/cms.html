@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 
 <head>
     <meta charset="utf-8" />
+    <title>CMS — Meny Mendonça</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 
@@ -14,10 +16,13 @@
                 window.location.href = "/admin/";
             }
         });
+
+        window.netlifyIdentity.on("logout", () => {
+            window.location.href = "/admin/";
+        });
     </script>
 
-    <!-- NETLIFY CMS -->
-    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
 </body>
 

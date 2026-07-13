@@ -49,3 +49,26 @@ collections:
               - label: "Imagem"
                 name: "imagem"
                 widget: "image"
+
+  - name: "tiktok"
+    label: "TikTok"
+    files:
+      - label: "Vídeos TikTok"
+        name: "tiktok"
+        file: "tiktok-manual.json"
+        format: "json"
+        fields:
+          - label: "Vídeos"
+            name: "videos"
+            widget: "list"
+            summary: "{{fields.titulo}} — {{fields.url}}"
+            fields:
+              - label: "Link do vídeo"
+                name: "url"
+                widget: "string"
+                hint: "Cole o link completo do TikTok (ex: https://www.tiktok.com/@usuario/video/1234567890)"
+
+              - label: "Título (opcional)"
+                name: "titulo"
+                widget: "string"
+                required: false

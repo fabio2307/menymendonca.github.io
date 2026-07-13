@@ -4,37 +4,119 @@
 <head>
     <meta charset="UTF-8">
     <title>Painel TikTok</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: sans-serif;
             background: #111;
             color: white;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+        }
+
+        h1 {
             text-align: center;
-            padding: 20px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 24px;
+            line-height: 1.5;
         }
 
         textarea {
-            width: 90%;
-            height: 100px;
-            margin: 10px;
+            width: 100%;
+            height: 110px;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: white;
+            resize: vertical;
         }
 
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            background: red;
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 16px 0 24px;
+        }
+
+        button,
+        .btn-link {
+            padding: 10px 18px;
             border: none;
-            color: white;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        button.primary {
+            background: #ff0033;
+            color: white;
+        }
+
+        button.secondary {
+            background: #333;
+            color: white;
+        }
+
+        button.danger {
+            background: #662222;
+            color: white;
+        }
+
+        .status {
+            text-align: center;
+            min-height: 24px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .status.ok {
+            color: #69c9d0;
+        }
+
+        .status.err {
+            color: #ff7a99;
         }
 
         .card {
-            background: black;
-            padding: 10px;
-            margin: 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card a {
+            color: #69c9d0;
+            word-break: break-all;
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 24px;
         }
     </style>
 </head>
@@ -42,71 +124,223 @@
 <body>
 
     <h1>Painel TikTok</h1>
+    <p class="subtitle">
+        Cole os links dos vídeos (um por linha). Ao salvar, eles aparecem no carrossel da seção de conteúdos do site.
+    </p>
 
-    <button onclick="voltar()">⬅ Voltar</button>
-    <button onclick="netlifyIdentity.logout()">Sair</button>
+    <div class="actions">
+        <button class="secondary" onclick="voltar()">Voltar</button>
+        <button class="secondary" onclick="netlifyIdentity.logout()">Sair</button>
+    </div>
 
-    <br><br>
+    <label for="links"><strong>Adicionar links</strong></label>
+    <textarea id="links" placeholder="https://www.tiktok.com/@meny.menycita/video/1234567890"></textarea>
 
-    <textarea id="links" placeholder="Cole links do TikTok"></textarea><br>
-    <button onclick="salvar()">Salvar</button>
+    <div class="actions">
+        <button class="primary" onclick="adicionarLinks()">Adicionar à lista</button>
+        <button class="primary" onclick="salvarNoSite()">Salvar no site</button>
+    </div>
 
-    <h2>Vídeos</h2>
+    <div class="status" id="status"></div>
+
+    <h2>Vídeos cadastrados (<span id="total">0</span>)</h2>
     <div id="lista"></div>
 
     <script>
-        /* 🔐 PROTEÇÃO */
+        const ARQUIVO = "tiktok-manual.json";
+        let videos = [];
+        let fileSha = null;
+
         window.netlifyIdentity.on("init", user => {
             if (!user) {
                 window.location.href = "/admin/";
+                return;
             }
+            carregar();
         });
 
         window.netlifyIdentity.on("logout", () => {
             window.location.href = "/admin/";
         });
 
-        /* 🔙 VOLTAR */
         function voltar() {
             window.location.href = "/admin/painel.html";
         }
 
-        /* 💾 SALVAR */
-        function salvar() {
-            const texto = document.getElementById("links").value;
-
-            let lista = JSON.parse(localStorage.getItem("tiktok") || "[]");
-
-            texto.split("\n").forEach(link => {
-                link = link.trim();
-
-                if (link.includes("tiktok.com") && !lista.includes(link)) {
-                    lista.push(link);
-                }
-            });
-
-            localStorage.setItem("tiktok", JSON.stringify(lista));
-            document.getElementById("links").value = "";
-
-            carregar();
+        function isLinkTikTok(url) {
+            return /tiktok\.com|vm\.tiktok\.com/i.test(url);
         }
 
-        /* 📋 CARREGAR */
-        function carregar() {
+        function normalizarUrl(url) {
+            return url.trim().split("?")[0];
+        }
+
+        function obterToken() {
+            const user = window.netlifyIdentity.currentUser();
+            return user?.token?.access_token || null;
+        }
+
+        function decodificarBase64(base64) {
+            return decodeURIComponent(escape(atob(base64.replace(/\s/g, ""))));
+        }
+
+        function codificarBase64(texto) {
+            return btoa(unescape(encodeURIComponent(texto)));
+        }
+
+        function mostrarStatus(mensagem, tipo) {
+            const el = document.getElementById("status");
+            el.textContent = mensagem;
+            el.className = "status " + (tipo || "");
+        }
+
+        async function carregarDoArquivoPublico() {
+            const res = await fetch("/" + ARQUIVO, { cache: "no-store" });
+            if (!res.ok) return { videos: [] };
+            const data = await res.json();
+            return {
+                videos: Array.isArray(data) ? data : (data.videos || [])
+            };
+        }
+
+        async function carregarDoGit() {
+            const token = obterToken();
+            if (!token) return null;
+
+            const res = await fetch("/.netlify/git/github/contents/" + ARQUIVO, {
+                headers: { Authorization: "Bearer " + token }
+            });
+
+            if (res.status === 404) {
+                return { videos: [], sha: null };
+            }
+
+            if (!res.ok) return null;
+
+            const data = await res.json();
+            const conteudo = JSON.parse(decodificarBase64(data.content));
+
+            return {
+                videos: Array.isArray(conteudo) ? conteudo : (conteudo.videos || []),
+                sha: data.sha
+            };
+        }
+
+        async function carregar() {
+            mostrarStatus("Carregando...", "");
+
+            try {
+                const git = await carregarDoGit();
+                const dados = git || await carregarDoArquivoPublico();
+
+                videos = (dados.videos || []).map(v =>
+                    typeof v === "string" ? { url: normalizarUrl(v) } : { ...v, url: normalizarUrl(v.url) }
+                ).filter(v => v.url && isLinkTikTok(v.url));
+
+                fileSha = git?.sha || null;
+                renderizarLista();
+                mostrarStatus(videos.length ? "Lista carregada." : "Nenhum vídeo cadastrado ainda.", "ok");
+            } catch (err) {
+                mostrarStatus("Erro ao carregar: " + err.message, "err");
+            }
+        }
+
+        function renderizarLista() {
             const div = document.getElementById("lista");
+            document.getElementById("total").textContent = videos.length;
             div.innerHTML = "";
 
-            let lista = JSON.parse(localStorage.getItem("tiktok") || "[]");
+            if (!videos.length) {
+                div.innerHTML = '<p class="empty">Nenhum vídeo. Cole links acima e clique em "Salvar no site".</p>';
+                return;
+            }
 
-            lista.forEach(link => {
+            videos.forEach((item, index) => {
                 const el = document.createElement("div");
                 el.className = "card";
-                el.innerHTML = link;
+                el.innerHTML = `
+                    <a href="${item.url}" target="_blank" rel="noopener">${item.titulo || item.url}</a>
+                    <button class="danger" onclick="remover(${index})">Remover</button>
+                `;
                 div.appendChild(el);
             });
         }
 
-        carregar();
+        function adicionarLinks() {
+            const texto = document.getElementById("links").value;
+            let adicionados = 0;
+
+            texto.split("\n").forEach(linha => {
+                const url = normalizarUrl(linha);
+                if (!url || !isLinkTikTok(url)) return;
+                if (videos.some(v => v.url === url)) return;
+
+                videos.push({ url, titulo: "Vídeo TikTok", date: new Date().toISOString() });
+                adicionados++;
+            });
+
+            document.getElementById("links").value = "";
+            renderizarLista();
+
+            if (adicionados) {
+                mostrarStatus(adicionados + ' link(s) adicionado(s). Clique em "Salvar no site" para publicar.', "ok");
+            } else {
+                mostrarStatus("Nenhum link válido encontrado.", "err");
+            }
+        }
+
+        function remover(index) {
+            videos.splice(index, 1);
+            renderizarLista();
+            mostrarStatus('Link removido. Clique em "Salvar no site" para confirmar.', "ok");
+        }
+
+        async function salvarNoSite() {
+            const token = obterToken();
+            if (!token) {
+                mostrarStatus("Faça login novamente.", "err");
+                return;
+            }
+
+            mostrarStatus("Salvando...", "");
+
+            try {
+                if (!fileSha) {
+                    const git = await carregarDoGit();
+                    if (git?.sha) fileSha = git.sha;
+                }
+
+                const conteudo = JSON.stringify({ videos }, null, 2);
+                const body = {
+                    branch: "main",
+                    commit_message: "Atualizar vídeos TikTok",
+                    content: codificarBase64(conteudo)
+                };
+
+                if (fileSha) body.sha = fileSha;
+
+                const res = await fetch("/.netlify/git/github/contents/" + ARQUIVO, {
+                    method: "PUT",
+                    headers: {
+                        Authorization: "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) {
+                    const erro = await res.json().catch(() => ({}));
+                    throw new Error(erro.message || "Falha ao salvar (" + res.status + ")");
+                }
+
+                const data = await res.json();
+                fileSha = data.content?.sha || fileSha;
+
+                mostrarStatus("Salvo! O carrossel será atualizado em alguns segundos.", "ok");
+            } catch (err) {
+                mostrarStatus("Erro ao salvar: " + err.message, "err");
+            }
+        }
     </script>
 
 </body>

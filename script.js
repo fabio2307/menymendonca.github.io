@@ -9,15 +9,31 @@ function truncarTexto(texto, limite = 120) {
   return texto.length > limite ? `${texto.substring(0, limite)}...` : texto;
 }
 
+function escaparHtml(texto) {
+  return String(texto || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function isUrlTikTok(url) {
+  return /tiktok\.com|vm\.tiktok\.com/i.test(url || "");
+}
+
+function normalizarUrlTikTok(url) {
+  return (url || "").trim().split("?")[0];
+}
+
 function criarSlideVazio(mensagem, linkTexto, linkUrl) {
   return `
     <div class="swiper-slide blog-item blog-item--empty">
       <div class="content">
         <span class="platform-tag platform-tag--empty">Atualização em breve</span>
-        <h4>${mensagem}</h4>
+        <h4>${escaparHtml(mensagem)}</h4>
         <p>Assim que o feed atualizar, este carrossel vai exibir os últimos conteúdos.</p>
-        <a target="_blank" rel="noopener noreferrer" href="${linkUrl}" class="btn">
-          ${linkTexto} <i class="fas fa-arrow-right"></i>
+        <a target="_blank" rel="noopener noreferrer" href="${escaparHtml(linkUrl)}" class="btn">
+          ${escaparHtml(linkTexto)} <i class="fas fa-arrow-right"></i>
         </a>
       </div>
     </div>
@@ -25,7 +41,7 @@ function criarSlideVazio(mensagem, linkTexto, linkUrl) {
 }
 
 function renderizarSlides(container, posts, fallbackConfig) {
-  if (!container) return [];
+  if (!container) return 0;
 
   const items = Array.isArray(posts) ? posts : [];
 
@@ -35,7 +51,7 @@ function renderizarSlides(container, posts, fallbackConfig) {
       fallbackConfig.ctaLabel,
       fallbackConfig.ctaUrl
     );
-    return [];
+    return 0;
   }
 
   container.innerHTML = items.map(post => {
@@ -49,22 +65,22 @@ function renderizarSlides(container, posts, fallbackConfig) {
     return `
       <div class="swiper-slide blog-item blog-item--${platformClass}">
         <div class="image">
-          <img src="${thumbnail}" alt="${post.platform || fallbackConfig.platform}" />
+          <img src="${escaparHtml(thumbnail)}" alt="${escaparHtml(post.platform || fallbackConfig.platform)}" loading="lazy" />
         </div>
 
         <div class="content">
           <div class="intro">
             <h5><i class="fas fa-calendar-alt"></i><span>${date}</span></h5>
-            <h5><i class="fas fa-user"></i><span>${post.platform || fallbackConfig.platform}</span></h5>
+            <h5><i class="fas fa-user"></i><span>${escaparHtml(post.platform || fallbackConfig.platform)}</span></h5>
           </div>
 
-          <a class="main-heading" target="_blank" rel="noopener noreferrer" href="${post.url}">
-            ${post.title}
+          <a class="main-heading" target="_blank" rel="noopener noreferrer" href="${escaparHtml(post.url)}">
+            ${escaparHtml(post.title || post.platform || fallbackConfig.platform)}
           </a>
 
-          ${description ? `<p>${description}</p>` : ""}
+          ${description ? `<p>${escaparHtml(description)}</p>` : ""}
 
-          <a target="_blank" rel="noopener noreferrer" href="${post.url}" class="btn">
+          <a target="_blank" rel="noopener noreferrer" href="${escaparHtml(post.url)}" class="btn">
             Veja mais <i class="fas fa-arrow-right"></i>
           </a>
         </div>
@@ -72,24 +88,26 @@ function renderizarSlides(container, posts, fallbackConfig) {
     `;
   }).join("");
 
-  return posts;
+  return items.length;
 }
 
-function iniciarSwiper(selector, paginationSelector) {
+function iniciarSwiper(selector, paginationSelector, slideCount) {
   if (blogSwipers[selector]) {
     blogSwipers[selector].destroy(true, true);
   }
 
+  const podeLoop = slideCount > 1;
+
   blogSwipers[selector] = new Swiper(selector, {
     spaceBetween: 20,
-    loop: true,
+    loop: podeLoop,
     observer: true,
     observeParents: true,
     watchOverflow: true,
-    autoplay: {
+    autoplay: podeLoop ? {
       delay: 2500,
       disableOnInteraction: false,
-    },
+    } : false,
     pagination: {
       el: paginationSelector,
       clickable: true,
@@ -100,6 +118,106 @@ function iniciarSwiper(selector, paginationSelector) {
       1024: { slidesPerView: 1 },
     },
   });
+}
+
+function normalizarPostTikTok(item) {
+  const bruto = typeof item === "string" ? { url: item } : item;
+  const url = normalizarUrlTikTok(bruto?.url);
+
+  if (!url || !isUrlTikTok(url)) return null;
+
+  return {
+    platform: "TikTok",
+    title: bruto.titulo || "Vídeo TikTok",
+    url,
+    thumbnail: bruto.thumbnail || "",
+    description: bruto.descricao || "",
+    date: bruto.date || new Date().toISOString(),
+  };
+}
+
+async function carregarTikTokManual() {
+  try {
+    const response = await fetch("tiktok-manual.json", { cache: "no-store" });
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    const videos = Array.isArray(data) ? data : (data.videos || []);
+
+    return videos
+      .map(normalizarPostTikTok)
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+async function buscarMetaTikTok(url) {
+  try {
+    const response = await fetch(
+      `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`
+    );
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    return {
+      title: data.title || "",
+      thumbnail: data.thumbnail_url || "",
+      author: data.author_name || "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function enriquecerTikTok(posts) {
+  return Promise.all(
+    posts.map(async post => {
+      if (post.thumbnail) return post;
+
+      const meta = await buscarMetaTikTok(post.url);
+      if (!meta) return post;
+
+      return {
+        ...post,
+        title: post.title === "Vídeo TikTok" && meta.title ? meta.title : post.title,
+        thumbnail: meta.thumbnail || post.thumbnail,
+        description: meta.author ? `@${meta.author}` : post.description,
+      };
+    })
+  );
+}
+
+function mesclarPosts(listaA, listaB) {
+  const mapa = new Map();
+
+  [...listaA, ...listaB].forEach(post => {
+    if (!post?.url) return;
+
+    const existente = mapa.get(post.url);
+
+    if (!existente) {
+      mapa.set(post.url, post);
+      return;
+    }
+
+    // Mescla mantendo os melhores dados disponíveis de cada fonte,
+    // em vez de deixar o último item da lista apagar thumbnail/título
+    // já enriquecidos que vieram do blog.json.
+    mapa.set(post.url, {
+      ...existente,
+      ...post,
+      title: (post.title && post.title !== "Vídeo TikTok") ? post.title : (existente.title || post.title),
+      thumbnail: post.thumbnail || existente.thumbnail,
+      description: post.description || existente.description,
+      date: post.date || existente.date,
+    });
+  });
+
+  return Array.from(mapa.values()).sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 }
 
 async function carregarBlog() {
@@ -119,15 +237,21 @@ async function carregarBlog() {
     fallbackImage: "assets/images/Blogs/blog-2.png",
   };
 
+  const containerTikTok = document.getElementById("blog-tiktok-dinamico");
+  const containerYouTube = document.getElementById("blog-youtube-dinamico");
+
   try {
-    const response = await fetch("blog.json", { cache: "no-store" });
+    const [blogResponse, manualTikTok] = await Promise.all([
+      fetch("blog.json", { cache: "no-store" }),
+      carregarTikTokManual(),
+    ]);
 
-    if (!response.ok) {
-      throw new Error(`Falha ao carregar blog.json (${response.status})`);
+    let postsValidos = [];
+
+    if (blogResponse.ok) {
+      const posts = await blogResponse.json();
+      postsValidos = Array.isArray(posts) ? posts : [];
     }
-
-    const posts = await response.json();
-    const postsValidos = Array.isArray(posts) ? posts : [];
 
     const grupos = postsValidos.reduce((acc, post) => {
       const key = (post.platform || "").toLowerCase();
@@ -136,20 +260,30 @@ async function carregarBlog() {
       return acc;
     }, {});
 
-    const tiktokPosts = (grupos.tiktok || []).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
-    const youtubePosts = (grupos.youtube || []).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
+    let tiktokPosts = mesclarPosts(grupos.tiktok || [], manualTikTok).slice(0, 6);
+    const youtubePosts = (grupos.youtube || [])
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 6);
 
-    renderizarSlides(document.getElementById("blog-tiktok-dinamico"), tiktokPosts, configTikTok);
-    renderizarSlides(document.getElementById("blog-youtube-dinamico"), youtubePosts, configYouTube);
+    const totalTikTok = renderizarSlides(containerTikTok, tiktokPosts, configTikTok);
+    const totalYouTube = renderizarSlides(containerYouTube, youtubePosts, configYouTube);
+
+    iniciarSwiper(".blog-slider--tiktok", ".swiper-pagination-tiktok", totalTikTok);
+    iniciarSwiper(".blog-slider--youtube", ".swiper-pagination-youtube", totalYouTube);
+
+    if (tiktokPosts.length) {
+      enriquecerTikTok(tiktokPosts).then(enriched => {
+        const total = renderizarSlides(containerTikTok, enriched, configTikTok);
+        iniciarSwiper(".blog-slider--tiktok", ".swiper-pagination-tiktok", total);
+      });
+    }
   } catch (error) {
     console.error("Erro ao carregar blog:", error);
-    renderizarSlides(document.getElementById("blog-tiktok-dinamico"), [], configTikTok);
-    renderizarSlides(document.getElementById("blog-youtube-dinamico"), [], configYouTube);
-  } finally {
-    iniciarSwiper(".blog-slider--tiktok", ".swiper-pagination-tiktok");
-    iniciarSwiper(".blog-slider--youtube", ".swiper-pagination-youtube");
+    const totalTikTok = renderizarSlides(containerTikTok, [], configTikTok);
+    const totalYouTube = renderizarSlides(containerYouTube, [], configYouTube);
+    iniciarSwiper(".blog-slider--tiktok", ".swiper-pagination-tiktok", totalTikTok);
+    iniciarSwiper(".blog-slider--youtube", ".swiper-pagination-youtube", totalYouTube);
   }
 }
 
 document.addEventListener("DOMContentLoaded", carregarBlog);
-
