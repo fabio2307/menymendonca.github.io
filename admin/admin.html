@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+  <div id="nc-root"></div>
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <script>
+    (function () {
+      function irParaLogin() {
+        window.location.replace("/login/");
+      }
+
+      function carregarCMS() {
+        if (document.getElementById("decap-cms-script")) return;
+        var script = document.createElement("script");
+        script.id = "decap-cms-script";
+        script.src = "https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js";
+        document.body.appendChild(script);
+      }
+
+      if (!window.netlifyIdentity) {
+        irParaLogin();
+        return;
+      }
+
+      // Verifica IMEDIATAMENTE, sem depender só do evento "init".
+      // O widget pode disparar "init" antes deste script rodar (ex: enquanto
+      // outro script ainda está sendo baixado), e nesse caso um listener
+      // registrado depois nunca seria chamado — deixando a página aberta
+      // para quem não está logado. currentUser() lê a sessão salva na hora,
+      // sem depender de um evento que pode já ter passado.
+      var usuario = window.netlifyIdentity.currentUser();
+
+      if (usuario) {
+        carregarCMS();
+      } else {
+        irParaLogin();
+      }
+
+      // Mantém os listeners como reforço para os demais casos
+      // (ex: login/logout concluído em outra aba, ou o init demorar).
+      window.netlifyIdentity.on("init", function (user) {
+        if (user) {
+          carregarCMS();
+        } else {
+          irParaLogin();
+        }
+      });
+
+      window.netlifyIdentity.on("logout", irParaLogin);
+    })();
+  </script>
+</body>
+
+</html>

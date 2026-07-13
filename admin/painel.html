@@ -37,9 +37,15 @@
 
     <script>
         /* 🔐 PROTEÇÃO */
+        // Verifica na hora, sem depender só do evento "init" (que pode já
+        // ter disparado antes deste script rodar e nunca mais ser chamado).
+        if (!window.netlifyIdentity || !window.netlifyIdentity.currentUser()) {
+            window.location.replace("/admin/");
+        }
+
         window.netlifyIdentity.on("init", user => {
             if (!user) {
-                window.location.href = "/admin/";
+                window.location.replace("/admin/");
             }
         });
 

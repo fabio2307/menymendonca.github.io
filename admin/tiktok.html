@@ -151,12 +151,29 @@
         let videos = [];
         let fileSha = null;
 
-        window.netlifyIdentity.on("init", user => {
-            if (!user) {
-                window.location.href = "/admin/";
+        // Verifica na hora, sem depender só do evento "init" (que pode já
+        // ter disparado antes deste script rodar e nunca mais ser chamado).
+        let jaCarregou = false;
+
+        function autenticarECarregar() {
+            if (!window.netlifyIdentity || !window.netlifyIdentity.currentUser()) {
+                window.location.replace("/admin/");
                 return;
             }
-            carregar();
+            if (!jaCarregou) {
+                jaCarregou = true;
+                carregar();
+            }
+        }
+
+        autenticarECarregar();
+
+        window.netlifyIdentity.on("init", user => {
+            if (!user) {
+                window.location.replace("/admin/");
+                return;
+            }
+            autenticarECarregar();
         });
 
         window.netlifyIdentity.on("logout", () => {
