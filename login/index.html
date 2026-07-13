@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
-  <title>Painel Administrativo</title>
+  <title>Login Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -18,76 +19,32 @@
       background: linear-gradient(135deg, #111, #1a1a1a, #222);
     }
 
-    .container {
-      background: rgba(255,255,255,0.05);
+    .box {
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(15px);
       padding: 40px;
       border-radius: 15px;
-      width: 900px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      width: 320px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
 
-    h2 { color: #fff; }
-    p { color: #aaa; }
-
-    .hidden { display: none; }
-
-    .menu {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: linear-gradient(45deg, #ff4d4d, #ff0000);
+    h2 {
       color: #fff;
-      font-weight: bold;
-      cursor: pointer;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(255,0,0,0.4);
+    p {
+      color: #aaa;
     }
 
-    textarea {
+    button {
       width: 100%;
-      height: 80px;
+      padding: 14px;
+      border: none;
       border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: none;
-      outline: none;
-    }
-
-    .carousel {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      background: #000;
-      padding: 10px;
-      border-radius: 10px;
-      width: 280px;
-      position: relative;
-    }
-
-    .remove {
-      position: absolute;
-      top: 5px;
-      right: 5px;
       background: red;
-      border: none;
       color: white;
-      padding: 5px;
+      font-weight: bold;
       cursor: pointer;
     }
   </style>
@@ -95,161 +52,39 @@
 
 <body>
 
-<div class="container">
-  <h2>Painel Administrativo</h2>
-  <p>Gerencie seus conteúdos</p>
+  <div class="box">
+    <h2>Área Administrativa</h2>
+    <p>Faça login para acessar o painel</p>
 
-  <div class="menu">
-    <button class="btn" onclick="trocarAba('momentos')">Momentos</button>
-    <button class="btn" onclick="trocarAba('tiktok')">TikTok</button>
-    <button class="btn" onclick="netlifyIdentity.logout()">Sair</button>
+    <button onclick="abrirLogin()">Entrar</button>
   </div>
 
-  <!-- MOMENTOS (NÃO ALTERADO) -->
-  <div id="aba-momentos">
-    <h3>Momentos</h3>
-    <p>Seu sistema de momentos continua funcionando normalmente.</p>
-  </div>
-
-  <!-- TIKTOK -->
-  <div id="aba-tiktok" class="hidden">
-    <h3>Adicionar vídeos do TikTok</h3>
-    <textarea id="inputLinks" placeholder="Cole links do TikTok (1 por linha)"></textarea>
-    <button class="btn" onclick="salvarLinks()">Salvar</button>
-
-    <h3>Seus vídeos</h3>
-    <div class="carousel" id="lista"></div>
-  </div>
-</div>
-
-<script>
-/* =========================
-   🔐 PROTEÇÃO LOGIN
-========================= */
-window.netlifyIdentity.on("init", user => {
-  if (!user) {
-    window.location.href = "/";
-  }
-});
-
-window.netlifyIdentity.on("logout", () => {
-  window.location.href = "/";
-});
-
-/* =========================
-   📂 TROCAR ABAS
-========================= */
-function trocarAba(aba) {
-  document.getElementById("aba-momentos").classList.add("hidden");
-  document.getElementById("aba-tiktok").classList.add("hidden");
-
-  document.getElementById("aba-" + aba).classList.remove("hidden");
-
-  if (aba === "tiktok") carregarLista();
-}
-
-/* =========================
-   💾 SALVAR LINKS
-========================= */
-function salvarLinks() {
-  const input = document.getElementById("inputLinks").value.trim();
-  if (!input) return;
-
-  let lista = JSON.parse(localStorage.getItem("tiktokLinks") || "[]");
-
-  input.split("\n").forEach(url => {
-    url = url.trim();
-
-    if (!url.includes("tiktok.com")) {
-      alert("Link inválido: " + url);
-      return;
+  <script>
+    function abrirLogin() {
+      netlifyIdentity.open();
     }
 
-    if (!lista.includes(url)) {
-      lista.push(url);
-    }
-  });
+    /* 🔐 CONTROLE TOTAL DO LOGIN */
+    window.netlifyIdentity.on("init", user => {
 
-  localStorage.setItem("tiktokLinks", JSON.stringify(lista));
-  document.getElementById("inputLinks").value = "";
+      // Se já estiver logado → vai pro painel
+      if (user) {
+        window.location.href = "/admin/painel.html";
+      }
 
-  carregarLista();
-}
+    });
 
-/* =========================
-   📋 LISTAR
-========================= */
-function carregarLista() {
-  const container = document.getElementById("lista");
-  container.innerHTML = "";
+    /* ✅ LOGIN FEITO */
+    window.netlifyIdentity.on("login", () => {
+      window.location.href = "/admin/painel.html";
+    });
 
-  const lista = JSON.parse(localStorage.getItem("tiktokLinks") || "[]");
-
-  lista.forEach(url => criarCard(url));
-}
-
-/* =========================
-   🎴 CARD
-========================= */
-function criarCard(url) {
-  const card = document.createElement("div");
-  card.className = "card";
-
-  const btn = document.createElement("button");
-  btn.innerText = "Remover";
-  btn.className = "remove";
-  btn.onclick = () => remover(url);
-
-  const block = document.createElement("blockquote");
-  block.className = "tiktok-embed";
-  block.setAttribute("cite", url);
-
-  const section = document.createElement("section");
-  block.appendChild(section);
-
-  card.appendChild(btn);
-  card.appendChild(block);
-
-  document.getElementById("lista").appendChild(card);
-
-  carregarTikTok();
-}
-
-/* =========================
-   ❌ REMOVER
-========================= */
-function remover(url) {
-  let lista = JSON.parse(localStorage.getItem("tiktokLinks") || "[]");
-  lista = lista.filter(v => v !== url);
-
-  localStorage.setItem("tiktokLinks", JSON.stringify(lista));
-  carregarLista();
-}
-
-/* =========================
-   ▶️ TIKTOK EMBED
-========================= */
-let tiktokScriptLoaded = false;
-
-function carregarTikTok() {
-  if (tiktokScriptLoaded && window.tiktokEmbed) {
-    window.tiktokEmbed.load();
-    return;
-  }
-
-  const script = document.createElement("script");
-  script.src = "https://www.tiktok.com/embed.js";
-
-  script.onload = () => {
-    tiktokScriptLoaded = true;
-    if (window.tiktokEmbed) {
-      window.tiktokEmbed.load();
-    }
-  };
-
-  document.body.appendChild(script);
-}
-</script>
+    /* 🚪 LOGOUT (caso volte aqui) */
+    window.netlifyIdentity.on("logout", () => {
+      window.location.href = "/admin/";
+    });
+  </script>
 
 </body>
+
 </html>

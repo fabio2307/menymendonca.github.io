@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Painel</title>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #111;
+            color: white;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        button {
+            padding: 15px 25px;
+            margin: 10px;
+            border: none;
+            background: red;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Painel Administrativo</h1>
+
+    <button onclick="irMomentos()">Momentos</button>
+    <button onclick="irTikTok()">TikTok</button>
+    <br><br>
+    <button onclick="netlifyIdentity.logout()">Sair</button>
+
+    <script>
+        /* 🔐 PROTEÇÃO */
+        window.netlifyIdentity.on("init", user => {
+            if (!user) {
+                window.location.href = "/admin/";
+            }
+        });
+
+        /* 🚀 ROTAS */
+        function irMomentos() {
+            window.location.href = "/admin/cms.html";
+        }
+
+        function irTikTok() {
+            window.location.href = "/admin/tiktok.html";
+        }
+
+        window.netlifyIdentity.on("logout", () => {
+            window.location.href = "/admin/";
+        });
+    </script>
+
+</body>
+
+</html>
