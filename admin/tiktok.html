@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Painel TikTok</title>
+
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #111;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        textarea {
+            width: 90%;
+            height: 100px;
+            margin: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: red;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .card {
+            background: black;
+            padding: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Painel TikTok</h1>
+
+    <button onclick="voltar()">⬅ Voltar</button>
+    <button onclick="netlifyIdentity.logout()">Sair</button>
+
+    <br><br>
+
+    <textarea id="links" placeholder="Cole links do TikTok"></textarea><br>
+    <button onclick="salvar()">Salvar</button>
+
+    <h2>Vídeos</h2>
+    <div id="lista"></div>
+
+    <script>
+        /* 🔐 PROTEÇÃO */
+        window.netlifyIdentity.on("init", user => {
+            if (!user) {
+                window.location.href = "/admin/";
+            }
+        });
+
+        window.netlifyIdentity.on("logout", () => {
+            window.location.href = "/admin/";
+        });
+
+        /* 🔙 VOLTAR */
+        function voltar() {
+            window.location.href = "/admin/painel.html";
+        }
+
+        /* 💾 SALVAR */
+        function salvar() {
+            const texto = document.getElementById("links").value;
+
+            let lista = JSON.parse(localStorage.getItem("tiktok") || "[]");
+
+            texto.split("\n").forEach(link => {
+                link = link.trim();
+
+                if (link.includes("tiktok.com") && !lista.includes(link)) {
+                    lista.push(link);
+                }
+            });
+
+            localStorage.setItem("tiktok", JSON.stringify(lista));
+            document.getElementById("links").value = "";
+
+            carregar();
+        }
+
+        /* 📋 CARREGAR */
+        function carregar() {
+            const div = document.getElementById("lista");
+            div.innerHTML = "";
+
+            let lista = JSON.parse(localStorage.getItem("tiktok") || "[]");
+
+            lista.forEach(link => {
+                const el = document.createElement("div");
+                el.className = "card";
+                el.innerHTML = link;
+                div.appendChild(el);
+            });
+        }
+
+        carregar();
+    </script>
+
+</body>
+
+</html>
