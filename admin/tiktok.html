@@ -8,86 +8,142 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --purple: #00FFA9;
+            --black: #07160f;
+            --white: #FFFFFF;
+            --grey: #d7e2dd;
+        }
+
         * {
             box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            font-family: sans-serif;
-            background: #111;
-            color: white;
-            max-width: 720px;
+            color: var(--white);
+            max-width: 72rem;
             margin: 0 auto;
-            padding: 24px 16px 48px;
+            padding: 4rem 1.6rem 5rem;
+            background:
+                radial-gradient(circle at top left, rgba(0, 255, 169, 0.14), transparent 28%),
+                radial-gradient(circle at top right, rgba(255, 0, 51, 0.10), transparent 24%),
+                linear-gradient(180deg, #0a1711 0%, var(--black) 38%, #04100b 100%);
+            min-height: 100vh;
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 0.8rem;
+            font-size: 2.8rem;
+            color: var(--purple);
+            letter-spacing: 0.02em;
+        }
+
+        h2 {
+            font-size: 1.9rem;
+            color: var(--white);
+            margin-bottom: 1.2rem;
         }
 
         .subtitle {
             text-align: center;
-            color: #aaa;
-            margin-bottom: 24px;
-            line-height: 1.5;
+            color: var(--grey);
+            margin-bottom: 2.4rem;
+            line-height: 1.6;
+            font-size: 1.5rem;
         }
 
         textarea {
             width: 100%;
-            height: 110px;
-            margin: 8px 0;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #1a1a1a;
-            color: white;
+            height: 11rem;
+            margin: 0.8rem 0;
+            padding: 1.2rem;
+            border-radius: 1.2rem;
+            border: 0.1rem solid rgba(255, 255, 255, 0.12);
+            background: rgba(34, 34, 34, 0.4);
+            color: var(--white);
+            font-size: 1.5rem;
             resize: vertical;
+        }
+
+        textarea::placeholder {
+            color: var(--grey);
+        }
+
+        textarea:focus {
+            border-color: var(--purple);
         }
 
         .actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 1rem;
             justify-content: center;
-            margin: 16px 0 24px;
+            margin: 1.6rem 0 2.4rem;
         }
 
         button,
         .btn-link {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 6px;
+            padding: 1rem 2rem;
+            border: 0.15rem solid transparent;
+            border-radius: 999px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 1.45rem;
             text-decoration: none;
             display: inline-block;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s linear;
         }
 
         button.primary {
-            background: #ff0033;
-            color: white;
+            color: var(--purple);
+            background: rgba(0, 255, 169, 0.06);
+            border-color: rgba(0, 255, 169, 0.65);
+        }
+
+        button.primary:hover {
+            color: var(--white);
+            background-color: var(--purple);
+            box-shadow: 0 1.2rem 2.4rem rgba(0, 255, 169, 0.18);
+            transform: translateY(-1px);
         }
 
         button.secondary {
-            background: #333;
-            color: white;
+            color: var(--grey);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.16);
+        }
+
+        button.secondary:hover {
+            color: var(--white);
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.12);
         }
 
         button.danger {
-            background: #662222;
-            color: white;
+            color: #ff7a99;
+            background: rgba(255, 0, 51, 0.08);
+            border-color: rgba(255, 0, 51, 0.4);
+        }
+
+        button.danger:hover {
+            color: var(--white);
+            background-color: #ff0033;
+            box-shadow: 0 1.2rem 2.4rem rgba(255, 0, 51, 0.2);
         }
 
         .status {
             text-align: center;
-            min-height: 24px;
-            margin-bottom: 16px;
-            font-size: 14px;
+            min-height: 2.4rem;
+            margin-bottom: 1.6rem;
+            font-size: 1.45rem;
         }
 
         .status.ok {
-            color: #69c9d0;
+            color: #8ff0f5;
         }
 
         .status.err {
@@ -95,28 +151,29 @@
         }
 
         .card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 12px 14px;
-            margin-bottom: 10px;
+            background: linear-gradient(180deg, rgba(34, 34, 34, 0.55), rgba(10, 10, 10, 0.6));
+            border: 0.1rem solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.4rem;
+            padding: 1.2rem 1.4rem;
+            margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            gap: 1.2rem;
+            box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.18);
         }
 
         .card a {
-            color: #69c9d0;
+            color: #8ff0f5;
             word-break: break-all;
             flex: 1;
-            font-size: 14px;
+            font-size: 1.4rem;
         }
 
         .empty {
             text-align: center;
-            color: #777;
-            padding: 24px;
+            color: var(--grey);
+            padding: 2.4rem;
         }
     </style>
 </head>

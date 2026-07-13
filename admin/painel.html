@@ -4,24 +4,89 @@
 <head>
     <meta charset="UTF-8">
     <title>Painel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
     <style>
-        body {
-            font-family: sans-serif;
-            background: #111;
-            color: white;
-            text-align: center;
-            padding-top: 100px;
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --purple: #00FFA9;
+            --black: #07160f;
+            --white: #FFFFFF;
+            --grey: #d7e2dd;
         }
 
-        button {
-            padding: 15px 25px;
-            margin: 10px;
-            border: none;
-            background: red;
-            color: white;
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 6rem 2rem;
+            color: var(--white);
+            text-align: center;
+            background:
+                radial-gradient(circle at top left, rgba(0, 255, 169, 0.14), transparent 28%),
+                radial-gradient(circle at top right, rgba(255, 0, 51, 0.10), transparent 24%),
+                linear-gradient(180deg, #0a1711 0%, var(--black) 38%, #04100b 100%);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--purple);
+            letter-spacing: 0.02em;
+            margin-bottom: 3rem;
+        }
+
+        .painel-card {
+            max-width: 42rem;
+            margin: 0 auto;
+            padding: 3rem 2.5rem;
+            border-radius: 2rem;
+            background: linear-gradient(180deg, rgba(34, 34, 34, 0.55), rgba(10, 10, 10, 0.6));
+            border: 0.1rem solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.22);
+        }
+
+        .painel-btn {
+            display: inline-block;
+            width: 100%;
+            max-width: 26rem;
+            padding: 1.3rem 2rem;
+            margin: 0.8rem 0;
+            font-size: 1.7rem;
+            color: var(--purple);
+            background: rgba(0, 255, 169, 0.06);
+            border: 0.15rem solid rgba(0, 255, 169, 0.65);
+            border-radius: 999px;
+            backdrop-filter: blur(10px);
             cursor: pointer;
+            transition: all 0.2s linear;
+        }
+
+        .painel-btn:hover,
+        .painel-btn:focus-visible {
+            color: var(--white);
+            background-color: var(--purple);
+            box-shadow: 0 1.2rem 2.4rem rgba(0, 255, 169, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .painel-btn--sair {
+            color: #ff7a99;
+            border-color: rgba(255, 0, 51, 0.5);
+            background: rgba(255, 0, 51, 0.06);
+            margin-top: 2rem;
+        }
+
+        .painel-btn--sair:hover,
+        .painel-btn--sair:focus-visible {
+            color: var(--white);
+            background-color: #ff0033;
+            box-shadow: 0 1.2rem 2.4rem rgba(255, 0, 51, 0.2);
         }
     </style>
 </head>
@@ -30,14 +95,17 @@
 
     <h1>Painel Administrativo</h1>
 
-    <button onclick="irMomentos()">Momentos</button>
-    <button onclick="irTikTok()">TikTok</button>
-    <br><br>
-    <button onclick="netlifyIdentity.logout()">Sair</button>
+    <div class="painel-card">
+        <button class="painel-btn" onclick="irMomentos()">Momentos</button>
+        <br>
+        <button class="painel-btn" onclick="irTikTok()">TikTok</button>
+        <br>
+        <button class="painel-btn painel-btn--sair" onclick="netlifyIdentity.logout()">Sair</button>
+    </div>
 
     <script>
-        /* 🔐 PROTEÇÃO */
-        // Verifica na hora, sem depender só do evento "init" (que pode já
+        /* PROTECAO */
+        // Verifica na hora, sem depender so do evento "init" (que pode ja
         // ter disparado antes deste script rodar e nunca mais ser chamado).
         if (!window.netlifyIdentity || !window.netlifyIdentity.currentUser()) {
             window.location.replace("/admin/");
@@ -49,7 +117,7 @@
             }
         });
 
-        /* 🚀 ROTAS */
+        /* ROTAS */
         function irMomentos() {
             window.location.href = "/admin/cms.html#/collections/momentos/entries/momentos";
         }

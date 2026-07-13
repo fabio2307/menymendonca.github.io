@@ -14,10 +14,6 @@
 
   <script>
     (function () {
-      function irParaLogin() {
-        window.location.replace("/login/");
-      }
-
       function carregarCMS() {
         if (document.getElementById("decap-cms-script")) return;
         var script = document.createElement("script");
@@ -26,36 +22,48 @@
         document.body.appendChild(script);
       }
 
+      function pedirLogin() {
+        // Abre o modal de login do proprio Netlify Identity, em vez de
+        // redirecionar para uma pagina "/login/" que nao existe no site
+        // (isso e o que causava o erro 404 "Pagina nao encontrada").
+        window.netlifyIdentity.open("login");
+      }
+
       if (!window.netlifyIdentity) {
-        irParaLogin();
+        document.getElementById("nc-root").innerHTML =
+          "<p style='font-family:sans-serif;text-align:center;margin-top:80px'>" +
+          "Nao foi possivel carregar o sistema de login. Recarregue a pagina." +
+          "</p>";
         return;
       }
 
-      // Verifica IMEDIATAMENTE, sem depender só do evento "init".
-      // O widget pode disparar "init" antes deste script rodar (ex: enquanto
-      // outro script ainda está sendo baixado), e nesse caso um listener
-      // registrado depois nunca seria chamado — deixando a página aberta
-      // para quem não está logado. currentUser() lê a sessão salva na hora,
-      // sem depender de um evento que pode já ter passado.
+      // Verifica imediatamente, sem depender so do evento "init"
+      // (que pode ja ter disparado antes deste script rodar).
       var usuario = window.netlifyIdentity.currentUser();
 
       if (usuario) {
         carregarCMS();
       } else {
-        irParaLogin();
+        pedirLogin();
       }
 
-      // Mantém os listeners como reforço para os demais casos
-      // (ex: login/logout concluído em outra aba, ou o init demorar).
       window.netlifyIdentity.on("init", function (user) {
         if (user) {
           carregarCMS();
         } else {
-          irParaLogin();
+          pedirLogin();
         }
       });
 
-      window.netlifyIdentity.on("logout", irParaLogin);
+      // Quando o login e concluido no modal, libera o CMS.
+      window.netlifyIdentity.on("login", function () {
+        carregarCMS();
+        window.netlifyIdentity.close();
+      });
+
+      window.netlifyIdentity.on("logout", function () {
+        window.location.reload();
+      });
     })();
   </script>
 </body>
