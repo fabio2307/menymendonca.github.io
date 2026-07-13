@@ -104,31 +104,22 @@
     </div>
 
     <script>
-        /* PROTECAO */
-        // Verifica na hora, sem depender so do evento "init" (que pode ja
-        // ter disparado antes deste script rodar e nunca mais ser chamado).
-        if (!window.netlifyIdentity || !window.netlifyIdentity.currentUser()) {
-            window.location.replace("/admin/");
-        }
-
-        window.netlifyIdentity.on("init", user => {
-            if (!user) {
-                window.location.replace("/admin/");
-            }
-        });
-
-        /* ROTAS */
         function irMomentos() {
-            window.location.href = "/admin/cms.html#/collections/momentos/entries/momentos";
+            window.location.href = "/admin/cms.html";
         }
 
         function irTikTok() {
             window.location.href = "/admin/tiktok.html";
         }
 
-        window.netlifyIdentity.on("logout", () => {
+        function logout() {
+            netlifyIdentity.logout();
+        }
+
+        /* 🔐 PROTEÇÃO */
+        if (!netlifyIdentity.currentUser()) {
             window.location.href = "/admin/";
-        });
+        }
     </script>
 
 </body>

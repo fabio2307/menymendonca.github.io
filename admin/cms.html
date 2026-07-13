@@ -35,14 +35,14 @@
             if (usuario) {
                 carregarCMS();
             } else {
-                irParaAdmin();
+                pedirLogin();
             }
 
             window.netlifyIdentity.on("init", user => {
-                if (user) {
+                if (usuario) {
                     carregarCMS();
                 } else {
-                    irParaAdmin();
+                    pedirLogin();
                 }
             });
 

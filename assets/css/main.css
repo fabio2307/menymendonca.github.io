@@ -249,7 +249,14 @@ header #menu-btn:hover {
 
 /*--------------------- 3- Header Area CSS (End) ---------------------*/
 
+.admin-link {
+    color: #00FFA9;
+    font-weight: 600;
+}
 
+.admin-link:hover {
+    color: white;
+}
 
 /*--------------------- 4- Home Area CSS (Start) ---------------------*/
 .home {
