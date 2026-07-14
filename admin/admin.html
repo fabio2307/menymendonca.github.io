@@ -41,11 +41,11 @@
       // (que pode ja ter disparado antes deste script rodar).
       var usuario = window.netlifyIdentity.currentUser();
 
-      if (usuario) {
+      /*if (usuario) {
         carregarCMS();
       } else {
         pedirLogin();
-      }
+      }*/
 
       window.netlifyIdentity.on("init", function (user) {
         if (user) {

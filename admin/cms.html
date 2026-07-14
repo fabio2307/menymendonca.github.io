@@ -31,12 +31,12 @@
 
             // Verifica imediatamente, sem depender só do evento "init"
             // (que pode já ter disparado antes deste script rodar).
-           /* var usuario = window.netlifyIdentity.currentUser();
+            var usuario = window.netlifyIdentity.currentUser();
             if (usuario) {
                 carregarCMS();
             } else {
                 pedirLogin();
-            }*/
+            }
 
             window.netlifyIdentity.on("init", user => {
                 if (usuario) {
