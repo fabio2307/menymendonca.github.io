@@ -549,6 +549,7 @@ header #menu-btn:hover {
 .spotlight-card--blog {
     border-top: 0.35rem solid var(--purple);
 }
+
 /*--------------------- Social Spotlight Area CSS (End) ---------------------*/
 
 /*--------------------- 4- Home Area CSS (End) ---------------------*/
@@ -1158,29 +1159,29 @@ header #menu-btn:hover {
 }
 
 .blog-carousel {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  padding: 20px;
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px;
 }
 
 .blog-card {
-  min-width: 280px;
-  background: #111;
-  border-radius: 10px;
-  overflow: hidden;
-  flex-shrink: 0;
+    min-width: 280px;
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .blog-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
 }
 
 .card-content {
-  padding: 10px;
-  color: white;
+    padding: 10px;
+    color: white;
 }
 
 /*--------------------- 10- Blog Area CSS (End) ---------------------*/
@@ -1258,7 +1259,7 @@ header #menu-btn:hover {
     padding-left: 1.8rem;
 }
 
-.agenda-card li + li {
+.agenda-card li+li {
     margin-top: 0.6rem;
 }
 

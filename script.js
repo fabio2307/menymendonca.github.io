@@ -286,4 +286,32 @@ async function carregarBlog() {
   }
 }
 
+async function iniciarCarrosselTikTok() {
+  const container = document.getElementById("blog-tiktok-dinamico");
+
+  if (!container) return;
+
+  // 🔥 1. carregar vídeos
+  let posts = await carregarTikTokManual();
+
+  // 🔥 2. enriquecer com thumbnail real do TikTok
+  posts = await enriquecerTikTok(posts);
+
+  // 🔥 3. renderizar
+  const total = renderizarSlides(container, posts, {
+    platform: "TikTok",
+    fallbackImage: "assets/images/blog/tiktok.jpg", // imagem padrão
+    emptyTitle: "Nenhum vídeo disponível",
+    ctaLabel: "Ver perfil no TikTok",
+    ctaUrl: "https://www.tiktok.com/@meny.menycita"
+  });
+
+  // 🔥 4. iniciar swiper
+  iniciarSwiper(".blog-slider--tiktok", ".swiper-pagination-tiktok", total);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  iniciarCarrosselTikTok();
+});
+
 document.addEventListener("DOMContentLoaded", carregarBlog);

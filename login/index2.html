@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Netlify Identity -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #111, #1a1a1a, #222);
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            width: 320px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            color: #fff;
+        }
+
+        p {
+            color: #aaa;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: red;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>Área Administrativa</h2>
+        <p>Faça login para acessar o painel</p>
+
+        <button onclick="abrirLogin()">Entrar</button>
+    </div>
+
+    <script>
+        function abrirLogin() {
+            if (window.netlifyIdentity) {
+                netlifyIdentity.open();
+            } else {
+                alert("Netlify Identity não carregou.");
+            }
+        }
+
+        // Espera o script carregar
+        if (window.netlifyIdentity) {
+
+            window.netlifyIdentity.on("init", user => {
+                console.log("Usuário:", user);
+
+                if (user) {
+                    window.location.href = "/admin/painel.html";
+                }
+            });
+
+            window.netlifyIdentity.on("login", () => {
+                console.log("Login feito");
+                window.location.href = "/admin/painel.html";
+            });
+
+            window.netlifyIdentity.on("logout", () => {
+                console.log("Logout feito");
+                window.location.href = "/admin/";
+            });
+
+        } else {
+            console.error("Netlify Identity não disponível");
+        }
+    </script>
+
+</body>
+
+</html>

@@ -690,6 +690,62 @@
         })();
     </script>
 
+    <script>
+        fetch('tiktok.html')
+            .then(res => res.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, 'text/html');
+
+                const videos = doc.querySelectorAll('.video');
+                const wrapper = document.getElementById('blog-tiktok-dinamico');
+
+                videos.forEach(video => {
+                    const link = video.dataset.link;
+                    const img = video.dataset.img;
+                    const desc = video.dataset.desc;
+
+                    const slide = document.createElement('div');
+                    slide.classList.add('swiper-slide');
+
+                    slide.innerHTML = `
+        <div class="blog-item">
+            <div class="image">
+                <img src="${img}" alt="${desc}">
+            </div>
+            <div class="content">
+                <h4>${desc}</h4>
+                <a href="${link}" target="_blank" class="btn">ver vídeo</a>
+            </div>
+        </div>
+      `;
+
+                    wrapper.appendChild(slide);
+                });
+
+                // 🔥 INICIALIZA O SWIPER DEPOIS DE INSERIR
+                new Swiper('.blog-slider--tiktok', {
+                    loop: true,
+                    spaceBetween: 20,
+                    slidesPerView: 1,
+                    pagination: {
+                        el: '.swiper-pagination-tiktok',
+                        clickable: true,
+                    },
+                    breakpoints: {
+                        768: {
+                            slidesPerView: 2
+                        },
+                        1024: {
+                            slidesPerView: 3
+                        }
+                    }
+                });
+
+            })
+            .catch(err => console.error("Erro ao carregar TikTok:", err));
+    </script>
+
 </body>
 
 </html>

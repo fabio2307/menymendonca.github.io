@@ -39,7 +39,7 @@
             }
 
             window.netlifyIdentity.on("init", user => {
-                if (usuario) {
+                if (user) {
                     carregarCMS();
                 } else {
                     pedirLogin();
@@ -48,6 +48,15 @@
 
             window.netlifyIdentity.on("logout", irParaAdmin);
         })();
+
+        window.netlifyIdentity.on("logout", () => {
+            window.location.href = "/";
+        });
+
+        function pedirLogin() {
+            window.netlifyIdentity.open();
+        }
+
     </script>
 
 </body>
