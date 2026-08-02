@@ -329,30 +329,34 @@ header #menu-btn:hover {
     flex: 1 1 42rem;
     filter: drop-shadow(0 2rem 3rem rgba(0, 0, 0, 0.4));
     position: relative;
-    padding: 2.8rem;
+    padding: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .home .image::before {
     content: "";
     position: absolute;
-    inset: 1.4rem;
+    inset: 0.8rem;
     border-radius: 42% 58% 40% 60% / 56% 34% 66% 44%;
-    border: 0.12rem solid rgba(0, 255, 169, 0.28);
+    border: 0.16rem solid rgba(0, 255, 169, 0.35);
     background:
         radial-gradient(circle at 30% 30%, rgba(0, 255, 169, 0.14), transparent 55%),
-        linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent);
-    transform: rotate(-6deg);
+        linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
+    transform: rotate(-5deg);
     pointer-events: none;
 }
 
 .home .image img {
-    width: min(45rem, 100%);
+    width: min(44rem, 100%);
+    max-width: 100%;
     aspect-ratio: 1 / 1;
     height: auto;
     border-radius: 42% 58% 40% 60% / 56% 34% 66% 44%;
     object-fit: cover;
-    border: 1rem solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.24);
+    border: 0.8rem solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 1.8rem 3.4rem rgba(0, 0, 0, 0.28);
     position: relative;
     z-index: 1;
 }
@@ -1146,8 +1150,8 @@ header #menu-btn:hover {
 
 .blog-item--empty {
     justify-content: center;
-    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,255,169,0.08));
-    border: 0.1rem dashed rgba(0,255,169,0.28);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 255, 169, 0.08));
+    border: 0.1rem dashed rgba(0, 255, 169, 0.28);
 }
 
 .blog-item--empty .content {
@@ -1166,14 +1170,19 @@ header #menu-btn:hover {
     margin: 1.5rem 1.5rem 0;
     overflow: hidden;
     border-radius: 1.2rem;
-    background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
     background-size: 200% 100%;
     animation: shimmer 1.4s infinite linear;
 }
 
 @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 .blog-item:hover .image img {
@@ -1394,15 +1403,20 @@ header #menu-btn:hover {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
     transform: translateX(-100%);
     animation: shimmerCalendar 2s infinite;
     pointer-events: none;
 }
 
 @keyframes shimmerCalendar {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 #calendar {
