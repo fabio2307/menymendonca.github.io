@@ -1,2 +1,17 @@
 # Local Netlify folder
 .netlify
+.env
+.vscode
+
+# Build / local generated files
+node_modules/
+graphify-out/
+
+# Generated site data
+public/blog.json
+public/tiktok-manual.json
+status.txt
+
+# Generated public data
+public/blog.json
+public/tiktok-manual.json

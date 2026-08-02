@@ -1,9 +1,14 @@
 {
   "name": "blog-auto-social",
   "version": "1.0.0",
+  "scripts": {
+    "build": "node public/scripts/updateBlog.js"
+  },
   "dependencies": {
-    "rss-parser": "^3.12.0",
+    "@netlify/blobs": "^10.7.10",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.4.5",
     "node-fetch": "^2.6.7",
-    "cheerio": "^1.0.0-rc.12"
+    "rss-parser": "^3.12.0"
   }
 }

@@ -11,16 +11,26 @@ exports.handler = async function () {
         const response = await fetch(url);
         const data = await response.json();
 
+        if (!response.ok || !Array.isArray(data.items)) {
+            return {
+                statusCode: 200,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ items: [] })
+            };
+        }
+
         return {
             statusCode: 200,
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         };
 
     } catch (error) {
 
         return {
-            statusCode: 500,
-            body: JSON.stringify({ error: "Erro ao buscar eventos" })
+            statusCode: 200,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items: [] })
         };
 
     }

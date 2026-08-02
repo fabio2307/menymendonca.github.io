@@ -1,2 +1,3 @@
-/admin/*  /admin/index.html  200
+/admin/*  /admin.html  200
+/login    /admin.html  301
 /*        /index.html        200

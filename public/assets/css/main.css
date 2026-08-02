@@ -1,0 +1,1909 @@
+/* Table of Contents
+----------------------------------
+
+0- Global CSS
+1- Heading CSS
+2- Button CSS
+3- Header Area CSS
+4- Home Area CSS
+5- About Area CSS
+6- Qualification Area CSS 
+7- Services Area CSS
+8- Portfolio Area CSS
+9- Testimonials Area CSS
+10- Blog Area CSS
+11- Contact Area CSS
+12- Footer Area CSS
+13- Scroll-Top Area CSS
+
+*/
+
+
+/*--------------------- 0- Global CSS (Start) ---------------------*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --purple: #00FFA9;
+    --black: #07160f;
+    --white: #FFFFFF;
+    --grey: #d7e2dd;
+    --surface: rgba(12, 25, 18, 0.82);
+    --surface-strong: rgba(8, 18, 13, 0.96);
+}
+
+* {
+    font-family: 'Poppins', sans-serif;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    text-transform: capitalize;
+    border: none;
+    outline: none;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+}
+
+*::selection {
+    color: var(--white);
+    background-color: var(--purple);
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+    display: block;
+    max-width: 100%;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+a,
+span,
+button,
+input,
+textarea {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+html {
+    font-size: 62.5%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+}
+
+body {
+    background:
+        radial-gradient(circle at top left, rgba(0, 255, 169, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(255, 0, 51, 0.10), transparent 24%),
+        linear-gradient(180deg, #0a1711 0%, var(--black) 38%, #04100b 100%);
+    color: var(--white);
+}
+
+section {
+    padding: 2rem 5%;
+}
+
+::-webkit-scrollbar {
+    width: 0.8rem;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background-color: var(--purple);
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--black);
+}
+
+.swiper-pagination-bullet {
+    height: 1rem;
+    width: 1rem;
+    border-radius: 50rem;
+    background-color: var(--grey);
+}
+
+.swiper-pagination-bullet-active {
+    width: 3rem;
+    background: var(--purple);
+}
+
+/*--------------------- 0- Global CSS (End) ---------------------*/
+
+
+
+/*--------------------- 1- Heading CSS (Start) ---------------------*/
+.heading {
+    margin-bottom: 2rem;
+}
+
+.heading h2 {
+    text-align: center;
+    padding-bottom: 2rem;
+    color: var(--purple);
+    font-size: 4rem;
+    letter-spacing: 0.02em;
+}
+
+.heading h2 span {
+    position: relative;
+    z-index: 0;
+    color: var(--white);
+}
+
+.heading h2 span::before {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    z-index: -1;
+    background: var(--purple);
+    height: 0.2rem;
+    width: 80%;
+    margin-left: 10%;
+}
+
+/*--------------------- 1- Heading CSS (End) ---------------------*/
+
+
+
+/*--------------------- 2- Button CSS (Start) ---------------------*/
+.btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 1.8rem;
+    color: var(--purple);
+    background: rgba(0, 255, 169, 0.06);
+    border: 0.2rem solid rgba(0, 255, 169, 0.65);
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+}
+
+.btn i {
+    padding-left: 1rem;
+}
+
+.btn:hover {
+    color: var(--white);
+    background-color: var(--purple);
+    cursor: pointer;
+    box-shadow: 0 1.2rem 2.4rem rgba(0, 255, 169, 0.18);
+    transform: translateY(-1px);
+}
+
+.btn:focus-visible,
+.controls .button.btn:focus-visible,
+.social-panel__btn:focus-visible,
+.btnGoogle:focus-visible,
+.contact-form .btn:focus-visible,
+.agenda-cta:focus-visible {
+    outline: 0.2rem solid rgba(255, 255, 255, 0.8);
+    outline-offset: 0.3rem;
+}
+
+/*--------------------- 2- Button CSS (End) ---------------------*/
+
+
+
+/*--------------------- 3- Header Area CSS (Start) ---------------------*/
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem 5%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 7.5rem;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background: transparent;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
+    z-index: 999;
+}
+
+header.sticky {
+    border-bottom: 0.1rem solid var(--grey);
+    background: rgba(0, 0, 0, 0.8);
+}
+
+header .logo h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+}
+
+header .logo img {
+    height: 7.5rem;
+    width: auto;
+}
+
+header .navbar a {
+    color: var(--white);
+    font-size: 1.8rem;
+    margin-left: 1rem;
+}
+
+header .navbar a:hover,
+header .navbar a.active {
+    color: var(--purple);
+}
+
+.admin-link {
+    display: inline-block;
+}
+
+header #menu-btn {
+    font-size: 3rem;
+    color: var(--white);
+    cursor: pointer;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
+    display: none;
+}
+
+header .fa-times {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+header #menu-btn:hover {
+    color: var(--purple);
+}
+
+/*--------------------- 3- Header Area CSS (End) ---------------------*/
+
+.admin-link {
+    color: #00FFA9;
+    font-weight: 600;
+}
+
+.admin-link:hover {
+    color: white;
+}
+
+/*--------------------- 4- Home Area CSS (Start) ---------------------*/
+.home {
+    padding: 2rem 5%;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.home::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(0, 255, 169, 0.16), transparent 20%),
+        radial-gradient(circle at 85% 15%, rgba(255, 0, 51, 0.10), transparent 18%);
+    pointer-events: none;
+}
+
+.home .box-container {
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 4rem;
+    position: relative;
+    z-index: 1;
+}
+
+.home .image {
+    text-align: center;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 42rem;
+    flex: 1 1 42rem;
+    filter: drop-shadow(0 2rem 3rem rgba(0, 0, 0, 0.4));
+    position: relative;
+    padding: 2.8rem;
+}
+
+.home .image::before {
+    content: "";
+    position: absolute;
+    inset: 1.4rem;
+    border-radius: 42% 58% 40% 60% / 56% 34% 66% 44%;
+    border: 0.12rem solid rgba(0, 255, 169, 0.28);
+    background:
+        radial-gradient(circle at 30% 30%, rgba(0, 255, 169, 0.14), transparent 55%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent);
+    transform: rotate(-6deg);
+    pointer-events: none;
+}
+
+.home .image img {
+    width: min(45rem, 100%);
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: 42% 58% 40% 60% / 56% 34% 66% 44%;
+    object-fit: cover;
+    border: 1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.24);
+    position: relative;
+    z-index: 1;
+}
+
+.home .content {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 40rem;
+    flex: 1 1 40rem;
+
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+
+    margin-top: 7rem;
+}
+
+.home .content .text {
+    max-width: 58rem;
+    padding: 3.2rem;
+    border-radius: 2.8rem;
+    background: linear-gradient(180deg, rgba(7, 22, 15, 0.72), rgba(7, 22, 15, 0.5));
+    border: 0.1rem solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 2.4rem 5rem rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.home .content .text::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(0, 255, 169, 0.12), transparent 35%);
+    pointer-events: none;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    background: rgba(0, 255, 169, 0.12);
+    border: 0.1rem solid rgba(0, 255, 169, 0.22);
+    color: var(--grey);
+    font-size: 1.15rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.6rem;
+}
+
+.home .content h2 {
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.home .content h1 {
+    font-size: clamp(4rem, 7vw, 6.8rem);
+    color: var(--white);
+    padding: 1rem 0;
+    text-transform: none;
+    line-height: 1;
+    min-height: 7.2rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.home .content h1 span {
+    color: var(--purple);
+}
+
+.home .content .typing-frame {
+    display: inline-block;
+    width: 12ch;
+    min-width: 12ch;
+    height: 1.1em;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+
+.home .content .typing-frame .typing-text {
+    display: inline-block;
+    width: 100%;
+    white-space: nowrap;
+    text-align: left;
+    overflow: hidden;
+}
+
+.home .content p {
+    font-size: 1.7rem;
+    font-weight: 400;
+    color: var(--grey);
+    padding-bottom: 1.2rem;
+    line-height: 1.8;
+    max-width: 52rem;
+    position: relative;
+    z-index: 1;
+}
+
+.home .content .btn {
+    margin-top: 1.2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.home .content .hero-line {
+    font-size: 1.5rem;
+    max-width: 46rem;
+    color: rgba(215, 226, 221, 0.88);
+    border-left: 0.3rem solid rgba(0, 255, 169, 0.45);
+    padding-left: 1.2rem;
+    margin-top: 0.3rem;
+}
+
+/*--------------------- Social Spotlight Area CSS (Start) ---------------------*/
+.social-spotlight {
+    position: relative;
+    padding-top: 2rem;
+}
+
+.social-spotlight .heading {
+    margin-bottom: 3rem;
+}
+
+.social-spotlight .section-lead {
+    max-width: 74rem;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1.7rem;
+    line-height: 1.7;
+    color: var(--grey);
+}
+
+.spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.8rem;
+}
+
+.spotlight-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1rem;
+    min-height: 23rem;
+    padding: 2rem;
+    border-radius: 2rem;
+    background: linear-gradient(180deg, rgba(34, 34, 34, 0.7), rgba(10, 10, 10, 0.82));
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.spotlight-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 55%);
+    pointer-events: none;
+}
+
+.spotlight-card:hover {
+    transform: translateY(-0.5rem);
+}
+
+.spotlight-card__icon {
+    width: 4.8rem;
+    height: 4.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.4rem;
+    font-size: 2.2rem;
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.spotlight-card h3 {
+    font-size: 2.4rem;
+    color: var(--white);
+}
+
+.spotlight-card p {
+    font-size: 1.5rem;
+    line-height: 1.7;
+    color: var(--grey);
+}
+
+.spotlight-card strong {
+    margin-top: auto;
+    font-size: 1.35rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.spotlight-card--tiktok {
+    border-top: 0.35rem solid #69c9d0;
+}
+
+.spotlight-card--youtube {
+    border-top: 0.35rem solid #ff0033;
+}
+
+.spotlight-card--instagram {
+    border-top: 0.35rem solid #f77737;
+}
+
+.spotlight-card--blog {
+    border-top: 0.35rem solid var(--purple);
+}
+
+/* CARD AO VIVO */
+.is-live {
+    border: 2px solid #ff0000;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+    transform: scale(1.03);
+}
+
+/* BADGE */
+.live-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: red;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: none;
+    align-items: center;
+    gap: 5px;
+}
+
+/* BOLINHA PISCANDO */
+.live-badge__dot {
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.6);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/*--------------------- Social Spotlight Area CSS (End) ---------------------*/
+
+/*--------------------- 4- Home Area CSS (End) ---------------------*/
+
+
+
+/*--------------------- 5- About Area CSS (Start) ---------------------*/
+.about .box-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 3rem 0;
+    align-items: stretch;
+}
+
+.about .image {
+    width: 100%;
+    max-width: 32rem;
+    text-align: center;
+    padding: 1.8rem;
+    border-radius: 2.6rem;
+    background: linear-gradient(180deg, rgba(34, 34, 34, 0.65), rgba(10, 10, 10, 0.78));
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+
+.about .image::before {
+    content: "";
+    position: absolute;
+    inset: 1rem;
+    border-radius: 2rem;
+    border: 0.12rem solid rgba(0, 255, 169, 0.22);
+    background: radial-gradient(circle at top left, rgba(0, 255, 169, 0.08), transparent 55%);
+    pointer-events: none;
+}
+
+.about .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 4 / 5;
+    border: 1rem solid rgba(0, 255, 169, 0.7);
+    border-radius: 2rem;
+    box-shadow: 0 2rem 3.5rem rgba(0, 0, 0, 0.2);
+}
+
+.about .content {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 55rem;
+    flex: 1 1 55rem;
+    padding: 2.2rem;
+    border-radius: 2rem;
+    background: rgba(34, 34, 34, 0.35);
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(10px);
+}
+
+.about .content h2 {
+    font-size: 3.5rem;
+    color: var(--white);
+    padding-bottom: 1rem;
+}
+
+.about .content>p {
+    font-size: 1.8rem;
+    color: var(--grey);
+    line-height: 1.6;
+    padding-bottom: 1rem;
+}
+
+.about .content .about-info {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.about .content .about-info .info,
+.counting .box {
+    padding: 1.6rem;
+    border-radius: 1.4rem;
+    background: rgba(7, 22, 15, 0.55);
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+}
+
+.about .content .about-info .info {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 15rem;
+    flex: 1 1 15rem;
+}
+
+.about .content .about-info .info h4 {
+    font-size: 1.6rem;
+    color: var(--white);
+    padding-bottom: 1rem;
+}
+
+.about .content .about-info .info span {
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--grey);
+}
+
+.about .content .about-info .info .btn {
+    margin-top: 1rem;
+}
+
+.counting {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 35rem;
+    flex: 1 1 35rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.counting .box {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 18rem;
+    flex: 1 1 18rem;
+    text-align: center;
+    padding: 1.8rem;
+    border-radius: 1.4rem;
+    background: rgba(7, 22, 15, 0.55);
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+}
+
+.counting .box .count {
+    font-size: 3.5rem;
+    color: var(--purple);
+    padding-bottom: 0.5rem;
+}
+
+.counting .box h3 {
+    font-size: 1.8rem;
+    color: var(--white);
+}
+
+/*--------------------- 5- About Area CSS (End) ---------------------*/
+
+
+
+/*--------------------- 8- Portfolio Area CSS (Start) ---------------------*/
+.portfolio .heading .section-lead {
+    max-width: 72rem;
+    margin: 0 auto 2rem;
+    text-align: center;
+    font-size: 1.7rem;
+    line-height: 1.7;
+    color: var(--grey);
+}
+
+.controls {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    list-style-type: none;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.controls .button {
+    cursor: pointer;
+    margin: 0;
+}
+
+.controls .button.btn {
+    padding: 0.9rem 1.6rem;
+    font-size: 1.45rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 0.1rem solid rgba(255, 255, 255, 0.1);
+    color: var(--grey);
+}
+
+.controls .button.btn:hover,
+.controls .button.btn.active {
+    cursor: pointer;
+    background: rgba(0, 255, 169, 0.14);
+    color: var(--white);
+    border-color: rgba(0, 255, 169, 0.35);
+    box-shadow: 0 1rem 2rem rgba(0, 255, 169, 0.12);
+    transform: translateY(-1px);
+}
+
+.portfolio .box-container {
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr));
+    gap: 1.6rem;
+    padding: 2rem 0;
+}
+
+.portfolio-item {
+    border-radius: 1.8rem;
+    height: 27rem;
+    overflow: hidden;
+    position: relative;
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.18);
+}
+
+.portfolio-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.portfolio-item .content {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2rem;
+    border-radius: 1.8rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.86));
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-transform: translateY(18%);
+    transform: translateY(18%);
+    opacity: 0;
+}
+
+.portfolio-item .content h4 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--purple);
+    transform-origin: top;
+    padding-bottom: 1rem;
+    -webkit-transition: all 0.4s linear;
+    -moz-transition: all 0.4s linear;
+    -o-transition: all 0.4s linear;
+    transition: all 0.4s linear;
+}
+
+.portfolio-item .content p {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--white);
+    transform-origin: top;
+    -webkit-transition: all 0.4s linear;
+    -moz-transition: all 0.4s linear;
+    -o-transition: all 0.4s linear;
+    transition: all 0.4s linear;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.portfolio-item .content .view-btn {
+    font-size: 1.7rem;
+    color: var(--white);
+    transform-origin: top;
+    -webkit-transition: all 0.4s linear;
+    -moz-transition: all 0.4s linear;
+    -o-transition: all 0.4s linear;
+    transition: all 0.4s linear;
+    border-radius: 999px;
+    margin-top: 1.5rem;
+    width: 4.8rem;
+    height: 4.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 255, 169, 0.12);
+    border: 0.1rem solid rgba(255, 255, 255, 0.16);
+}
+
+.portfolio-item:hover .content {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.portfolio-item:hover .content h4 {
+    -webkit-transform: none;
+    transform: none;
+}
+
+.portfolio-item:hover .content p {
+    -webkit-transform: none;
+    transform: none;
+}
+
+.portfolio-item:hover .content .view-btn {
+    -webkit-transform: none;
+    transform: none;
+}
+
+.portfolio-item:hover img {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.1);
+}
+
+/*CSS3 Animation Effects for Magnific Popup*/
+
+/* start state */
+.mfp-newspaper .mfp-with-anim {
+    opacity: 0;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+
+    -webkit-transform: scale(0) rotate(500deg);
+    transform: scale(0) rotate(500deg);
+}
+
+.mfp-newspaper.mfp-bg {
+    opacity: 0;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+/* animate in */
+.mfp-newspaper.mfp-ready .mfp-with-anim {
+    opacity: 1;
+    -webkit-transform: scale(1) rotate(0deg);
+    transform: scale(1) rotate(0deg);
+}
+
+.mfp-newspaper.mfp-ready.mfp-bg {
+    opacity: 0.8;
+}
+
+/* animate out */
+.mfp-newspaper.mfp-removing .mfp-with-anim {
+    -webkit-transform: scale(0) rotate(500deg);
+    transform: scale(0) rotate(500deg);
+    opacity: 0;
+}
+
+.mfp-newspaper.mfp-removing.mfp-bg {
+    opacity: 0;
+}
+
+
+/*--------------------- 8- Portfolio Area CSS (End) ---------------------*/
+
+
+
+
+/*--------------------- 10- Blog Area CSS (Start) ---------------------*/
+.blog .heading .section-lead {
+    max-width: 72rem;
+    margin: 0 auto 2.5rem;
+    text-align: center;
+    font-size: 1.7rem;
+    line-height: 1.7;
+    color: var(--grey);
+}
+
+.social-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem;
+    align-items: stretch;
+}
+
+.social-panel {
+    padding: 2rem;
+    border-radius: 2rem;
+    background: linear-gradient(180deg, rgba(34, 34, 34, 0.55), rgba(10, 10, 10, 0.6));
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.22);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.social-panel--tiktok {
+    border-top: 0.4rem solid #69c9d0;
+}
+
+.social-panel--youtube {
+    border-top: 0.4rem solid #ff0033;
+}
+
+.social-panel__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.social-panel__header h3 {
+    font-size: 2.4rem;
+    color: var(--white);
+    margin: 1rem 0 0.6rem;
+}
+
+.social-panel__header p {
+    font-size: 1.55rem;
+    line-height: 1.7;
+    color: var(--grey);
+}
+
+.platform-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.platform-tag--tiktok {
+    background: rgba(105, 201, 208, 0.18);
+    color: #8ff0f5;
+}
+
+.platform-tag--youtube {
+    background: rgba(255, 0, 51, 0.18);
+    color: #ff7a99;
+}
+
+.platform-tag--empty {
+    margin-bottom: 1.4rem;
+}
+
+.social-panel__btn {
+    white-space: normal;
+    min-width: 0;
+    max-width: 16rem;
+    text-align: center;
+    line-height: 1.2;
+    font-size: 1.45rem;
+    padding: 0.9rem 1.3rem;
+}
+
+.social-panel__btn:hover,
+.social-panel__btn:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 1rem 2rem rgba(0, 255, 169, 0.16);
+}
+
+.blog-slider {
+    position: relative;
+    padding-bottom: 4rem;
+    overflow: hidden;
+    width: 100%;
+    flex: 1;
+}
+
+.blog-slider .swiper-wrapper {
+    align-items: stretch;
+}
+
+.blog-slider .swiper-slide {
+    height: auto;
+}
+
+.blog-item {
+    min-height: 58rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #2222223c;
+    border: 0.1rem solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.6rem;
+    overflow: hidden;
+}
+
+.blog-item--tiktok {
+    box-shadow: inset 0 0.3rem 0 rgba(105, 201, 208, 0.7);
+}
+
+.blog-item--youtube {
+    box-shadow: inset 0 0.3rem 0 rgba(255, 0, 51, 0.7);
+}
+
+.blog-item--empty {
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,255,169,0.08));
+    border: 0.1rem dashed rgba(0,255,169,0.28);
+}
+
+.blog-item--empty .content {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.blog-item--empty .btn {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.blog-item .image {
+    height: 25rem;
+    margin: 1.5rem 1.5rem 0;
+    overflow: hidden;
+    border-radius: 1.2rem;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.blog-item:hover .image img {
+    -webkit-transform: scale(1.08);
+    transform: scale(1.08);
+}
+
+.blog-item .image img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.blog-item .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.6rem 1.8rem;
+    min-height: 0;
+}
+
+.blog-item .content .intro {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 0.2rem solid var(--grey);
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.blog-item .content .intro h5 {
+    font-size: 1.4rem;
+}
+
+.blog-item .content .intro h5 i {
+    color: var(--purple);
+    padding-right: 0.5rem;
+}
+
+.blog-item .content .intro h5 span {
+    color: var(--grey);
+}
+
+.blog-item .content .main-heading {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--white);
+}
+
+.blog-item p {
+    padding: 1rem 0 1.5rem;
+    font-size: 1.55rem;
+    color: var(--grey);
+    line-height: 1.7;
+}
+
+.blog-item .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 16rem;
+    min-width: 14rem;
+    height: 4rem;
+    position: static;
+    margin-top: auto;
+    font-size: 1.45rem;
+    padding: 0 1.5rem;
+    border-radius: 0.8rem;
+    align-self: flex-start;
+}
+
+.blog-carousel {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px;
+}
+
+.blog-card {
+    min-width: 280px;
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.blog-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 10px;
+    color: white;
+}
+
+.platform-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+}
+
+/* Variante inline do badge (aqui ele não fica sobreposto, e sim ao lado da tag) */
+.live-badge--inline {
+    position: static;
+    display: none;
+}
+
+.social-panel--tiktok.is-live .live-badge--inline {
+    display: inline-flex;
+}
+
+.social-panel--tiktok.is-live {
+    border-top-color: #ff2d55;
+    box-shadow: 0 2rem 4rem rgba(255, 45, 85, 0.18);
+}
+
+/*--------------------- 10- Blog Area CSS (End) ---------------------*/
+
+
+.agenda {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.agenda .heading .section-lead {
+    max-width: 72rem;
+    margin: 0 auto 2.5rem;
+    text-align: center;
+    font-size: 1.7rem;
+    line-height: 1.7;
+    color: var(--grey);
+}
+
+.agenda-layout {
+    display: grid;
+    grid-template-columns: 32rem minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+}
+
+.agenda-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+.agenda-card {
+    padding: 2rem;
+    border-radius: 2rem;
+    background: linear-gradient(180deg, rgba(34, 34, 34, 0.58), rgba(10, 10, 10, 0.72));
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.18);
+}
+
+.agenda-card--accent {
+    border-top: 0.35rem solid var(--purple);
+}
+
+.agenda-card__eyebrow {
+    display: inline-flex;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--purple);
+}
+
+.agenda-card h3 {
+    font-size: 2.4rem;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+}
+
+.agenda-card h4 {
+    font-size: 1.8rem;
+    color: var(--white);
+    margin-bottom: 1rem;
+}
+
+.agenda-card p,
+.agenda-card li {
+    font-size: 1.55rem;
+    line-height: 1.7;
+    color: var(--grey);
+}
+
+.agenda-card ul {
+    padding-left: 1.8rem;
+}
+
+.agenda-card li+li {
+    margin-top: 0.6rem;
+}
+
+.agenda-cta {
+    width: 100%;
+    text-align: center;
+}
+
+.calendar-wrapper {
+    min-height: 72rem;
+    background: linear-gradient(180deg, rgba(34, 34, 34, 0.58), rgba(10, 10, 10, 0.72));
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    border-radius: 2rem;
+    padding: 1.6rem;
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+
+.calendar-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+    transform: translateX(-100%);
+    animation: shimmerCalendar 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmerCalendar {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+#calendar {
+    background: rgba(7, 22, 15, 0.55);
+    padding: 1.8rem;
+    border-radius: 1.4rem;
+    color: #00FFA9;
+    font-size: 1.5rem;
+    min-height: 68rem;
+    transition: opacity 0.25s ease;
+}
+
+.agenda .modalSenha,
+.agenda .modalAdmin,
+.agenda .modalEvento {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    padding: 2rem;
+    font-size: 1.3rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-conteudo {
+    background: linear-gradient(180deg, rgba(10, 46, 33, 0.98), rgba(6, 24, 17, 0.98));
+    color: #fff;
+    width: 100%;
+    max-width: 52rem;
+    margin: auto;
+    padding: 2.2rem;
+    border-radius: 1.8rem;
+    box-shadow: 0 2rem 5rem rgba(0, 0, 0, .45);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    font-size: 1.6rem;
+}
+
+.modal-conteudo h3 {
+    margin-top: 0;
+    font-size: 2.4rem;
+    color: var(--white);
+}
+
+#modalData {
+    font-size: 1.4rem;
+    opacity: 0.8;
+    margin-top: 0.8rem;
+}
+
+#modalDescricao {
+    margin-top: 1.2rem;
+    line-height: 1.6;
+    color: var(--grey);
+}
+
+.fecharModal {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 999px;
+    cursor: pointer;
+    color: #ffffff;
+    margin-left: auto;
+    display: block;
+    font-size: 1.8rem;
+}
+
+.fechar {
+    background: #cc1616;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #ffffff;
+    margin: 10px;
+    font-size: 14px;
+}
+
+.modal-conteudo input,
+.modal-conteudo textarea {
+    width: 100%;
+    margin: 8px 0;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+}
+
+.agenda .fc-toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.6rem;
+}
+
+.agenda .fc .fc-toolbar-title {
+    font-size: 2.4rem;
+    color: var(--white);
+}
+
+.agenda .fc .fc-button {
+    border-radius: 999px;
+    background: rgba(0, 255, 169, 0.14);
+    border: 0.1rem solid rgba(0, 255, 169, 0.35);
+    color: var(--white);
+    box-shadow: none;
+}
+
+.agenda .fc .fc-button:hover,
+.agenda .fc .fc-button:focus {
+    background: rgba(0, 255, 169, 0.24);
+    border-color: rgba(0, 255, 169, 0.6);
+}
+
+.agenda .fc .fc-daygrid-day-number,
+.agenda .fc .fc-col-header-cell-cushion {
+    color: var(--white);
+}
+
+.agenda .fc .fc-daygrid-event {
+    border-radius: 0.8rem;
+    padding: 0.3rem 0.6rem;
+}
+
+.agenda .fc-theme-standard td,
+.agenda .fc-theme-standard th,
+.agenda .fc-theme-standard .fc-scrollgrid {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.fc-toolbar-title,
+.fc-button {
+    color: white;
+}
+
+.btnGoogle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    font-size: 1.45rem;
+    color: var(--purple);
+    background: rgba(0, 255, 169, 0.08);
+    border: 0.1rem solid rgba(0, 255, 169, 0.45);
+    margin-top: 1.5rem;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+}
+
+.fc-button {
+    background: #16CC6B;
+    border: none;
+}
+
+.fc-button:hover {
+    background: #12b35e;
+}
+
+.btnGoogle:hover {
+    background: rgba(0, 255, 169, 0.16);
+    border-color: rgba(0, 255, 169, 0.65);
+    color: var(--white);
+}
+
+.btnGoogle:focus-visible {
+    background: rgba(0, 255, 169, 0.16);
+    border-color: rgba(0, 255, 169, 0.65);
+    color: var(--white);
+}
+
+.modalEvento .modal-conteudo {
+    max-width: 52rem;
+}
+
+/* Remove QUALQUER estado de seleção/foco visual */
+.fc-event,
+.fc-event:focus,
+.fc-event:active,
+.fc-event.fc-event-selected,
+.fc-daygrid-event.fc-event-selected {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Impede fundo azul aplicado internamente */
+.fc .fc-daygrid-event.fc-event-selected {
+    background-color: var(--fc-event-bg-color, inherit) !important;
+}
+
+/* Evita que o navegador mantenha foco ao clicar */
+.fc-event {
+    user-select: none;
+}
+
+
+
+/*--------------------- 11- Contact Area CSS (Start) ---------------------*/
+.contact .alert {
+    font-size: 2rem;
+    color: var(--purple);
+    border-radius: 0.5rem;
+    padding-left: 1rem;
+}
+
+.contact .box-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: stretch;
+}
+
+.heading {
+    margin-bottom: 0.5rem;
+}
+
+.contact-info {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 42rem;
+    flex: 1 1 42rem;
+    padding: 2.2rem;
+    border-radius: 2rem;
+    background: rgba(34, 34, 34, 0.35);
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.14);
+}
+
+.contact-info h3 {
+    font-size: 3rem;
+    color: var(--white);
+    margin-bottom: 1.4rem;
+}
+
+.contact-info>p {
+    font-size: 2rem;
+    color: var(--grey);
+    padding: 0.5rem 0;
+}
+
+.linkedin {
+    text-decoration: none;
+    color: var(--grey);
+    font-size: 24px;
+    padding: 1rem 0;
+    margin-left: 1rem;
+}
+
+.github {
+    text-decoration: none;
+    color: var(--grey);
+    font-size: 24px;
+    padding: 1rem 0;
+    margin-left: 1rem;
+}
+
+.contact-info .info-item {
+    padding: 1rem 0;
+    border-bottom: 0.1rem solid rgba(255, 255, 255, 0.08);
+}
+
+.contact-info .info-item:last-child {
+    border-bottom: none;
+}
+
+.contact-info .info-item .gmail,
+.contact-info .info-item .linkedin,
+.contact-info .info-item .github {
+    text-transform: none;
+}
+
+.contact-info .info-item h4 {
+    font-size: 1.8rem;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+}
+
+.contact-info .info-item .detail {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.contact-info .info-item .detail .fas,
+.contact-info .info-item .detail .fab {
+    border-radius: 50%;
+    color: var(--purple);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    ;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    font-size: 2rem;
+    width: 3.8rem;
+    height: 3.8rem;
+    background: rgba(0, 255, 169, 0.08);
+}
+
+#msg {
+    font-size: 1.8rem;
+    color: white;
+    padding-bottom: 1rem;
+}
+
+.contact-info .info-item .detail p {
+    font-size: 1.6rem;
+    color: var(--grey);
+    line-height: 1.6;
+    padding-left: 1rem;
+}
+
+.contact-form {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 42rem;
+    flex: 1 1 42rem;
+    padding: 2.2rem;
+    border-radius: 2rem;
+    background: rgba(34, 34, 34, 0.35);
+    border: 0.1rem solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.14);
+}
+
+.contact-form .box {
+    width: 100%;
+    text-transform: none;
+    color: var(--grey);
+    font-size: 1.6rem;
+    border: 0.1rem solid rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin: 0.5rem 0;
+    background-color: #2222223c;
+}
+
+.contact-form .box:focus {
+    border-color: var(--white);
+}
+
+.contact-form .box::placeholder {
+    color: var(--grey);
+}
+
+.contact-form textarea {
+    height: 15rem;
+    resize: none;
+}
+
+.contact-form .btn {
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+/*--------------------- 11- Contact Area CSS (End) ---------------------*/
+
+
+
+/*--------------------- 12- Footer Area CSS (Start) ---------------------*/
+footer {
+    min-height: 15rem;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    background: linear-gradient(180deg, rgba(0, 255, 169, 0.22), rgba(0, 133, 71, 0.95));
+    margin-bottom: calc(-50vw + 50%);
+    padding: 2rem 5%;
+    text-align: center;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+footer .social {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 1rem 5%;
+    gap: 1rem;
+}
+
+footer .social .fab {
+    background-color: rgba(7, 22, 15, 0.95);
+    border-radius: 50%;
+    height: 4.6rem;
+    width: 4.6rem;
+    color: var(--white);
+    font-size: 2rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin: 0 0.5rem;
+}
+
+footer .social .fab:hover {
+    color: var(--black);
+    background-color: var(--white);
+    transform: translateY(-2px) scale(1.04);
+}
+
+footer .social .fab:focus-visible {
+    color: var(--black);
+    background-color: var(--white);
+    outline: 0.2rem solid rgba(255, 255, 255, 0.85);
+    outline-offset: 0.3rem;
+}
+
+footer .content p {
+    margin-top: 2rem;
+    font-size: 2rem;
+    color: var(--white);
+    letter-spacing: 0.02em;
+}
+
+footer .content p span {
+    color: var(--white);
+}
+
+/* Contador de visitas — footer */
+.visit-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding: 0.6rem 1.4rem;
+    font-size: 1.3rem;
+    color: var(--grey);
+    background: rgba(7, 22, 15, 0.35);
+    border: 0.1rem solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+}
+
+.visit-counter strong {
+    color: var(--purple);
+    font-weight: 600;
+}
+
+/*--------------------- 12- Footer Area CSS (End) ---------------------*/
+
+
+
+/*--------------------- 13- Scroll-Top (Start) ---------------------*/
+.scroll-top {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    height: 5rem;
+    width: 5rem;
+    font-size: 3rem;
+    font-weight: lighter;
+    background: var(--black);
+    color: var(--white);
+    border: 0.2rem solid var(--white);
+    border-radius: 50%;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s;
+    z-index: 999;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.scroll-top:hover {
+    background: var(--white);
+    color: var(--black);
+}
+
+/*--------------------- 13- Scroll-Top (End) ---------------------*/

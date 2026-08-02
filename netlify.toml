@@ -1,4 +1,13 @@
+[build]
+command = "npm run build"
+publish = "public"
+
 [[redirects]]
-  from = "/admin"
-  to = "/login"
-  status = 301
+from = "/admin"
+to = "/admin.html"
+status = 301
+
+[[redirects]]
+from = "/login"
+to = "/admin.html"
+status = 301

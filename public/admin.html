@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Login Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07160f;
+      --panel: rgba(10, 24, 17, 0.95);
+      --border: rgba(0, 255, 169, 0.24);
+      --text: #f4fff9;
+      --muted: #9db6ad;
+      --accent: #00FFA9;
+      --accent-strong: #0dcf8d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #07160f 0%, #0f241e 45%, #08120d 100%);
+      color: var(--text);
+    }
+
+    .box {
+      width: min(100%, 38rem);
+      background: var(--panel);
+      border: 0.1rem solid var(--border);
+      border-radius: 1.8rem;
+      padding: 2.6rem;
+      box-shadow: 0 2rem 4rem rgba(0,0,0,0.3);
+      backdrop-filter: blur(14px);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 1.2rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    h2 {
+      margin: 0 0 0.8rem;
+      font-size: 2.4rem;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 1.2rem;
+      line-height: 1.7;
+      color: var(--muted);
+      font-size: 1.5rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.8rem;
+    }
+
+    button, .link-btn {
+      width: 100%;
+      padding: 1.2rem 1.4rem;
+      border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1.45rem;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    button:hover, .link-btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #042117;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 0.1rem solid rgba(255,255,255,0.14);
+    }
+
+    .btn-primary.loading {
+      opacity: 0.85;
+      pointer-events: none;      position: relative;
+    }
+
+    .btn-primary.loading::after {
+      content: "";
+      position: absolute;
+      right: 1.4rem;
+      top: 50%;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(4, 33, 23, 0.25);
+      border-top-color: rgba(4, 33, 23, 0.85);
+      border-radius: 50%;
+      transform: translateY(-50%);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: translateY(-50%) rotate(0deg); }
+      100% { transform: translateY(-50%) rotate(360deg); }    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 1.4rem;
+      padding: 1rem 1.2rem;
+      border-radius: 1rem;
+      font-size: 1.35rem;
+      background: rgba(255,255,255,0.04);
+      border: 0.1rem solid rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+
+    .status--error {
+      color: #ffb5b5;
+      border-color: rgba(255, 91, 91, 0.3);
+      background: rgba(255, 91, 91, 0.08);
+    }
+
+    .status--success {
+      color: var(--accent);
+      border-color: rgba(0, 255, 169, 0.25);
+      background: rgba(0, 255, 169, 0.08);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="box">
+    <span class="eyebrow">Painel Admin</span>
+    <h2>Área administrativa</h2>
+    <p>O acesso ao CMS e ao painel do TikTok é feito com Netlify Identity. Nenhuma senha fixa é usada neste fluxo.</p>
+
+    <div class="actions">
+      <button id="btnEntrar" class="btn-primary" type="button">Entrar no painel</button>
+      <a class="link-btn btn-secondary" href="/">Voltar para a home</a>
+    </div>
+
+    <div id="status" class="status">Verificando acesso...</div>
+  </main>
+
+  <script>
+    (function () {
+      const btnEntrar = document.getElementById("btnEntrar");
+      const status = document.getElementById("status");
+
+      function atualizarStatus(texto, tipo) {
+        status.textContent = texto;
+        status.className = "status";
+        if (tipo === "error") status.classList.add("status--error");
+        if (tipo === "success") status.classList.add("status--success");
+      }
+
+      function setButtonLoading(loading) {
+        if (loading) {
+          btnEntrar.classList.add("loading");
+          btnEntrar.textContent = "Abrindo login...";
+          btnEntrar.disabled = true;
+        } else {
+          btnEntrar.classList.remove("loading");
+          btnEntrar.textContent = "Entrar no painel";
+          btnEntrar.disabled = false;
+        }
+      }
+
+      function abrirLogin() {
+        if (!window.netlifyIdentity) {
+          atualizarStatus("O widget de autenticação não carregou. Recarregue a página e tente novamente.", "error");
+          return;
+        }
+
+        setButtonLoading(true);
+        atualizarStatus("Abrindo a tela de login...", "success");
+        window.netlifyIdentity.open("login");
+      }
+
+      if (!window.netlifyIdentity) {
+        atualizarStatus("O widget de autenticação não carregou. Recarregue a página e tente novamente.", "error");
+        return;
+      }
+
+      btnEntrar.addEventListener("click", abrirLogin);
+
+      window.netlifyIdentity.on("init", function (user) {
+        if (user) {
+          setButtonLoading(false);
+          atualizarStatus(`Conectado como ${user.email || "usuário"}. Redirecionando para o CMS...`, "success");
+          window.location.replace("/admin/cms.html");
+        } else {
+          setButtonLoading(false);
+          atualizarStatus("Você ainda não está logado. Clique em Entrar no painel para continuar.", "success");
+        }
+      });
+
+      window.netlifyIdentity.on("login", function (user) {
+        setButtonLoading(false);
+        atualizarStatus(`Login realizado com sucesso. Redirecionando...`, "success");
+        window.location.replace("/admin/cms.html");
+      });
+
+      window.netlifyIdentity.on("close", function () {
+        setButtonLoading(false);
+        atualizarStatus("Login cancelado. Tente novamente ou feche o popup.", "error");
+      });
+
+      window.netlifyIdentity.on("logout", function () {
+        atualizarStatus("Você saiu do painel.", "success");
+      });
+
+      window.netlifyIdentity.init();
+    })();
+  </script>
+</body>
+</html>

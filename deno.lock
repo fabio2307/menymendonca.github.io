@@ -11,6 +11,7 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
+        "npm:@netlify/blobs@^10.7.10",
         "npm:cheerio@^1.0.0-rc.12",
         "npm:node-fetch@^2.6.7",
         "npm:rss-parser@^3.12.0"
