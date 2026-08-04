@@ -146,23 +146,35 @@
         padding-bottom: 1.5rem;
     }
 
+    .home {
+        min-height: auto;
+        padding: 9rem 2rem 3rem;
+    }
+
+    .home .box-container {
+        gap: 1.4rem;
+        min-height: auto;
+        padding-bottom: 0;
+    }
+
     .home .content {
-        margin-top: 5rem;
+        margin-top: 1.5rem;
     }
 
     .home .content .text {
-        padding: 2.4rem;
+        padding: 2rem;
         width: 100%;
     }
 
+    /* .home .image mantém o mesmo padding fluido (clamp) do main.css;
+       aqui só ajustamos o layout para empilhar em coluna única */
     .home .image {
-        padding: 1.8rem;
         flex: 1 1 100%;
     }
 
-    .home .image img {
-        width: min(36rem, 100%);
-    }
+    /* largura da foto NÃO é mais sobrescrita aqui — segue o
+       "width: min(44rem, 100%)" do main.css, igual ao desktop,
+       mantendo a moldura com a mesma proporção em qualquer tamanho */
 
     .spotlight-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -305,9 +317,23 @@
 }
 
 @media (max-width: 600px) {
+
     section,
     header {
         padding: 1.6rem;
+    }
+
+    .home {
+        min-height: auto;
+        padding: 8.5rem 1.6rem 2.5rem;
+    }
+
+    .home .box-container {
+        gap: 1rem;
+    }
+
+    .home .content {
+        margin-top: 0.8rem;
     }
 
     .home .content .text,
@@ -320,9 +346,22 @@
         padding: 1.6rem;
     }
 
+    .home .content .text {
+        padding: 1.6rem;
+    }
+
     .home .content h1 {
         font-size: clamp(3rem, 8vw, 4.2rem);
         min-height: auto;
+    }
+
+    .home .content p {
+        padding-bottom: 0.8rem;
+        font-size: 1.5rem;
+    }
+
+    .home .content .btn {
+        margin-top: 0.8rem;
     }
 
     .home .content .typing-frame {
@@ -390,8 +429,13 @@
         font-size: 2.8rem;
     }
 
+    .home {
+        min-height: auto;
+        padding: 7.5rem 1rem 2rem;
+    }
+
     .home .content .text {
-        padding: 2rem;
+        padding: 1.4rem;
     }
 
     .home .content h1 {
@@ -411,13 +455,9 @@
         padding: 0.6rem 1rem;
     }
 
-    .home .image {
-        padding: 1.2rem;
-    }
-
-    .home .image img {
-        width: min(30rem, 100%);
-    }
+    /* .home .image e .home .image img não são mais sobrescritos aqui —
+       o clamp()/min() definidos no main.css já encolhem a moldura de
+       forma contínua, mantendo a mesma proporção do desktop */
 
     .spotlight-grid {
         grid-template-columns: 1fr;
@@ -525,10 +565,6 @@
         padding: 1.6rem;
     }
 
-    .home .image {
-        padding: 1rem;
-    }
-
     .portfolio-item {
         height: 22rem;
     }
@@ -557,6 +593,21 @@
     .home .box-container {
         min-height: auto;
         padding-bottom: 2rem;
+    }
+}
+
+/* Telas muito grandes: evita o conteúdo esticar demais */
+@media (min-width: 1600px) {
+
+    .home .box-container,
+    .spotlight-grid,
+    .social-grid,
+    .portfolio .box-container,
+    .agenda-layout,
+    .contact .box-container {
+        max-width: 160rem;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 

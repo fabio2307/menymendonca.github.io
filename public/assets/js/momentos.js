@@ -1,4 +1,27 @@
+let mixer = null;
+
+// Remove acentos, espaços e deixa minúsculo, para casar exatamente
+// com os seletores usados nos botões de filtro (.familia, .passeio, etc.)
+function normalizarCategoria(str) {
+    return (str || "")
+        .toString()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")   // remove acentos
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");             // espaços -> hífen, caso existam categorias compostas
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+
+    // Trava para evitar que o script rode a inicialização duas vezes
+    // (ex.: live-reload do "netlify dev" injetando o script mais de uma vez,
+    // o que criaria dois mixers + dois listeners por botão e causaria o
+    // aviso "MixItUp instance was busy / queue is full" a cada clique)
+    if (window.__portfolioMomentosInit) {
+        return;
+    }
+    window.__portfolioMomentosInit = true;
 
     fetch("assets/data/momentos.json")
         .then(response => response.json())
@@ -9,18 +32,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
             data.items.forEach(item => {
 
+                const categoriaNormalizada = normalizarCategoria(item.categoria);
+
                 const div = document.createElement("div");
-                div.className = `portfolio-item image ${item.categoria}`;
+
+                // classe usada pelo filtro agora é sempre normalizada
+                div.className = `mix portfolio-item image ${categoriaNormalizada}`;
+                // guarda o texto original para exibir no card
+                div.dataset.categoriaOriginal = item.categoria;
 
                 div.innerHTML = `
                     <img src="${item.imagem}" alt="${item.titulo}" />
                     <div class="content">
                         <h4>${item.titulo}</h4>
                         <p>${item.categoria}</p>
-                        <a data-effect="mfp-newspaper"
-                           href="${item.imagem}"
-                           class="view-btn">
-                           <i class="fas fa-search-plus"></i>
+                        <a href="${item.imagem}" class="view-btn">
+                            <i class="fas fa-search-plus"></i>
                         </a>
                     </div>
                 `;
@@ -28,12 +55,88 @@ document.addEventListener("DOMContentLoaded", function () {
                 container.appendChild(div);
             });
 
-            // Reativar filtro (se estiver usando MixItUp ou Isotope)
-            if (typeof mixitup !== "undefined") {
-                mixitup('.box-container');
-            }
+            // ✅ inicia MixItUp
+            mixer = mixitup('#portfolio-container', {
+                selectors: {
+                    target: '.mix'
+                },
+                animation: {
+                    duration: 300,
+                    queue: true,
+                    queueLimit: 3   // margem maior, evita rejeitar cliques em sequência
+                }
+            });
+
+            // ✅ botão ativo
+            const buttons = document.querySelectorAll('.controls .button');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function () {
+
+                    // ignora o clique se já existe uma animação em andamento
+                    // (evita o warning "MixItUp instance was busy")
+                    if (mixer.isMixing()) {
+                        return;
+                    }
+
+                    buttons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // normaliza também o valor do data-filter, por segurança
+                    // (ex.: ".familia" continua ".familia", mas evita problemas
+                    // se algum dia o HTML vier com acento/maiúscula)
+                    const filtroBruto = this.getAttribute('data-filter');
+                    const filtro = filtroBruto === 'all'
+                        ? 'all'
+                        : '.' + normalizarCategoria(filtroBruto.replace('.', ''));
+
+                    mixer.filter(filtro).catch(() => {
+                        // engole rejeições de fila cheia em vez de quebrar o app
+                    });
+                });
+            });
+
+            // ✅ inicializa popup
+            initPopup();
 
         })
         .catch(error => console.error("Erro ao carregar JSON:", error));
 
 });
+
+
+// 🔥 POPUP COM BOTÃO DE FECHAR GARANTIDO
+function initPopup() {
+    if (typeof $.fn.magnificPopup === "undefined") {
+        console.warn("Magnific Popup não carregado");
+        return;
+    }
+
+    $('.view-btn').magnificPopup({
+        type: 'image',
+        gallery: {
+            enabled: true
+        },
+
+        // fechamento sempre disponível, mesmo se algo bloquear o botão visual
+        closeOnBgClick: true,   // clicar fora da imagem fecha
+        enableEscapeKey: true,  // tecla Esc fecha
+        closeOnContentClick: false,
+
+        showCloseBtn: true,
+        closeBtnInside: true,
+
+        // marcação própria do botão de fechar, garantindo que ele sempre exista
+        // e fique acima de qualquer outro elemento (evita casos em que o CSS
+        // do tema esconde ou sobrepõe o botão padrão do plugin)
+        closeMarkup: '<button title="Fechar (Esc)" type="button" class="mfp-close">&#215;</button>',
+
+        // OBS: o efeito "zoom" foi removido de propósito.
+        // Ele calcula a posição do elemento de origem (_getOffset) para animar
+        // a imagem "crescendo" a partir do card clicado, mas quebra quando os
+        // itens são inseridos dinamicamente (nosso caso, via JSON + MixItUp),
+        // gerando "Cannot read properties of undefined (reading 'top')".
+        mainClass: 'mfp-fade',
+        removalDelay: 300
+    });
+}

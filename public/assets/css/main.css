@@ -1007,6 +1007,17 @@ header #menu-btn:hover {
     opacity: 0;
 }
 
+.mfp-close {
+    color: #fff !important;
+    font-size: 32px;
+    opacity: 1;
+    right: 10px;
+    top: 10px;
+}
+
+.mfp-bg {
+    opacity: 0.9 !important;
+}
 
 /*--------------------- 8- Portfolio Area CSS (End) ---------------------*/
 

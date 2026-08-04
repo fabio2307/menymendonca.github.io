@@ -29,6 +29,10 @@ collections:
           - label: "Momentos"
             name: "items"
             widget: "list"
+            # itens começam fechados: em telas pequenas evita renderizar
+            # imagem + select + texto de todos os momentos ao mesmo tempo
+            collapsed: true
+            summary: "{{fields.titulo}} — {{fields.categoria}}"
             fields:
               - label: "Título"
                 name: "titulo"
@@ -61,7 +65,10 @@ collections:
           - label: "Vídeos"
             name: "videos"
             widget: "list"
-            summary: "{{fields.titulo}} — {{fields.url}}"
+            collapsed: true
+            # resumo só com o título: a URL completa do TikTok é longa
+            # e estourava a linha de resumo (com os ícones de ação) em mobile
+            summary: "{{fields.titulo}}"
             fields:
               - label: "Link do vídeo"
                 name: "url"
