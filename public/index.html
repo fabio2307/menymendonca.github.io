@@ -13,37 +13,34 @@
     <!-- SEO básico -->
     <meta name="description"
         content="Meny Mendonça — streamer, cantora e criadora de conteúdo. Acompanhe minhas lives, vídeos e agenda de eventos.">
-
     <meta property="og:title" content="Meny Mendonça">
     <meta property="og:description"
         content="Streamer, cantora e criadora de conteúdo. Acompanhe minhas lives, vídeos e agenda de eventos.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="assets/images/Home/Home-Image.png">
-
     <link rel="icon" href="/favicon.ico">
 
-    <!-- Netlify Identity -->
+    <!-- Netlify Identity (necessário para exibir/ocultar o link de Login no menu) -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
-    <!-- Font Awesome (usar só um) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Font-Awesome CSS -->
+    <link rel="stylesheet" href="assets/vendors/font-awesome/css/all.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <!-- Swiper CSS -->
-    <link rel="stylesheet" href="assets/vendors/swiper/swiper.css">
+    <link rel="stylesheet" href="assets/vendors/swiper/swiper.css" />
 
-    <!-- Magnific Popup -->
-    <link rel="stylesheet" href="assets/vendors/magnific-popup/magnific-popup.css">
+    <!-- Magnific-Popup CSS -->
+    <link rel="stylesheet" href="assets/vendors/magnific-popup/magnific-popup.css" />
 
-    <!-- MixItUp -->
-    <script src="https://cdn.jsdelivr.net/npm/mixitup/dist/mixitup.min.js"></script>
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/responsive.css" />
 
-    <!-- FullCalendar -->
+    <!-- calendario -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales-all.global.min.js"></script>
-
-    <!-- CSS principal -->
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/responsive.css">
 
 
 
@@ -232,27 +229,26 @@
 
         <div class="heading">
             <h2>meus <span>momentos</span></h2>
-            <p class="section-lead">
-                Memórias, bastidores e registros que ajudam a contar minha história com mais contexto visual.
-            </p>
+            <p class="section-lead">Memórias, bastidores e registros que ajudam a contar minha história com mais
+                contexto visual.</p>
         </div>
 
         <div class="gallery">
 
-            <!-- BOTÕES -->
             <ul class="controls">
                 <li class="button btn active" data-filter="all">Todos</li>
-                <li class="button btn" data-filter=".familia">Família</li>
-                <li class="button btn" data-filter=".passeio">Passeios</li>
-                <li class="button btn" data-filter=".lives">Lives</li>
-                <li class="button btn" data-filter=".amigos">Amigos</li>
-                <li class="button btn" data-filter=".inesqueciveis">Inesquecíveis</li>
-                <li class="button btn" data-filter=".viagens">Viagens</li>
-                <li class="button btn" data-filter=".diversos">Diversos</li>
+                <li class="button btn" data-filter="família">família</li>
+                <li class="button btn" data-filter="passeio">passeios</li>
+                <li class="button btn" data-filter="lives">lives</li>
+                <li class="button btn" data-filter="amigos">amigos</li>
+                <li class="button btn" data-filter="inesquecíveis">inesquecíveis</li>
+                <li class="button btn" data-filter="viagens">viagens</li>
+                <li class="button btn" data-filter="diversos">diversos</li>
             </ul>
 
-            <!-- IMPORTANTE: precisa da classe "mix-container" -->
-            <div id="portfolio-container" class="box-container"></div>
+            <div class="box-container" id="portfolio-container">
+
+            </div>
 
         </div>
 

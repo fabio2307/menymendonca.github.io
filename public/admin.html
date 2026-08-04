@@ -18,9 +18,7 @@
       --accent-strong: #0dcf8d;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -39,7 +37,7 @@
       border: 0.1rem solid var(--border);
       border-radius: 1.8rem;
       padding: 2.6rem;
-      box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2rem 4rem rgba(0,0,0,0.3);
       backdrop-filter: blur(14px);
     }
 
@@ -72,8 +70,7 @@
       margin-top: 1.8rem;
     }
 
-    button,
-    .link-btn {
+    button, .link-btn {
       width: 100%;
       padding: 1.2rem 1.4rem;
       border: none;
@@ -84,10 +81,7 @@
       transition: transform 0.2s ease, background 0.2s ease;
     }
 
-    button:hover,
-    .link-btn:hover {
-      transform: translateY(-1px);
-    }
+    button:hover, .link-btn:hover { transform: translateY(-1px); }
 
     .btn-primary {
       background: var(--accent);
@@ -95,15 +89,14 @@
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.08);
       color: var(--text);
-      border: 0.1rem solid rgba(255, 255, 255, 0.14);
+      border: 0.1rem solid rgba(255,255,255,0.14);
     }
 
     .btn-primary.loading {
       opacity: 0.85;
-      pointer-events: none;
-      position: relative;
+      pointer-events: none;      position: relative;
     }
 
     .btn-primary.loading::after {
@@ -121,14 +114,8 @@
     }
 
     @keyframes spin {
-      0% {
-        transform: translateY(-50%) rotate(0deg);
-      }
-
-      100% {
-        transform: translateY(-50%) rotate(360deg);
-      }
-    }
+      0% { transform: translateY(-50%) rotate(0deg); }
+      100% { transform: translateY(-50%) rotate(360deg); }    }
 
     button:disabled {
       opacity: 0.65;
@@ -140,8 +127,8 @@
       padding: 1rem 1.2rem;
       border-radius: 1rem;
       font-size: 1.35rem;
-      background: rgba(255, 255, 255, 0.04);
-      border: 0.1rem solid rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.04);
+      border: 0.1rem solid rgba(255,255,255,0.08);
       color: var(--muted);
     }
 
@@ -155,38 +142,6 @@
       color: var(--accent);
       border-color: rgba(0, 255, 169, 0.25);
       background: rgba(0, 255, 169, 0.08);
-    }
-
-    /* Breakpoint mobile — no mesmo padrão já usado no cms.html,
-       para manter os dois telões de acesso (login e CMS) consistentes */
-    @media (max-width: 640px) {
-      body {
-        padding: 1rem;
-      }
-
-      .box {
-        width: 100%;
-        padding: 1.8rem 1.5rem;
-        border-radius: 1.4rem;
-      }
-
-      h2 {
-        font-size: 2rem;
-      }
-
-      p {
-        font-size: 1.35rem;
-      }
-
-      button,
-      .link-btn {
-        font-size: 1.3rem;
-        padding: 1.05rem 1.2rem;
-      }
-
-      .status {
-        font-size: 1.2rem;
-      }
     }
   </style>
 </head>
@@ -277,5 +232,4 @@
     })();
   </script>
 </body>
-
 </html>
