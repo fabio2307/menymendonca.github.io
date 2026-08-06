@@ -10,6 +10,7 @@ media_folder: "assets/images/uploads"
 public_folder: "/assets/images/uploads"
 
 # Informações do site
+site_url: https://menymendonca.netlify.app
 display_url: https://menymendonca.netlify.app
 logo_url: /assets/images/logo.png
 
@@ -29,6 +30,7 @@ collections:
           - label: "Momentos"
             name: "items"
             widget: "list"
+            summary: "{{fields.titulo}} — {{fields.categoria}}"
             fields:
               - label: "Título"
                 name: "titulo"
@@ -55,7 +57,7 @@ collections:
     files:
       - label: "Vídeos TikTok"
         name: "tiktok"
-        file: "tiktok-manual.json"
+        file: "assets/data/tiktok-manual.json"
         format: "json"
         fields:
           - label: "Vídeos"
@@ -67,6 +69,7 @@ collections:
                 name: "url"
                 widget: "string"
                 hint: "Cole o link completo do TikTok (ex: https://www.tiktok.com/@usuario/video/1234567890)"
+                pattern: ['^https:\/\/(www\.)?tiktok\.com\/.+', "Cole um link válido do TikTok (precisa começar com https://www.tiktok.com/)"]
 
               - label: "Título (opcional)"
                 name: "titulo"

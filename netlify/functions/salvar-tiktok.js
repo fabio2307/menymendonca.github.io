@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-const FILE_PATH = "tiktok-manual.json";
+const FILE_PATH = "assets/data/tiktok-manual.json";
 const TIKTOK_URL_REGEX = /^(https?:\/\/)?(www\.)?(tiktok\.com|vm\.tiktok\.com)\//i;
 
 function normalizarUrl(url) {

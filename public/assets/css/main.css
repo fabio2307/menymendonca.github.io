@@ -1007,6 +1007,19 @@ header #menu-btn:hover {
     opacity: 0;
 }
 
+/* Botão de fechar do popup (Magnific Popup) — sem isso, o "x" padrão
+   da lib fica cinza-escuro sobre fundo escuro e praticamente some. */
+.mfp-close {
+    color: #fff !important;
+    font-size: 32px;
+    opacity: 1;
+    right: 10px;
+    top: 10px;
+}
+
+.mfp-bg {
+    opacity: 0.9 !important;
+}
 
 /*--------------------- 8- Portfolio Area CSS (End) ---------------------*/
 

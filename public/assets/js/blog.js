@@ -18,7 +18,9 @@ function escaparHtml(texto) {
 }
 
 function isUrlTikTok(url) {
-  return /tiktok\.com|vm\.tiktok\.com/i.test(url || "");
+  // Inclui vt.tiktok.com (comum em links compartilhados pelo app),
+  // além de tiktok.com e vm.tiktok.com.
+  return /tiktok\.com|v[mt]\.tiktok\.com/i.test(url || "");
 }
 
 function normalizarUrlTikTok(url) {
@@ -138,13 +140,15 @@ function normalizarPostTikTok(item) {
 
 async function carregarTikTokManual() {
   try {
-    // Caminho absoluto: a pasta "public" e a RAIZ publicada do site
-    // (o Netlify serve o conteudo dela em "/"), entao buscar
-    // "public/tiktok-manual.json" (relativo) resultava em 404.
-    const response = await fetch("/tiktok-manual.json", { cache: "no-store" });
+    // Precisa bater exatamente com o FILE_PATH usado pela function de
+    // salvamento (netlify/functions/salvar-tiktok.js ou equivalente):
+    // "assets/data/tiktok-manual.json". Esse arquivo NÃO fica na raiz
+    // publicada — buscar "/tiktok-manual.json" sempre retorna 404/JSON
+    // antigo, porque é um arquivo diferente do que a function grava.
+    const response = await fetch("/assets/data/tiktok-manual.json", { cache: "no-store" });
     if (!response.ok) return [];
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
     const videos = Array.isArray(data) ? data : (data.videos || []);
 
     return videos
@@ -157,8 +161,11 @@ async function carregarTikTokManual() {
 
 async function buscarMetaTikTok(url) {
   try {
+    // Passa pela function-proxy (netlify/functions/tiktok-oembed.js) em vez
+    // de chamar tiktok.com/oembed direto do navegador — evita depender do
+    // CORS do TikTok, que pode variar por navegador/região.
     const response = await fetch(
-      `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`
+      `/.netlify/functions/tiktok-oembed?url=${encodeURIComponent(url)}`
     );
 
     if (!response.ok) return null;
@@ -205,6 +212,9 @@ function mesclarPosts(listaA, listaB) {
       return;
     }
 
+    // Mescla mantendo os melhores dados disponíveis de cada fonte,
+    // em vez de deixar o último item da lista apagar thumbnail/título
+    // já enriquecidos que vieram do blog.json.
     mapa.set(post.url, {
       ...existente,
       ...post,
@@ -242,14 +252,14 @@ async function carregarBlog() {
 
   try {
     const [blogResponse, manualTikTok] = await Promise.all([
-      fetch("/blog.json", { cache: "no-store" }),
+      fetch("/blog.json", { cache: "no-store" }).catch(() => ({ ok: false })),
       carregarTikTokManual(),
     ]);
 
     let postsValidos = [];
 
     if (blogResponse.ok) {
-      const posts = await blogResponse.json();
+      const posts = await blogResponse.json().catch(() => []);
       postsValidos = Array.isArray(posts) ? posts : [];
     }
 
@@ -309,12 +319,12 @@ function iniciarStatusLive() {
     spotlightCard.classList.toggle("is-live", online);
 
     if (online) {
-      spotlightCta.textContent = "🔴 assistir agora";
-      spotlightDesc.textContent = textos.live;
+      if (spotlightCta) spotlightCta.textContent = "🔴 assistir agora";
+      if (spotlightDesc) spotlightDesc.textContent = textos.live;
       if (liveBadge) liveBadge.style.display = "flex";
     } else {
-      spotlightCta.textContent = "abrir perfil";
-      spotlightDesc.textContent = textos.normal;
+      if (spotlightCta) spotlightCta.textContent = "abrir perfil";
+      if (spotlightDesc) spotlightDesc.textContent = textos.normal;
       if (liveBadge) liveBadge.style.display = "none";
     }
   }
@@ -331,16 +341,11 @@ function iniciarStatusLive() {
   }
 
   function limparStatusLive() {
-    const spotlightCard = document.getElementById("tiktok-spotlight-card");
-    const spotlightCta = document.getElementById("tiktok-card-cta");
-    const spotlightDesc = document.getElementById("tiktok-card-desc");
-    const liveBadge = document.getElementById("live-badge");
-
-    if (!spotlightCard || !spotlightCta || !spotlightDesc) return;
+    if (!spotlightCard) return;
 
     spotlightCard.classList.remove("is-live");
-    spotlightCta.textContent = "abrir perfil";
-    spotlightDesc.textContent = "Clipes curtos, bastidores e chamadas para as lives.";
+    if (spotlightCta) spotlightCta.textContent = "abrir perfil";
+    if (spotlightDesc) spotlightDesc.textContent = textos.normal;
     if (liveBadge) liveBadge.style.display = "none";
   }
 
@@ -394,6 +399,7 @@ function iniciarVisibilidadeLogin() {
     adminLink.style.display = user ? "inline-block" : "none";
   }
 
+  // Verifica imediatamente, caso a sessão já esteja ativa
   atualizarVisibilidade(netlifyIdentity.currentUser());
 
   netlifyIdentity.on("init", atualizarVisibilidade);
