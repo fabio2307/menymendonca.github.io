@@ -12,7 +12,24 @@ const YOUTUBE_CHANNEL_ID = process.env.YOUTUBE_ID;
 const TIKTOK_RSS = process.env.TIKTOK_URL_RSS;
 
 const OUTPUT_FILE = path.join(__dirname, "../blog.json");
-const MANUAL_TIKTOK_FILE = path.join(__dirname, "../tiktok-manual.json");
+
+// Precisa bater com o caminho real gravado pelo config.yml (coleção
+// "tiktok") e pela function "salvar-tiktok.js": public/assets/data/tiktok-manual.json.
+// Antes apontava para "../tiktok-manual.json" (ou seja, public/tiktok-manual.json),
+// um arquivo diferente — por isso o build nunca via os vídeos manuais,
+// mesmo com tudo salvando certo no lugar correto. O carrossel só continuava
+// mostrando os vídeos manuais porque o blog.js busca esse JSON direto do
+// navegador, em paralelo, mascarando o problema aqui no build.
+const MANUAL_TIKTOK_FILE = path.join(__dirname, "../assets/data/tiktok-manual.json");
+
+// Remove query string, do mesmo jeito que o front-end (blog.js) e a function
+// de salvar (salvar-tiktok.js) já normalizam as URLs manuais. Sem isso, o
+// mesmo vídeo vindo do RSS (URL crua, com tracking) e da lista manual (URL
+// já normalizada) não batia na deduplicação e aparecia duas vezes no
+// carrossel.
+function normalizarUrlTikTok(url) {
+  return (url || "").trim().split("?")[0];
+}
 
 function normalizeThumbnail(item) {
   if (item.enclosure?.url) return item.enclosure.url;
@@ -76,7 +93,8 @@ async function buscarMetaTikTok(url) {
 async function parseManualTikTok() {
   const manual = normalizarListaManual(lerJSON(MANUAL_TIKTOK_FILE))
     .map(item => (typeof item === "string" ? { url: item } : item))
-    .filter(item => item && typeof item.url === "string");
+    .filter(item => item && typeof item.url === "string")
+    .map(item => ({ ...item, url: normalizarUrlTikTok(item.url) }));
 
   const anteriores = normalizarListaManual(lerJSON(OUTPUT_FILE));
 
@@ -112,7 +130,7 @@ async function readFeed(source, platform) {
     return (feed.items || []).slice(0, 20).map((item) => ({
       platform,
       title: item.title || platform,
-      url: item.link || "",
+      url: platform === "TikTok" ? normalizarUrlTikTok(item.link || "") : (item.link || ""),
       thumbnail:
         platform === "YouTube"
           ? buildYouTubeThumbnail(item)
