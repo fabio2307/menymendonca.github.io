@@ -12,6 +12,14 @@ function normalizarCategoria(str) {
         .replace(/\s+/g, "-");             // espaços -> hífen, caso existam categorias compostas
 }
 
+function escaparHtml(texto) {
+    return String(texto || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // Trava para evitar que o script rode a inicialização duas vezes
@@ -23,14 +31,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     window.__portfolioMomentosInit = true;
 
-    fetch("assets/data/momentos.json")
-        .then(response => response.json())
+    const container = document.getElementById("portfolio-container");
+
+    // Caminho absoluto (com "/" inicial): garante que o fetch busque sempre
+    // a partir da raiz do site, independente de essa galeria estar embutida
+    // em "/", "/momentos/" ou qualquer outra rota. "no-store" evita servir
+    // uma versão em cache do JSON logo após uma edição no CMS.
+    fetch("/assets/data/momentos.json", { cache: "no-store" })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`momentos.json respondeu ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
 
-            const container = document.getElementById("portfolio-container");
+            if (!container) return;
+
+            const items = Array.isArray(data.items) ? data.items : [];
+
+            if (!items.length) {
+                container.innerHTML = `<p class="portfolio-empty">Nenhum momento publicado ainda.</p>`;
+                return;
+            }
+
             container.innerHTML = "";
 
-            data.items.forEach(item => {
+            items.forEach(item => {
 
                 const categoriaNormalizada = normalizarCategoria(item.categoria);
 
@@ -42,11 +69,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 div.dataset.categoriaOriginal = item.categoria;
 
                 div.innerHTML = `
-                    <img src="${item.imagem}" alt="${item.titulo}" />
+                    <img src="${escaparHtml(item.imagem)}" alt="${escaparHtml(item.titulo)}" loading="lazy" />
                     <div class="content">
-                        <h4>${item.titulo}</h4>
-                        <p>${item.categoria}</p>
-                        <a href="${item.imagem}" class="view-btn">
+                        <h4>${escaparHtml(item.titulo)}</h4>
+                        <p>${escaparHtml(item.categoria)}</p>
+                        <a href="${escaparHtml(item.imagem)}" class="view-btn">
                             <i class="fas fa-search-plus"></i>
                         </a>
                     </div>
@@ -100,7 +127,12 @@ document.addEventListener("DOMContentLoaded", function () {
             initPopup();
 
         })
-        .catch(error => console.error("Erro ao carregar JSON:", error));
+        .catch(error => {
+            console.error("Erro ao carregar JSON:", error);
+            if (container) {
+                container.innerHTML = `<p class="portfolio-empty">Não foi possível carregar os momentos agora.</p>`;
+            }
+        });
 
 });
 

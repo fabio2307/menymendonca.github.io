@@ -6,7 +6,12 @@ backend:
 local_backend: false
 
 # Onde as imagens serão salvas
-media_folder: "assets/images/uploads"
+# IMPORTANTE: o site publicado é a pasta "public/" (ver netlify.toml:
+# publish = "public"), então o caminho de gravação no repositório precisa
+# do prefixo "public/" — sem ele, a imagem era commitada em
+# assets/images/uploads (raiz do repo), fora da pasta publicada, e nunca
+# aparecia no site.
+media_folder: "public/assets/images/uploads"
 public_folder: "/assets/images/uploads"
 
 # Informações do site
@@ -24,7 +29,9 @@ collections:
     files:
       - label: "Lista de Momentos"
         name: "momentos"
-        file: "assets/data/momentos.json"
+        # Idem: precisa do prefixo "public/" para cair dentro da pasta
+        # que o Netlify realmente publica.
+        file: "public/assets/data/momentos.json"
         format: "json"
         fields:
           - label: "Momentos"
@@ -57,7 +64,7 @@ collections:
     files:
       - label: "Vídeos TikTok"
         name: "tiktok"
-        file: "assets/data/tiktok-manual.json"
+        file: "public/assets/data/tiktok-manual.json"
         format: "json"
         fields:
           - label: "Vídeos"

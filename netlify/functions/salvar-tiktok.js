@@ -1,7 +1,15 @@
 const fetch = require("node-fetch");
 
-const FILE_PATH = "assets/data/tiktok-manual.json";
-const TIKTOK_URL_REGEX = /^(https?:\/\/)?(www\.)?(tiktok\.com|vm\.tiktok\.com)\//i;
+// IMPORTANTE: o Netlify publica a pasta "public/" (netlify.toml:
+// publish = "public"), então o caminho no repositório precisa do
+// prefixo "public/" — sem ele, o commit ia para assets/data/tiktok-manual.json
+// na raiz do repo, fora da pasta publicada, e o carrossel nunca via a
+// atualização mesmo com o deploy rodando com sucesso.
+const FILE_PATH = "public/assets/data/tiktok-manual.json";
+
+// Inclui vt.tiktok.com (comum em links compartilhados pelo app), além de
+// tiktok.com e vm.tiktok.com — mesma cobertura usada no front-end (blog.js).
+const TIKTOK_URL_REGEX = /^(https?:\/\/)?(www\.)?(tiktok\.com|v[mt]\.tiktok\.com)\//i;
 
 function normalizarUrl(url) {
     try {

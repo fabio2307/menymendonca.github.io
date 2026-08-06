@@ -14,6 +14,11 @@
       "categoria": "inesquecíveis",
       "titulo": "Meu momento",
       "imagem": "assets/images/uploads/momentos-1.png"
+    },
+    {
+      "titulo": "Festa",
+      "categoria": "inesquecíveis",
+      "imagem": "/assets/images/uploads/momentos-4.png"
     }
   ]
 }
