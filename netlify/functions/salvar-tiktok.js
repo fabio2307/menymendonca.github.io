@@ -1,4 +1,6 @@
 const fetch = require("node-fetch");
+const fs = require("fs").promises;
+const path = require("path");
 
 // IMPORTANTE: o Netlify publica a pasta "public/" (netlify.toml:
 // publish = "public"), então o caminho no repositório precisa do
@@ -89,6 +91,24 @@ exports.handler = async (event, context) => {
             videos.push({ ...v, url: urlLimpa });
         }
 
+        const conteudoFinal = { videos };
+
+        // 🖥️ MODO LOCAL (netlify dev): grava direto no disco, sem tocar o
+        // GitHub. O "netlify dev" define NETLIFY_DEV=true automaticamente no
+        // ambiente; em produção essa variável não existe, então esse bloco
+        // nunca roda lá e o fluxo abaixo (API do GitHub) continua idêntico
+        // ao de sempre.
+        if (process.env.NETLIFY_DEV === "true") {
+            const localPath = path.join(process.cwd(), FILE_PATH);
+            await fs.mkdir(path.dirname(localPath), { recursive: true });
+            await fs.writeFile(localPath, JSON.stringify(conteudoFinal, null, 2), "utf-8");
+
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ success: true, videos, local: true }),
+            };
+        }
+
         const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
         if (!GITHUB_TOKEN) {
             throw new Error("GITHUB_TOKEN não configurado nas variáveis de ambiente do Netlify");
@@ -148,7 +168,6 @@ exports.handler = async (event, context) => {
             throw new Error(`Falha ao ler arquivo atual (${arquivo.status}): ${erro}`);
         }
 
-        const conteudoFinal = { videos };
         const content = Buffer.from(JSON.stringify(conteudoFinal, null, 2)).toString("base64");
 
         const salvar = await fetch(

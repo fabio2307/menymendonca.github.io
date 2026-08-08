@@ -2,8 +2,15 @@ backend:
   name: git-gateway
   branch: main
 
-# Opcional para desenvolvimento local
-local_backend: false
+# Ativa o backend local do Decap: quando o site é acessado em localhost
+# (ex: via "netlify dev"), o CMS passa a gravar direto no disco através de
+# um servidor auxiliar, em vez de commitar no GitHub. Em produção esse modo
+# nunca ativa (o Decap só usa local backend quando o hostname é localhost),
+# então isso não muda nada fora do ambiente de desenvolvimento.
+#
+# Para funcionar, rode em outro terminal, junto com "netlify dev":
+#   npx decap-server
+local_backend: true
 
 # Onde as imagens serão salvas
 # IMPORTANTE: o site publicado é a pasta "public/" (ver netlify.toml:

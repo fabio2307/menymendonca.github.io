@@ -27,6 +27,35 @@ function normalizarUrlTikTok(url) {
   return (url || "").trim().split("?")[0];
 }
 
+// Usado como sentinela para saber se o admin definiu um título próprio ou
+// se ainda é o rótulo genérico (e portanto pode ser substituído quando o
+// enriquecimento via oEmbed trouxer a legenda real do vídeo).
+const TITULO_PLACEHOLDER = "Vídeo TikTok";
+
+// O campo "title" que o oEmbed do TikTok retorna é, na prática, a legenda
+// completa do vídeo — incluindo #hashtags e @menções. Para usar como
+// título curto do card (sem competir com a descrição, que já mostra a
+// legenda inteira e destacada), removemos as tags e cortamos o texto.
+function extrairTituloLimpo(legenda, limite = 70) {
+  const semTags = (legenda || "")
+    .replace(/#[\p{L}0-9_]+/gu, "")
+    .replace(/@[\p{L}0-9_.]+/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!semTags) return "";
+  return semTags.length > limite ? `${semTags.substring(0, limite)}...` : semTags;
+}
+
+// Destaca #hashtags e @menções dentro de um texto já escapado (escaparHtml
+// precisa rodar ANTES desta função, nunca depois — senão os "<span>" que
+// ela insere seriam escapados também).
+function destacarTags(textoEscapado) {
+  return (textoEscapado || "")
+    .replace(/(^|\s)(#[\p{L}0-9_]+)/gu, '$1<span class="post-tag post-tag--hashtag" style="color:#fe2c55;font-weight:600;">$2</span>')
+    .replace(/(^|\s)(@[\p{L}0-9_.]+)/gu, '$1<span class="post-tag post-tag--mention" style="color:#25a4bf;font-weight:600;">$2</span>');
+}
+
 function criarSlideVazio(mensagem, linkTexto, linkUrl) {
   return `
     <div class="swiper-slide blog-item blog-item--empty">
@@ -58,7 +87,7 @@ function renderizarSlides(container, posts, fallbackConfig) {
 
   container.innerHTML = items.map(post => {
     const date = post.date ? new Date(post.date).toLocaleDateString("pt-BR") : "";
-    const description = truncarTexto(limparTexto(post.description || post.content || ""));
+    const description = truncarTexto(limparTexto(post.description || post.content || ""), 160);
     const platformClass = (post.platform || fallbackConfig.platform).toLowerCase().replace(/\s+/g, "-");
     const thumbnail = post.thumbnail && post.thumbnail !== ""
       ? post.thumbnail
@@ -74,13 +103,14 @@ function renderizarSlides(container, posts, fallbackConfig) {
           <div class="intro">
             <h5><i class="fas fa-calendar-alt"></i><span>${date}</span></h5>
             <h5><i class="fas fa-user"></i><span>${escaparHtml(post.platform || fallbackConfig.platform)}</span></h5>
+            ${post.author ? `<h5><i class="fas fa-at"></i><span>${escaparHtml(post.author)}</span></h5>` : ""}
           </div>
 
           <a class="main-heading" target="_blank" rel="noopener noreferrer" href="${escaparHtml(post.url)}">
             ${escaparHtml(post.title || post.platform || fallbackConfig.platform)}
           </a>
 
-          ${description ? `<p>${escaparHtml(description)}</p>` : ""}
+          ${description ? `<p>${destacarTags(escaparHtml(description))}</p>` : ""}
 
           <a target="_blank" rel="noopener noreferrer" href="${escaparHtml(post.url)}" class="btn">
             Veja mais <i class="fas fa-arrow-right"></i>
@@ -130,10 +160,11 @@ function normalizarPostTikTok(item) {
 
   return {
     platform: "TikTok",
-    title: bruto.titulo || "Vídeo TikTok",
+    title: bruto.titulo || TITULO_PLACEHOLDER,
     url,
     thumbnail: bruto.thumbnail || "",
     description: bruto.descricao || "",
+    author: bruto.autor || "",
     date: bruto.date || new Date().toISOString(),
   };
 }
@@ -184,16 +215,30 @@ async function buscarMetaTikTok(url) {
 async function enriquecerTikTok(posts) {
   return Promise.all(
     posts.map(async post => {
-      if (post.thumbnail) return post;
+      const faltaThumbnail = !post.thumbnail;
+      const faltaLegenda = !post.description;
+      const faltaAutor = !post.author;
+      const faltaTitulo = !post.title || post.title === TITULO_PLACEHOLDER;
+
+      // Só chama o oEmbed se realmente faltar alguma coisa — antes só
+      // checava "thumbnail", então um vídeo já com thumbnail (mas sem
+      // descrição/autor) nunca era enriquecido.
+      if (!faltaThumbnail && !faltaLegenda && !faltaAutor && !faltaTitulo) {
+        return post;
+      }
 
       const meta = await buscarMetaTikTok(post.url);
       if (!meta) return post;
 
       return {
         ...post,
-        title: post.title === "Vídeo TikTok" && meta.title ? meta.title : post.title,
-        thumbnail: meta.thumbnail || post.thumbnail,
-        description: meta.author ? `@${meta.author}` : post.description,
+        // "meta.title" é a legenda completa do vídeo (com # e @) — vira a
+        // descrição, nunca o "title" curto do card. O título só é
+        // preenchido a partir dela quando o admin não definiu um próprio.
+        title: faltaTitulo ? (extrairTituloLimpo(meta.title) || post.title) : post.title,
+        thumbnail: post.thumbnail || meta.thumbnail,
+        description: post.description || meta.title || "",
+        author: post.author || (meta.author ? `@${meta.author}` : ""),
       };
     })
   );
@@ -214,13 +259,14 @@ function mesclarPosts(listaA, listaB) {
 
     // Mescla mantendo os melhores dados disponíveis de cada fonte,
     // em vez de deixar o último item da lista apagar thumbnail/título
-    // já enriquecidos que vieram do blog.json.
+    // já enriquecidos que vieram do tiktok-feed.json (gerado no build).
     mapa.set(post.url, {
       ...existente,
       ...post,
-      title: (post.title && post.title !== "Vídeo TikTok") ? post.title : (existente.title || post.title),
+      title: (post.title && post.title !== TITULO_PLACEHOLDER) ? post.title : (existente.title || post.title),
       thumbnail: post.thumbnail || existente.thumbnail,
       description: post.description || existente.description,
+      author: post.author || existente.author,
       date: post.date || existente.date,
     });
   });
@@ -251,27 +297,33 @@ async function carregarBlog() {
   const containerYouTube = document.getElementById("blog-youtube-dinamico");
 
   try {
-    const [blogResponse, manualTikTok] = await Promise.all([
+    const [youtubeResponse, tiktokFeedResponse, manualTikTok] = await Promise.all([
+      // blog.json agora só tem YouTube (TikTok ganhou arquivo próprio —
+      // ver assets/data/tiktok-feed.json abaixo). Isso reflete os dois
+      // carrosséis serem independentes hoje, diferente da versão antiga
+      // em que os dois vinham juntos do mesmo blog.json.
       fetch("/blog.json", { cache: "no-store" }).catch(() => ({ ok: false })),
+      // TikTok via RSS + manual, já mesclado no build.
+      fetch("/assets/data/tiktok-feed.json", { cache: "no-store" }).catch(() => ({ ok: false })),
+      // TikTok manual, direto do CMS, sempre ao vivo — garante que um
+      // vídeo recém-salvo apareça na hora, mesmo antes do próximo build.
       carregarTikTokManual(),
     ]);
 
-    let postsValidos = [];
-
-    if (blogResponse.ok) {
-      const posts = await blogResponse.json().catch(() => []);
-      postsValidos = Array.isArray(posts) ? posts : [];
+    let youtubePostsRaw = [];
+    if (youtubeResponse.ok) {
+      const posts = await youtubeResponse.json().catch(() => []);
+      youtubePostsRaw = Array.isArray(posts) ? posts : [];
     }
 
-    const grupos = postsValidos.reduce((acc, post) => {
-      const key = (post.platform || "").toLowerCase();
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(post);
-      return acc;
-    }, {});
+    let tiktokFeed = [];
+    if (tiktokFeedResponse.ok) {
+      const posts = await tiktokFeedResponse.json().catch(() => []);
+      tiktokFeed = Array.isArray(posts) ? posts : [];
+    }
 
-    let tiktokPosts = mesclarPosts(grupos.tiktok || [], manualTikTok).slice(0, 6);
-    const youtubePosts = (grupos.youtube || [])
+    let tiktokPosts = mesclarPosts(tiktokFeed, manualTikTok).slice(0, 6);
+    const youtubePosts = youtubePostsRaw
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 6);
 
@@ -308,24 +360,49 @@ function iniciarStatusLive() {
   const spotlightDesc = document.getElementById("tiktok-card-desc");
   const liveBadge = document.getElementById("live-badge");
 
+  // Segundo badge "AO VIVO", na seção de blog — existe no HTML
+  // (blog-live-badge, tiktok-panel-desc, tiktok-panel-cta) mas nunca era
+  // atualizado por aqui, então ficava sempre no texto padrão mesmo com a
+  // Meny ao vivo.
+  const blogLiveBadge = document.getElementById("blog-live-badge");
+  const blogPanelDesc = document.getElementById("tiktok-panel-desc");
+  const blogPanelCta = document.getElementById("tiktok-panel-cta");
+
   const textos = {
     normal: "Clipes curtos, bastidores e chamadas para as lives.",
     live: "🔴 AO VIVO AGORA — clique e assista!"
   };
 
+  const textosBlog = {
+    normal: "Posts rápidos com bastidores, lives e chamadas para ação.",
+    live: "🔴 AO VIVO AGORA — clique e assista!"
+  };
+
   function aplicarStatus(online) {
-    if (!spotlightCard) return;
+    if (spotlightCard) {
+      spotlightCard.classList.toggle("is-live", online);
 
-    spotlightCard.classList.toggle("is-live", online);
+      if (online) {
+        if (spotlightCta) spotlightCta.textContent = "🔴 assistir agora";
+        if (spotlightDesc) spotlightDesc.textContent = textos.live;
+        if (liveBadge) liveBadge.style.display = "flex";
+      } else {
+        if (spotlightCta) spotlightCta.textContent = "abrir perfil";
+        if (spotlightDesc) spotlightDesc.textContent = textos.normal;
+        if (liveBadge) liveBadge.style.display = "none";
+      }
+    }
 
-    if (online) {
-      if (spotlightCta) spotlightCta.textContent = "🔴 assistir agora";
-      if (spotlightDesc) spotlightDesc.textContent = textos.live;
-      if (liveBadge) liveBadge.style.display = "flex";
-    } else {
-      if (spotlightCta) spotlightCta.textContent = "abrir perfil";
-      if (spotlightDesc) spotlightDesc.textContent = textos.normal;
-      if (liveBadge) liveBadge.style.display = "none";
+    if (blogPanelDesc || blogPanelCta || blogLiveBadge) {
+      if (online) {
+        if (blogPanelCta) blogPanelCta.textContent = "🔴 assistir agora";
+        if (blogPanelDesc) blogPanelDesc.textContent = textosBlog.live;
+        if (blogLiveBadge) blogLiveBadge.style.display = "flex";
+      } else {
+        if (blogPanelCta) blogPanelCta.textContent = "seguir no tiktok";
+        if (blogPanelDesc) blogPanelDesc.textContent = textosBlog.normal;
+        if (blogLiveBadge) blogLiveBadge.style.display = "none";
+      }
     }
   }
 
@@ -341,12 +418,7 @@ function iniciarStatusLive() {
   }
 
   function limparStatusLive() {
-    if (!spotlightCard) return;
-
-    spotlightCard.classList.remove("is-live");
-    if (spotlightCta) spotlightCta.textContent = "abrir perfil";
-    if (spotlightDesc) spotlightDesc.textContent = textos.normal;
-    if (liveBadge) liveBadge.style.display = "none";
+    aplicarStatus(false);
   }
 
   function conectarSocket() {

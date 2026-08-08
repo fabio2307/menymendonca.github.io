@@ -13,6 +13,7 @@
       "dependencies": [
         "npm:@netlify/blobs@^10.7.12",
         "npm:cheerio@^1.0.0-rc.12",
+        "npm:decap-server@^3.10.0",
         "npm:dotenv@^16.4.5",
         "npm:node-fetch@^2.6.7",
         "npm:rss-parser@^3.12.0"
