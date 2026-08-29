@@ -2,16 +2,13 @@
   "name": "blog-auto-social",
   "version": "1.0.0",
   "scripts": {
-    "build": "node public/scripts/updateBlog.js"
+    "build": "echo 'Sem build necessário — YouTube/TikTok atualizam via feeds-update.js (Netlify Scheduled Function), não mais no deploy.'"
   },
   "dependencies": {
-    "@netlify/blobs": "^10.7.12",
+    "@netlify/blobs": "^10.7.13",
     "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.6.1",
+    "dotenv": "^16.4.5",
     "node-fetch": "^2.6.7",
-    "rss-parser": "^3.13.0"
-  },
-  "devDependencies": {
-    "decap-server": "^3.10.0"
+    "rss-parser": "^3.12.0"
   }
 }

@@ -1,11 +1,8 @@
 /*--------------------- Responsive (Start) ---------------------*/
-
 /* Tablet / telas médias */
 @media (max-width: 1200px) {
-    .spotlight-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 
+    /* .spotlight-grid já é fluido via auto-fit em main.css (2 a 4 colunas dependendo do espaço disponível), então não precisamos mais forçar 2 colunas aqui manualmente. */
     .social-grid {
         gap: 2rem;
     }
@@ -34,10 +31,8 @@
 }
 
 @media (max-width: 991px) {
-    html {
-        font-size: 55%;
-    }
 
+    /* A escala de html { font-size } agora é fluida (clamp) em main.css, então não redefinimos mais um valor fixo aqui — isso evitava o "salto" perceptível de todo o layout reescalar de uma vez neste breakpoint. */
     .heading h2 {
         font-size: 3.4rem;
     }
@@ -66,49 +61,16 @@
         z-index: 1000;
     }
 
-    .header .navbar {
-        width: min(30rem, 100%);
-        position: fixed;
-        right: 0;
-        top: 0;
-        padding: 8rem 2rem 2rem;
-        background: rgba(7, 22, 15, 0.98);
-        border-left: 0.1rem solid rgba(0, 255, 169, 0.35);
-        -webkit-transition: 0.25s ease;
-        -moz-transition: 0.25s ease;
-        -o-transition: 0.25s ease;
-        transition: 0.25s ease;
-        -webkit-transform: translateX(100%);
-        transform: translateX(100%);
-        height: 100vh;
-        height: 100dvh;
-        overflow-y: auto;
-        -webkit-box-shadow: -0.5rem 0 2rem rgba(0, 0, 0, 0.35);
-        box-shadow: -0.5rem 0 2rem rgba(0, 0, 0, 0.35);
-        z-index: 999;
-    }
-
-    .header .navbar.active {
-        -webkit-transform: translateX(0);
-        transform: translateX(0);
-    }
-
-    .header .navbar a {
-        display: block;
-        color: var(--white);
-        padding: 1.4rem 0;
-        margin: 0;
-        border-bottom: 0.1rem solid rgba(255, 255, 255, 0.08);
-    }
-
-    .header .navbar a:last-child {
-        border-bottom: none;
-    }
-
-    .header .navbar a:hover,
-    .header .navbar a.active {
-        color: var(--purple);
-    }
+    /*
+       A gaveta do menu mobile (fixa, deslizando da esquerda,
+       com transform translateX) já é definida em main.css
+       dentro de @media (max-width: 991px), usando o seletor
+       "header .navbar". Removida daqui a definição duplicada
+       que existia com o seletor ".header .navbar" (abrindo
+       pela direita) — as duas competiam entre si por causa
+       da especificidade, e a antiga sempre vencia abaixo de
+       768px, fazendo o menu abrir pelo lado errado.
+    */
 
     .navbar::-webkit-scrollbar {
         width: 0.8rem;
@@ -165,7 +127,6 @@
     }
 
     .spotlight-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1.4rem;
     }
 
@@ -197,7 +158,7 @@
     }
 
     .blog-item {
-        min-height: auto;
+        max-height: none;
     }
 
     .blog-item .image {
@@ -209,11 +170,10 @@
     }
 
     .calendar-wrapper {
-        min-height: auto;
+        max-height: none;
     }
 
     #calendar {
-        min-height: 52rem;
         padding: 1.4rem;
     }
 
@@ -305,6 +265,7 @@
 }
 
 @media (max-width: 600px) {
+
     section,
     header {
         padding: 1.6rem;
@@ -366,13 +327,21 @@
     .contact-info .info-item .detail a {
         margin-left: 0;
     }
+
+    /* FullCalendar troca para listWeek via JS abaixo de 600px (ver index.html) — o toolbar fica mais compacto nessa view, então reduzimos o padding para aproveitar melhor o espaço. */
+    .agenda .fc-list-day-cushion {
+        padding: 0.8rem 1.2rem;
+    }
+
+    .agenda .fc-list-event-time,
+    .agenda .fc-list-event-title {
+        font-size: 1.3rem;
+    }
 }
 
 @media (max-width: 450px) {
-    html {
-        font-size: 50%;
-    }
 
+    /* Nota: a redução de escala geral agora é feita via clamp() em html { font-size } no main.css, de forma contínua — não é mais necessário redefinir o valor fixo aqui. */
     section,
     header {
         padding: 1rem;
@@ -439,7 +408,7 @@
         justify-content: flex-start;
     }
 
-    .controls .button.btn {
+    .controls .button .btn {
         padding: 0.8rem 1.2rem;
         font-size: 1.3rem;
     }
@@ -484,7 +453,6 @@
 
     #calendar {
         padding: 1rem;
-        min-height: 42rem;
         font-size: 1.3rem;
     }
 
@@ -506,8 +474,8 @@
         height: 4.5rem;
         width: 4.5rem;
         font-size: 2.4rem;
-        bottom: 1.2rem;
-        right: 1.2rem;
+        bottom: calc(1.2rem + env(safe-area-inset-bottom));
+        right: calc(1.2rem + env(safe-area-inset-right));
     }
 
     .btn {
@@ -535,7 +503,7 @@
 }
 
 @media (max-width: 360px) {
-    .controls .button.btn {
+    .controls .button .btn {
         flex: 1 1 calc(50% - 0.4rem);
         text-align: center;
         justify-content: center;
@@ -557,6 +525,136 @@
     .home .box-container {
         min-height: auto;
         padding-bottom: 2rem;
+    }
+}
+
+/* ============================================================ BLOG — HEADER FLUIDO Funciona em qualquer largura de tela. ============================================================ */
+.social-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* * O header usa GRID porque precisamos reservar uma área real * para o botão. */
+.social-panel__header {
+    display: grid;
+    /* * Primeira coluna: * ocupa todo espaço disponível para título/descrição. * * Segunda coluna: * fica reservada exclusivamente para o botão. */
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: clamp(0.8rem, 2vw, 1.5rem);
+    row-gap: 1rem;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 2rem;
+}
+
+/* * O bloco que contém TikTok/YouTube + título + descrição * nunca poderá forçar a largura do card. */
+.social-panel__header>div {
+    min-width: 0;
+    width: 100%;
+}
+
+/* ------------------------------------------------------------ TÍTULO ------------------------------------------------------------ */
+.social-panel__header h3 {
+    /* * Escala continuamente conforme a largura da viewport. */
+    font-size: clamp(1.8rem, 2.2vw, 2.4rem);
+    line-height: 1.12;
+    margin: 1rem 0 0.6rem;
+    min-width: 0;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+/* ------------------------------------------------------------ DESCRIÇÃO ------------------------------------------------------------ */
+.social-panel__header p {
+    /* * NÃO existe mais um tamanho fixo de 1.55rem. * * A fonte diminui gradualmente conforme a tela diminui. */
+    font-size: clamp(1.1rem, 1.45vw, 1.55rem);
+    line-height: 1.45;
+    margin: 0;
+    min-width: 0;
+    color: var(--grey);
+    overflow-wrap: break-word;
+    word-break: normal;
+    /* * Impede a descrição de aumentar indefinidamente * a altura do header. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+/* ------------------------------------------------------------ BOTÃO ------------------------------------------------------------ */
+.social-panel__btn {
+    /* * O botão nunca será comprimido para zero. */
+    flex-shrink: 0;
+    /* * Reserva uma largura proporcional, mas sem deixar * o botão ocupar metade do card. */
+    width: clamp(10rem, 18vw, 16rem);
+    min-width: 10rem;
+    max-width: 16rem;
+    min-height: 4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1rem;
+    font-size: clamp(1.05rem, 1.25vw, 1.45rem);
+    line-height: 1.2;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+    align-self: center;
+}
+
+/* ------------------------------------------------------------ CARROSSEL ------------------------------------------------------------ */
+.blog-slider {
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+/* ============================================================ QUANDO O HEADER NÃO COMPORTAR MAIS TEXTO + BOTÃO ============================================================ */
+/* * Aqui não estamos dizendo "iPad". * * Estamos dizendo: * * "quando a largura disponível ficar pequena". * * Isso também funciona ao redimensionar o navegador * manualmente no computador. */
+@media (max-width: 900px) {
+    .social-panel__header {
+        /* * O texto ocupa sua própria linha. */
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 1rem;
+    }
+
+    .social-panel__btn {
+        /* * Agora o botão ganha uma linha inteira. */
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        justify-self: stretch;
+    }
+}
+
+/* ============================================================ TELAS PEQUENAS ============================================================ */
+@media (max-width: 600px) {
+    .social-panel__header {
+        margin-bottom: 1.5rem;
+    }
+
+    .social-panel__header h3 {
+        font-size: clamp(1.8rem, 7vw, 2.1rem);
+    }
+
+    .social-panel__header p {
+        /* * Ainda reduz a fonte, mas permite até 3 linhas * em telas realmente pequenas. */
+        font-size: clamp(1.05rem, 4vw, 1.35rem);
+        line-height: 1.45;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+    }
+
+    .social-panel__btn {
+        width: 100%;
+        min-height: 4rem;
+        font-size: 1.2rem;
     }
 }
 

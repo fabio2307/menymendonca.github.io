@@ -29,6 +29,7 @@ exports.handler = async function () {
     if (!dataNascimento) {
         return {
             statusCode: 500,
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ erro: "IDADE_NASC não configurada nas variáveis de ambiente do Netlify" }),
         };
     }
@@ -37,6 +38,7 @@ exports.handler = async function () {
     if (isNaN(nascimento.getTime())) {
         return {
             statusCode: 500,
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ erro: "IDADE_NASC inválida" }),
         };
     }

@@ -2,234 +2,1595 @@
 <html lang="pt-br">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Login Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #07160f;
-      --panel: rgba(10, 24, 17, 0.95);
-      --border: rgba(0, 255, 169, 0.24);
-      --text: #f4fff9;
-      --muted: #9db6ad;
-      --accent: #00FFA9;
-      --accent-strong: #0dcf8d;
-    }
+    <meta charset="utf-8" />
+    <title>Painel — Meny Mendonça</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg-1: #0a140f;
+            --bg-2: #0d1f15;
+            --panel: #101f17;
+            --border: rgba(212, 162, 76, 0.26);
+            --border-soft: rgba(212, 162, 76, 0.14);
+            --brass: #d4a24c;
+            --brass-soft: #e9c877;
+            --emerald: #34c793;
+            --text: #f3efe3;
+            --muted: #93a89b;
+            --danger: #ff9d8a;
+        }
 
-    * { box-sizing: border-box; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
 
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 2rem;
-      background: linear-gradient(135deg, #07160f 0%, #0f241e 45%, #08120d 100%);
-      color: var(--text);
-    }
+        html {
+            min-height: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
 
-    .box {
-      width: min(100%, 38rem);
-      background: var(--panel);
-      border: 0.1rem solid var(--border);
-      border-radius: 1.8rem;
-      padding: 2.6rem;
-      box-shadow: 0 2rem 4rem rgba(0,0,0,0.3);
-      backdrop-filter: blur(14px);
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family: 'Work Sans', system-ui, sans-serif;
+            background:
+                radial-gradient(circle at 12% 8%, rgba(212, 162, 76, 0.10), transparent 32%),
+                radial-gradient(circle at 88% 92%, rgba(52, 199, 147, 0.10), transparent 30%),
+                linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-1) 100%);
+            color: var(--text);
+            padding: clamp(0.75rem, 3vw, 2rem);
+            overflow-x: hidden;
+        }
 
-    .eyebrow {
-      display: inline-block;
-      font-size: 1.2rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.8rem;
-    }
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
 
-    h2 {
-      margin: 0 0 0.8rem;
-      font-size: 2.4rem;
-      color: #fff;
-    }
+        button {
+            min-height: 44px;
+        }
 
-    p {
-      margin: 0 0 1.2rem;
-      line-height: 1.7;
-      color: var(--muted);
-      font-size: 1.5rem;
-    }
+        /* ---------- Tela de login ---------- */
 
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-top: 1.8rem;
-    }
+        .badge {
+            position: relative;
+            width: min(100%, 27rem);
+            margin: clamp(1.5rem, 8vh, 4rem) auto;
+            padding: clamp(1.8rem, 5vw, 3.1rem) clamp(1.1rem, 5vw, 2.6rem) clamp(1.5rem, 4vw, 2.4rem);
+            border-radius: 1.4rem;
+            background: var(--panel);
+            border: 1px solid var(--border-soft);
+            box-shadow: 0 40px 90px rgba(0, 0, 0, 0.38);
+            text-align: center;
+        }
 
-    button, .link-btn {
-      width: 100%;
-      padding: 1.2rem 1.4rem;
-      border: none;
-      border-radius: 999px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 1.45rem;
-      transition: transform 0.2s ease, background 0.2s ease;
-    }
+        .eyebrow {
+            display: inline-block;
+            max-width: 100%;
+            font-size: clamp(0.68rem, 1.8vw, 0.72rem);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--brass-soft);
+            overflow-wrap: anywhere;
+        }
 
-    button:hover, .link-btn:hover { transform: translateY(-1px); }
+        h1 {
+            margin: 0.9rem 0 0;
+            font-size: clamp(1.35rem, 5vw, 1.6rem);
+            font-weight: 600;
+            line-height: 1.2;
+        }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #042117;
-    }
+        .badge p {
+            margin: 0.9rem 0 0;
+            color: var(--muted);
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
 
-    .btn-secondary {
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
-      border: 0.1rem solid rgba(255,255,255,0.14);
-    }
+        button,
+        .btn {
+            padding: 0.75rem 1.1rem;
+            border: none;
+            border-radius: 0.7rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            max-width: 100%;
+        }
 
-    .btn-primary.loading {
-      opacity: 0.85;
-      pointer-events: none;      position: relative;
-    }
+        button:disabled,
+        .btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
 
-    .btn-primary.loading::after {
-      content: "";
-      position: absolute;
-      right: 1.4rem;
-      top: 50%;
-      width: 1rem;
-      height: 1rem;
-      border: 2px solid rgba(4, 33, 23, 0.25);
-      border-top-color: rgba(4, 33, 23, 0.85);
-      border-radius: 50%;
-      transform: translateY(-50%);
-      animation: spin 0.8s linear infinite;
-    }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brass-soft), var(--brass) 70%);
+            color: #241705;
+            width: 100%;
+            margin-top: 1.6rem;
+        }
 
-    @keyframes spin {
-      0% { transform: translateY(-50%) rotate(0deg); }
-      100% { transform: translateY(-50%) rotate(360deg); }    }
+        .status {
+            margin-top: 1.4rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.6rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-soft);
+            color: var(--muted);
+            font-size: 0.85rem;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+        }
 
-    button:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-    }
+        /* ---------- Painel principal ---------- */
 
-    .status {
-      margin-top: 1.4rem;
-      padding: 1rem 1.2rem;
-      border-radius: 1rem;
-      font-size: 1.35rem;
-      background: rgba(255,255,255,0.04);
-      border: 0.1rem solid rgba(255,255,255,0.08);
-      color: var(--muted);
-    }
+        #painel {
+            display: none;
+            width: 100%;
+            max-width: 60rem;
+            margin: 0 auto;
+        }
 
-    .status--error {
-      color: #ffb5b5;
-      border-color: rgba(255, 91, 91, 0.3);
-      background: rgba(255, 91, 91, 0.08);
-    }
+        .painel-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+            gap: 0.9rem;
+            min-width: 0;
+        }
 
-    .status--success {
-      color: var(--accent);
-      border-color: rgba(0, 255, 169, 0.25);
-      background: rgba(0, 255, 169, 0.08);
-    }
-  </style>
+        .painel-topo > div {
+            min-width: 0;
+            flex: 1 1 12rem;
+        }
+
+        .painel-topo h1 {
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            margin: 0;
+            line-height: 1.25;
+        }
+
+        .painel-topo .muted {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            overflow-wrap: anywhere;
+        }
+
+        #btnSair {
+            flex: 0 0 auto;
+        }
+
+        /* ---------- Abas ---------- */
+
+        .abas {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            width: 100%;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+
+        .aba-btn {
+            flex: 1 1 0;
+            min-width: 6rem;
+            background: transparent;
+            border: 1px solid var(--border-soft);
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .aba-btn.ativa {
+            background: var(--brass);
+            color: #241705;
+            border-color: var(--brass);
+        }
+
+        .painel-secao {
+            display: none;
+            min-width: 0;
+        }
+
+        .painel-secao.ativa {
+            display: block;
+        }
+
+        /* ---------- Cards / formulários ---------- */
+
+        .card {
+            width: 100%;
+            min-width: 0;
+            background: var(--panel);
+            border: 1px solid var(--border-soft);
+            border-radius: 1rem;
+            padding: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 1.25rem;
+        }
+
+        .card h2 {
+            margin: 0 0 1rem;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            line-height: 1.3;
+        }
+
+        .card-hint {
+            color: var(--muted);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            margin: -0.5rem 0 1rem;
+        }
+
+        .campo {
+            margin-bottom: 1rem;
+            min-width: 0;
+        }
+
+        .campo label {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .campo .dica {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 0.35rem;
+            line-height: 1.4;
+        }
+
+        .linha-dupla {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .linha-dupla {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="number"],
+        select,
+        textarea {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            min-height: 44px;
+            padding: 0.7rem 0.9rem;
+            border-radius: 0.6rem;
+            border: 1px solid var(--border-soft);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.25;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 6.5rem;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        input[type="text"],
+        input[type="url"] {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+                linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+            background-position:
+                calc(100% - 1.3rem) center,
+                calc(100% - 0.9rem) center;
+            background-size: 0.45rem 0.45rem;
+            background-repeat: no-repeat;
+            padding-right: 2.4rem;
+        }
+
+        select option {
+            background: #0a140f;
+            color: var(--text);
+        }
+
+        /* ---------- Preview de foto ---------- */
+
+        .preview-foto {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.6rem;
+            border: 1px solid var(--border-soft);
+            border-radius: 0.7rem;
+            min-width: 0;
+        }
+
+        .preview-foto img {
+            flex: 0 0 64px;
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .preview-foto .preview-texto {
+            flex: 1 1 auto;
+            min-width: 0;
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        /* ---------- Seletor de categoria responsivo ---------- */
+
+        .select-nativo {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        .select-custom {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .select-custom-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+
+            width: 100%;
+            min-width: 0;
+            min-height: 44px;
+
+            padding: 0.7rem 0.9rem;
+
+            border: 1px solid var(--border-soft);
+            border-radius: 0.6rem;
+
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+
+            text-align: left;
+            font-size: 16px;
+            font-weight: 400;
+
+            cursor: pointer;
+        }
+
+        .select-custom-trigger:focus-visible {
+            outline: 2px solid var(--brass);
+            outline-offset: 2px;
+        }
+
+        #categoriaValor {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .select-custom-arrow {
+            flex: 0 0 auto;
+            width: 0.55rem;
+            height: 0.55rem;
+            border-right: 2px solid var(--muted);
+            border-bottom: 2px solid var(--muted);
+            transform: rotate(45deg) translateY(-2px);
+            transition: transform 0.15s ease;
+        }
+
+        .select-custom.open .select-custom-arrow {
+            transform: rotate(225deg) translateY(-1px);
+        }
+
+        .select-custom-options {
+            position: absolute;
+            z-index: 1000;
+
+            top: calc(100% + 0.35rem);
+            left: 0;
+
+            width: 100%;
+            max-width: 100%;
+
+            max-height: min(18rem, 45vh);
+
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            padding: 0.35rem;
+
+            border: 1px solid var(--border-soft);
+            border-radius: 0.7rem;
+
+            background: #101f17;
+            box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.45);
+
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(-0.25rem);
+            transition:
+                opacity 0.12s ease,
+                transform 0.12s ease,
+                visibility 0.12s ease;
+        }
+
+        .select-custom.open .select-custom-options {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .select-custom-options button {
+            display: block;
+
+            width: 100%;
+            min-width: 0;
+            min-height: 44px;
+
+            margin: 0;
+            padding: 0.7rem 0.8rem;
+
+            border: 0;
+            border-radius: 0.45rem;
+
+            background: transparent;
+            color: var(--text);
+
+            font-size: 16px;
+            font-weight: 400;
+            text-align: left;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            cursor: pointer;
+        }
+
+        .select-custom-options button:hover,
+        .select-custom-options button:focus-visible {
+            background: rgba(212, 162, 76, 0.12);
+            outline: none;
+        }
+
+        .select-custom-options button[aria-selected="true"] {
+            background: rgba(52, 199, 147, 0.12);
+            color: var(--brass-soft);
+        }
+
+        @media (max-width: 640px) {
+            .select-custom-options {
+                max-height: min(17rem, 42vh);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .select-custom-options {
+                max-height: min(15rem, 40vh);
+            }
+
+            .select-custom-options button {
+                min-height: 42px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .select-custom-options {
+                max-height: min(14rem, 38vh);
+            }
+        }
+
+        /* ---------- Listas ---------- */
+
+        .lista-item {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            width: 100%;
+            min-width: 0;
+            padding: 0.8rem;
+            border: 1px solid var(--border-soft);
+            border-radius: 0.7rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .lista-item img {
+            flex: 0 0 48px;
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .lista-item .info {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .lista-item .titulo {
+            font-weight: 600;
+            font-size: 0.9rem;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .lista-item .sub {
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .btn-remover {
+            flex: 0 0 auto;
+            min-height: 40px;
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .vazio {
+            color: var(--muted);
+            font-size: 0.85rem;
+            padding: 1rem 0;
+            line-height: 1.5;
+        }
+
+        /* ---------- Tablets / telas médias ---------- */
+
+        @media (max-width: 900px) {
+            #painel {
+                max-width: 100%;
+            }
+
+            .painel-topo {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* ---------- Celulares ---------- */
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .badge {
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .painel-topo {
+                align-items: stretch;
+            }
+
+            .painel-topo > div {
+                flex-basis: 100%;
+            }
+
+            #btnSair {
+                width: 100%;
+            }
+
+            .abas {
+                gap: 0.4rem;
+            }
+
+            .aba-btn {
+                padding-inline: 0.6rem;
+                flex-basis: calc(50% - 0.2rem);
+            }
+
+            .card {
+                margin-bottom: 0.9rem;
+            }
+
+            .lista-item {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .lista-item .info {
+                flex: 1 1 calc(100% - 60px);
+            }
+
+            .lista-item .btn-remover {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+
+        /* ---------- Celulares estreitos ---------- */
+
+        @media (max-width: 420px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .badge {
+                border-radius: 1rem;
+                padding: 1.5rem 1rem;
+            }
+
+            .aba-btn {
+                width: 100%;
+                flex-basis: 100%;
+            }
+
+            .card {
+                border-radius: 0.8rem;
+                padding: 0.9rem;
+            }
+
+            .lista-item {
+                gap: 0.7rem;
+                padding: 0.7rem;
+            }
+
+            .lista-item img {
+                flex-basis: 42px;
+                width: 42px;
+                height: 42px;
+            }
+
+            .lista-item .info {
+                flex-basis: calc(100% - 52px);
+            }
+        }
+
+        /* ---------- Celulares muito estreitos ---------- */
+
+        @media (max-width: 360px) {
+            body {
+                padding: 0.35rem;
+            }
+
+            .badge {
+                padding: 1.25rem 0.8rem;
+            }
+
+            .card {
+                padding: 0.75rem;
+            }
+
+            .card h2 {
+                font-size: 0.98rem;
+            }
+
+            button,
+            .btn {
+                padding-inline: 0.75rem;
+            }
+
+            .lista-item .info {
+                flex-basis: calc(100% - 52px);
+            }
+        }
+
+        /* ---------- Alturas pequenas / landscape ---------- */
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .badge {
+                margin-top: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .card {
+                padding-block: 0.9rem;
+            }
+        }
+
+        /* ---------- Preferência de movimento ---------- */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <main class="box">
-    <span class="eyebrow">Painel Admin</span>
-    <h2>Área administrativa</h2>
-    <p>O acesso ao CMS e ao painel do TikTok é feito com Netlify Identity. Nenhuma senha fixa é usada neste fluxo.</p>
 
-    <div class="actions">
-      <button id="btnEntrar" class="btn-primary" type="button">Entrar no painel</button>
-      <a class="link-btn btn-secondary" href="/">Voltar para a home</a>
+    <!-- Tela de login -->
+    <main class="badge" id="access-card">
+        <span class="eyebrow">Meny Mendonça · Painel</span>
+        <h1>Acesso ao painel</h1>
+        <p>Entre com sua conta Netlify para gerenciar momentos e vídeos do TikTok.</p>
+        <button class="btn-primary" id="btnEntrar" type="button">Entrar com Netlify</button>
+        <div id="status" class="status">Aguardando ação de login…</div>
+    </main>
+
+    <!-- Painel logado -->
+    <div id="painel">
+        <div class="painel-topo">
+            <div>
+                <h1>Painel da Meny</h1>
+                <div class="muted" id="usuarioLogado"></div>
+            </div>
+            <button class="btn" id="btnSair"
+                style="background:transparent;border:1px solid var(--border-soft);color:var(--muted);">Sair</button>
+        </div>
+
+        <div class="abas">
+            <button class="aba-btn ativa" data-aba="inicio">Início</button>
+            <button class="aba-btn" data-aba="sobre">Sobre</button>
+            <button class="aba-btn" data-aba="momentos">Momentos</button>
+            <button class="aba-btn" data-aba="tiktok">TikTok</button>
+        </div>
+
+        <!-- Início (seção Home do site) -->
+        <section class="painel-secao ativa" id="secao-inicio">
+            <div class="card">
+                <h2>Textos e foto da página inicial</h2>
+                <p class="card-hint">Isso edita o que aparece na primeira seção do site (banner de topo).</p>
+
+                <form id="formInicio">
+                    <div class="preview-foto">
+                        <img id="inicioPreview" src="assets/images/Home/Home-Image.png" alt="" />
+                        <div class="preview-texto">Foto atual da página inicial. Envie uma nova abaixo só se quiser trocar.</div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="inicioBadge">Frase de destaque (badge acima do título)</label>
+                        <input type="text" id="inicioBadge" placeholder="streaming • música • presença" />
+                    </div>
+
+                    <div class="campo">
+                        <label for="inicioFrases">Frases que digitam sozinhas (uma por linha)</label>
+                        <textarea id="inicioFrases" placeholder="cantora&#10;streaming&#10;mãe"></textarea>
+                        <span class="dica">Cada linha vira uma frase que aparece digitando no "Eu sou ...". Deixe pelo menos uma.</span>
+                    </div>
+
+                    <div class="campo">
+                        <label for="inicioParagrafo1">Parágrafo principal</label>
+                        <textarea id="inicioParagrafo1" placeholder="Com mais de 40 anos vividos..."></textarea>
+                    </div>
+
+                    <div class="campo">
+                        <label for="inicioParagrafo2">Linha de destaque (menor, logo abaixo)</label>
+                        <textarea id="inicioParagrafo2" placeholder="Uma presença acolhedora..."></textarea>
+                    </div>
+
+                    <div class="campo">
+                        <label for="inicioImagem">Trocar foto (opcional)</label>
+                        <input type="file" id="inicioImagem" accept="image/*" />
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="btnSalvarInicio">Salvar página inicial</button>
+                </form>
+                <div class="status" id="statusInicio" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- Sobre -->
+        <section class="painel-secao" id="secao-sobre">
+            <div class="card">
+                <h2>Textos, foto e contadores da seção Sobre</h2>
+                <p class="card-hint">A idade continua calculada automaticamente e não é editável aqui.</p>
+
+                <form id="formSobre">
+                    <div class="preview-foto">
+                        <img id="sobrePreview" src="assets/images/About/About-Image.png" alt="" />
+                        <div class="preview-texto">Foto atual da seção Sobre. Envie uma nova abaixo só se quiser trocar.</div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="sobreTitulo">Título</label>
+                        <input type="text" id="sobreTitulo" placeholder="Meu nome é meny mendonça." />
+                    </div>
+
+                    <div class="campo">
+                        <label for="sobreParagrafo">Texto sobre mim</label>
+                        <textarea id="sobreParagrafo" placeholder="Recifense de coração vibrante..."></textarea>
+                    </div>
+
+                    <div class="linha-dupla">
+                        <div class="campo">
+                            <label for="sobreSexo">Sexo</label>
+                            <input type="text" id="sobreSexo" placeholder="Feminino" />
+                        </div>
+                        <div class="campo">
+                            <label for="sobreIdioma">Idioma</label>
+                            <input type="text" id="sobreIdioma" placeholder="português" />
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="sobreTrabalho">Trabalho</label>
+                        <input type="text" id="sobreTrabalho" placeholder="Streaming, empreendedora" />
+                    </div>
+
+                    <div class="linha-dupla">
+                        <div class="campo">
+                            <label for="contador1Numero">1º contador — número</label>
+                            <input type="number" id="contador1Numero" placeholder="4" />
+                        </div>
+                        <div class="campo">
+                            <label for="contador1Texto">1º contador — texto</label>
+                            <input type="text" id="contador1Texto" placeholder="anos de | Streaming" />
+                        </div>
+                    </div>
+                    <p class="card-hint" style="margin-top:-0.6rem;">Use " | " para quebrar a linha do texto do contador (ex.: "anos de | Streaming").</p>
+
+                    <div class="linha-dupla">
+                        <div class="campo">
+                            <label for="contador2Numero">2º contador — número</label>
+                            <input type="number" id="contador2Numero" placeholder="20" />
+                        </div>
+                        <div class="campo">
+                            <label for="contador2Texto">2º contador — texto</label>
+                            <input type="text" id="contador2Texto" placeholder="anos | cantando" />
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="sobreImagem">Trocar foto (opcional)</label>
+                        <input type="file" id="sobreImagem" accept="image/*" />
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="btnSalvarSobre">Salvar seção Sobre</button>
+                </form>
+                <div class="status" id="statusSobre" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- Momentos -->
+        <section class="painel-secao" id="secao-momentos">
+            <div class="card">
+                <h2>Adicionar momento</h2>
+                <form id="formMomento">
+                    <div class="campo">
+                        <label for="momentoTitulo">Título</label>
+                        <input type="text" id="momentoTitulo" required />
+                    </div>
+                    <div class="campo">
+                        <label for="momentoCategoria">Categoria</label>
+
+                        <!-- Select nativo mantido para compatibilidade com o formulário/JS.
+                             No visual, usamos o seletor customizado abaixo para que a
+                             lista aberta nunca ultrapasse a viewport no celular. -->
+                        <select id="momentoCategoria" class="select-nativo">
+                            <option>família</option>
+                            <option>passeios</option>
+                            <option>lives</option>
+                            <option>inesquecíveis</option>
+                            <option>amigos</option>
+                            <option>viagens</option>
+                            <option>diversos</option>
+                        </select>
+
+                        <div class="select-custom" id="categoriaCustom">
+                            <button
+                                type="button"
+                                class="select-custom-trigger"
+                                id="categoriaTrigger"
+                                aria-haspopup="listbox"
+                                aria-expanded="false"
+                                aria-controls="categoriaOptions">
+                                <span id="categoriaValor">família</span>
+                                <span class="select-custom-arrow" aria-hidden="true"></span>
+                            </button>
+
+                            <div
+                                class="select-custom-options"
+                                id="categoriaOptions"
+                                role="listbox"
+                                aria-label="Categorias">
+                                <button type="button" role="option" data-value="família" aria-selected="true">família</button>
+                                <button type="button" role="option" data-value="passeios">passeios</button>
+                                <button type="button" role="option" data-value="lives">lives</button>
+                                <button type="button" role="option" data-value="inesquecíveis">inesquecíveis</button>
+                                <button type="button" role="option" data-value="amigos">amigos</button>
+                                <button type="button" role="option" data-value="viagens">viagens</button>
+                                <button type="button" role="option" data-value="diversos">diversos</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="campo">
+                        <label for="momentoImagem">Foto</label>
+                        <input type="file" id="momentoImagem" accept="image/*" required />
+                    </div>
+                    <button type="submit" class="btn-primary" id="btnSalvarMomento">Adicionar momento</button>
+                </form>
+                <div class="status" id="statusMomento" style="display:none;"></div>
+            </div>
+
+            <div class="card">
+                <h2>Momentos publicados</h2>
+                <div id="listaMomentos">
+                    <p class="vazio">Carregando…</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TikTok -->
+        <section class="painel-secao" id="secao-tiktok">
+            <div class="card">
+                <h2>Adicionar vídeo do TikTok</h2>
+                <form id="formTiktok">
+                    <div class="campo">
+                        <label for="tiktokUrl">Link do vídeo</label>
+                        <input type="url" id="tiktokUrl" placeholder="https://www.tiktok.com/@meny.menycita/video/..."
+                            required />
+                    </div>
+                    <div class="campo">
+                        <label for="tiktokTitulo">Título (opcional)</label>
+                        <input type="text" id="tiktokTitulo"
+                            placeholder="Deixe em branco pra usar a legenda do vídeo" />
+                    </div>
+                    <button type="submit" class="btn-primary" id="btnSalvarTiktok">Adicionar vídeo</button>
+                </form>
+                <div class="status" id="statusTiktok" style="display:none;"></div>
+            </div>
+
+            <div class="card">
+                <h2>Vídeos publicados</h2>
+                <div id="listaTiktok">
+                    <p class="vazio">Carregando…</p>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <div id="status" class="status">Verificando acesso...</div>
-  </main>
+    <script>
+        (function () {
+            const accessCard = document.getElementById("access-card");
+            const painel = document.getElementById("painel");
+            const statusEl = document.getElementById("status");
+            const btnEntrar = document.getElementById("btnEntrar");
+            const usuarioLogadoEl = document.getElementById("usuarioLogado");
 
-  <script>
-    (function () {
-      const btnEntrar = document.getElementById("btnEntrar");
-      const status = document.getElementById("status");
+            function setStatus(texto) {
+                if (statusEl) statusEl.textContent = texto;
+            }
 
-      function atualizarStatus(texto, tipo) {
-        status.textContent = texto;
-        status.className = "status";
-        if (tipo === "error") status.classList.add("status--error");
-        if (tipo === "success") status.classList.add("status--success");
-      }
+            function abrirLogin() {
+                if (!window.netlifyIdentity) {
+                    setStatus("Widget de login indisponível. Recarregue a página.");
+                    return;
+                }
+                setStatus("Abrindo painel de login…");
+                window.netlifyIdentity.open("login");
+            }
 
-      function setButtonLoading(loading) {
-        if (loading) {
-          btnEntrar.classList.add("loading");
-          btnEntrar.textContent = "Abrindo login...";
-          btnEntrar.disabled = true;
-        } else {
-          btnEntrar.classList.remove("loading");
-          btnEntrar.textContent = "Entrar no painel";
-          btnEntrar.disabled = false;
-        }
-      }
+            btnEntrar.addEventListener("click", abrirLogin);
 
-      function abrirLogin() {
-        if (!window.netlifyIdentity) {
-          atualizarStatus("O widget de autenticação não carregou. Recarregue a página e tente novamente.", "error");
-          return;
-        }
+            document.getElementById("btnSair").addEventListener("click", () => {
+                window.netlifyIdentity.logout();
+            });
 
-        setButtonLoading(true);
-        atualizarStatus("Abrindo a tela de login...", "success");
-        window.netlifyIdentity.open("login");
-      }
+            function mostrarPainel(user) {
+                accessCard.style.display = "none";
+                painel.style.display = "block";
+                usuarioLogadoEl.textContent = user.email || "";
+                carregarConteudo();
+                carregarMomentos();
+                carregarTiktok();
+            }
 
-      if (!window.netlifyIdentity) {
-        atualizarStatus("O widget de autenticação não carregou. Recarregue a página e tente novamente.", "error");
-        return;
-      }
+            function mostrarLogin() {
+                accessCard.style.display = "block";
+                painel.style.display = "none";
+            }
 
-      btnEntrar.addEventListener("click", abrirLogin);
+            if (!window.netlifyIdentity) {
+                setStatus("Widget de login indisponível. Recarregue a página.");
+                return;
+            }
 
-      window.netlifyIdentity.on("init", function (user) {
-        if (user) {
-          setButtonLoading(false);
-          atualizarStatus(`Conectado como ${user.email || "usuário"}. Redirecionando para o CMS...`, "success");
-          window.location.replace("/admin/cms.html");
-        } else {
-          setButtonLoading(false);
-          atualizarStatus("Você ainda não está logado. Clique em Entrar no painel para continuar.", "success");
-        }
-      });
+            window.netlifyIdentity.on("init", (user) => {
+                if (user) mostrarPainel(user);
+                else mostrarLogin();
+            });
 
-      window.netlifyIdentity.on("login", function (user) {
-        setButtonLoading(false);
-        atualizarStatus(`Login realizado com sucesso. Redirecionando...`, "success");
-        window.location.replace("/admin/cms.html");
-      });
+            window.netlifyIdentity.on("login", () => {
+                window.netlifyIdentity.close();
+                mostrarPainel(window.netlifyIdentity.currentUser());
+            });
 
-      window.netlifyIdentity.on("close", function () {
-        setButtonLoading(false);
-        atualizarStatus("Login cancelado. Tente novamente ou feche o popup.", "error");
-      });
+            window.netlifyIdentity.on("logout", mostrarLogin);
 
-      window.netlifyIdentity.on("logout", function () {
-        atualizarStatus("Você saiu do painel.", "success");
-      });
+            window.netlifyIdentity.init();
 
-      window.netlifyIdentity.init();
-    })();
-  </script>
+            // ---------------- Abas ----------------
+            document.querySelectorAll(".aba-btn").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".aba-btn").forEach((b) => b.classList.remove("ativa"));
+                    document.querySelectorAll(".painel-secao").forEach((s) => s.classList.remove("ativa"));
+                    btn.classList.add("ativa");
+                    document.getElementById(`secao-${btn.dataset.aba}`).classList.add("ativa");
+                });
+            });
+
+            // ---------------- Helpers ----------------
+            function escaparHtml(texto) {
+                return String(texto || "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;");
+            }
+
+            async function authFetch(url, opcoes = {}) {
+                const user = window.netlifyIdentity.currentUser();
+                if (!user) throw new Error("Não autenticado");
+                const token = await user.jwt();
+                return fetch(url, {
+                    ...opcoes,
+                    headers: {
+                        ...(opcoes.headers || {}),
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            }
+
+            // Redimensiona e comprime a imagem no navegador antes de enviar —
+            // a API de upload do GitHub tem limite de ~1MB por arquivo, e
+            // fotos de celular costumam passar disso facilmente.
+            function comprimirImagem(file, maxDimensao = 1600, qualidade = 0.82) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    const url = URL.createObjectURL(file);
+                    img.onload = () => {
+                        let { width, height } = img;
+                        if (width > maxDimensao || height > maxDimensao) {
+                            const escala = maxDimensao / Math.max(width, height);
+                            width = Math.round(width * escala);
+                            height = Math.round(height * escala);
+                        }
+                        const canvas = document.createElement("canvas");
+                        canvas.width = width;
+                        canvas.height = height;
+                        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+                        URL.revokeObjectURL(url);
+                        canvas.toBlob(
+                            (blob) => {
+                                const reader = new FileReader();
+                                reader.onload = () => resolve(reader.result.split(",")[1]);
+                                reader.onerror = reject;
+                                reader.readAsDataURL(blob);
+                            },
+                            "image/jpeg",
+                            qualidade
+                        );
+                    };
+                    img.onerror = reject;
+                    img.src = url;
+                });
+            }
+
+            // Envia uma imagem já comprimida para o upload-imagem e devolve a URL final.
+            async function enviarImagem(file) {
+                const base64 = await comprimirImagem(file);
+                const resp = await authFetch("/.netlify/functions/upload-imagem", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nomeArquivo: file.name, conteudoBase64: base64, tipoConteudo: "image/jpeg" }),
+                });
+                const dados = await resp.json();
+                if (!resp.ok || !dados.success) {
+                    throw new Error(dados.error || "Falha ao subir a imagem");
+                }
+                return dados.url;
+            }
+
+            // ---------------- Início e Sobre (conteúdo do site) ----------------
+            let conteudoAtual = { home: {}, about: {} };
+
+            function textoParaLinhas(texto) {
+                return String(texto || "")
+                    .split(/\r?\n/)
+                    .map((l) => l.trim())
+                    .filter(Boolean);
+            }
+
+            function contadorParaCampo(texto) {
+                // "anos de<br />Streaming" -> "anos de | Streaming"
+                return String(texto || "")
+                    .replace(/<br\s*\/?>/gi, " | ")
+                    .replace(/\s*\|\s*/g, " | ")
+                    .trim();
+            }
+
+            function preencherFormInicio() {
+                const home = conteudoAtual.home || {};
+
+                document.getElementById("inicioBadge").value = home.badge || "";
+                document.getElementById("inicioFrases").value = Array.isArray(home.typedStrings)
+                    ? home.typedStrings.join("\n")
+                    : "";
+                document.getElementById("inicioParagrafo1").value = home.paragrafo1 || "";
+                document.getElementById("inicioParagrafo2").value = home.paragrafo2 || "";
+
+                const preview = document.getElementById("inicioPreview");
+                if (home.imagem) preview.src = home.imagem;
+            }
+
+            function preencherFormSobre() {
+                const about = conteudoAtual.about || {};
+                const contadores = Array.isArray(about.contadores) ? about.contadores : [];
+
+                document.getElementById("sobreTitulo").value = about.titulo || "";
+                document.getElementById("sobreParagrafo").value = about.paragrafo || "";
+                document.getElementById("sobreSexo").value = about.sexo || "";
+                document.getElementById("sobreIdioma").value = about.idioma || "";
+                document.getElementById("sobreTrabalho").value = about.trabalho || "";
+
+                document.getElementById("contador1Numero").value = contadores[0]?.numero ?? "";
+                document.getElementById("contador1Texto").value = contadorParaCampo(contadores[0]?.texto);
+                document.getElementById("contador2Numero").value = contadores[1]?.numero ?? "";
+                document.getElementById("contador2Texto").value = contadorParaCampo(contadores[1]?.texto);
+
+                const preview = document.getElementById("sobrePreview");
+                if (about.imagem) preview.src = about.imagem;
+            }
+
+            async function carregarConteudo() {
+                try {
+                    const resp = await fetch("/.netlify/functions/conteudo-api", { cache: "no-store" });
+                    conteudoAtual = await resp.json();
+                } catch (err) {
+                    conteudoAtual = { home: {}, about: {} };
+                }
+                preencherFormInicio();
+                preencherFormSobre();
+            }
+
+            async function salvarConteudo() {
+                const resp = await authFetch("/.netlify/functions/conteudo-api", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(conteudoAtual),
+                });
+                const dados = await resp.json().catch(() => ({}));
+                if (!resp.ok || !dados.success) {
+                    throw new Error(dados.error || `Falha ao salvar (${resp.status})`);
+                }
+            }
+
+            document.getElementById("formInicio").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const statusInicio = document.getElementById("statusInicio");
+                const btn = document.getElementById("btnSalvarInicio");
+                const arquivo = document.getElementById("inicioImagem").files[0];
+
+                btn.disabled = true;
+                statusInicio.style.display = "block";
+                statusInicio.textContent = arquivo ? "Enviando foto…" : "Salvando…";
+
+                try {
+                    let imagemUrl = conteudoAtual.home?.imagem;
+                    if (arquivo) {
+                        imagemUrl = await enviarImagem(arquivo);
+                        statusInicio.textContent = "Foto enviada. Salvando textos…";
+                    }
+
+                    const frases = textoParaLinhas(document.getElementById("inicioFrases").value);
+
+                    conteudoAtual.home = {
+                        ...conteudoAtual.home,
+                        badge: document.getElementById("inicioBadge").value.trim(),
+                        typedStrings: frases.length ? frases : conteudoAtual.home?.typedStrings || [],
+                        paragrafo1: document.getElementById("inicioParagrafo1").value.trim(),
+                        paragrafo2: document.getElementById("inicioParagrafo2").value.trim(),
+                        imagem: imagemUrl,
+                    };
+
+                    await salvarConteudo();
+
+                    statusInicio.textContent = "Página inicial salva!";
+                    document.getElementById("inicioImagem").value = "";
+                    preencherFormInicio();
+                } catch (err) {
+                    statusInicio.textContent = "Erro: " + err.message;
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            document.getElementById("formSobre").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const statusSobre = document.getElementById("statusSobre");
+                const btn = document.getElementById("btnSalvarSobre");
+                const arquivo = document.getElementById("sobreImagem").files[0];
+
+                btn.disabled = true;
+                statusSobre.style.display = "block";
+                statusSobre.textContent = arquivo ? "Enviando foto…" : "Salvando…";
+
+                try {
+                    let imagemUrl = conteudoAtual.about?.imagem;
+                    if (arquivo) {
+                        imagemUrl = await enviarImagem(arquivo);
+                        statusSobre.textContent = "Foto enviada. Salvando textos…";
+                    }
+
+                    const n1 = document.getElementById("contador1Numero").value;
+                    const n2 = document.getElementById("contador2Numero").value;
+
+                    conteudoAtual.about = {
+                        ...conteudoAtual.about,
+                        titulo: document.getElementById("sobreTitulo").value.trim(),
+                        paragrafo: document.getElementById("sobreParagrafo").value.trim(),
+                        sexo: document.getElementById("sobreSexo").value.trim(),
+                        idioma: document.getElementById("sobreIdioma").value.trim(),
+                        trabalho: document.getElementById("sobreTrabalho").value.trim(),
+                        imagem: imagemUrl,
+                        contadores: [
+                            {
+                                numero: n1 === "" ? null : Number(n1),
+                                texto: document.getElementById("contador1Texto").value.trim(),
+                            },
+                            {
+                                numero: n2 === "" ? null : Number(n2),
+                                texto: document.getElementById("contador2Texto").value.trim(),
+                            },
+                        ],
+                    };
+
+                    await salvarConteudo();
+
+                    statusSobre.textContent = "Seção Sobre salva!";
+                    document.getElementById("sobreImagem").value = "";
+                    preencherFormSobre();
+                } catch (err) {
+                    statusSobre.textContent = "Erro: " + err.message;
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            // ---------------- Seletor de categoria customizado ----------------
+            // O <select> original continua existindo e recebe o valor escolhido.
+            // Isso preserva o código existente que usa .value no envio do formulário.
+            const categoriaNative = document.getElementById("momentoCategoria");
+            const categoriaCustom = document.getElementById("categoriaCustom");
+            const categoriaTrigger = document.getElementById("categoriaTrigger");
+            const categoriaValor = document.getElementById("categoriaValor");
+            const categoriaOptions = document.getElementById("categoriaOptions");
+
+            function fecharCategoria() {
+                if (!categoriaCustom) return;
+                categoriaCustom.classList.remove("open");
+                categoriaTrigger.setAttribute("aria-expanded", "false");
+            }
+
+            function abrirCategoria() {
+                if (!categoriaCustom) return;
+                categoriaCustom.classList.add("open");
+                categoriaTrigger.setAttribute("aria-expanded", "true");
+            }
+
+            function atualizarCategoriaVisual(valor) {
+                categoriaValor.textContent = valor;
+
+                categoriaOptions.querySelectorAll('[role="option"]').forEach((opcao) => {
+                    const selecionada = opcao.dataset.value === valor;
+                    opcao.setAttribute("aria-selected", selecionada ? "true" : "false");
+                });
+            }
+
+            categoriaTrigger.addEventListener("click", (event) => {
+                event.preventDefault();
+
+                if (categoriaCustom.classList.contains("open")) {
+                    fecharCategoria();
+                } else {
+                    abrirCategoria();
+                }
+            });
+
+            categoriaOptions.querySelectorAll('[role="option"]').forEach((opcao) => {
+                opcao.addEventListener("click", () => {
+                    const valor = opcao.dataset.value;
+
+                    categoriaNative.value = valor;
+                    atualizarCategoriaVisual(valor);
+
+                    // Dispara change para manter compatibilidade caso outro
+                    // código do projeto esteja observando o select.
+                    categoriaNative.dispatchEvent(new Event("change", { bubbles: true }));
+
+                    fecharCategoria();
+                    categoriaTrigger.focus();
+                });
+            });
+
+            categoriaNative.addEventListener("change", () => {
+                atualizarCategoriaVisual(categoriaNative.value);
+            });
+
+            document.addEventListener("click", (event) => {
+                if (!categoriaCustom.contains(event.target)) {
+                    fecharCategoria();
+                }
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") {
+                    fecharCategoria();
+                    categoriaTrigger.blur();
+                }
+            });
+
+            atualizarCategoriaVisual(categoriaNative.value);
+
+            // ---------------- Momentos ----------------
+            async function carregarMomentos() {
+                const lista = document.getElementById("listaMomentos");
+                try {
+                    const resp = await fetch("/.netlify/functions/momentos-api", { cache: "no-store" });
+                    const dados = await resp.json();
+                    const items = Array.isArray(dados.items) ? dados.items : [];
+
+                    if (!items.length) {
+                        lista.innerHTML = '<p class="vazio">Nenhum momento cadastrado ainda.</p>';
+                        return;
+                    }
+
+                    lista.innerHTML = items.map((item, i) => `
+                        <div class="lista-item">
+                            <img src="${escaparHtml(item.imagem)}" alt="" onerror="this.style.visibility='hidden'" />
+                            <div class="info">
+                                <div class="titulo">${escaparHtml(item.titulo)}</div>
+                                <div class="sub">${escaparHtml(item.categoria)}</div>
+                            </div>
+                            <button class="btn-remover" data-remover-momento="${i}">Remover</button>
+                        </div>
+                    `).join("");
+
+                    lista.querySelectorAll("[data-remover-momento]").forEach((btn) => {
+                        btn.addEventListener("click", () => removerMomento(Number(btn.dataset.removerMomento)));
+                    });
+                } catch (err) {
+                    lista.innerHTML = '<p class="vazio">Não foi possível carregar os momentos.</p>';
+                }
+            }
+
+            async function salvarListaMomentos(items) {
+                const resp = await authFetch("/.netlify/functions/momentos-api", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ items }),
+                });
+                if (!resp.ok) {
+                    const erro = await resp.json().catch(() => ({}));
+                    throw new Error(erro.error || `Falha ao salvar (${resp.status})`);
+                }
+            }
+
+            function extrairChaveDaImagem(url) {
+                try {
+                    const u = new URL(url, window.location.origin);
+                    return u.searchParams.get("chave");
+                } catch {
+                    return null;
+                }
+            }
+
+            async function removerMomento(indice) {
+                if (!confirm("Remover este momento?")) return;
+                try {
+                    const resp = await fetch("/.netlify/functions/momentos-api", { cache: "no-store" });
+                    const dados = await resp.json();
+                    const items = Array.isArray(dados.items) ? dados.items : [];
+                    const removido = items.splice(indice, 1)[0];
+                    await salvarListaMomentos(items);
+
+                    // Limpa a imagem órfã do Blobs — não é crítico se falhar
+                    // (a lista já foi salva sem ela), só evita acúmulo de
+                    // arquivo sem uso.
+                    const chave = removido && extrairChaveDaImagem(removido.imagem);
+                    if (chave) {
+                        authFetch(`/.netlify/functions/imagem-momento?chave=${chave}`, { method: "DELETE" }).catch(() => { });
+                    }
+
+                    carregarMomentos();
+                } catch (err) {
+                    alert("Erro ao remover: " + err.message);
+                }
+            }
+
+            document.getElementById("formMomento").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const statusMomento = document.getElementById("statusMomento");
+                const btn = document.getElementById("btnSalvarMomento");
+                const arquivo = document.getElementById("momentoImagem").files[0];
+
+                if (!arquivo) return;
+
+                btn.disabled = true;
+                statusMomento.style.display = "block";
+                statusMomento.textContent = "Enviando foto…";
+
+                try {
+                    const url = await enviarImagem(arquivo);
+
+                    statusMomento.textContent = "Foto enviada. Salvando momento…";
+
+                    const respAtual = await fetch("/.netlify/functions/momentos-api", { cache: "no-store" });
+                    const dadosAtual = await respAtual.json();
+                    const items = Array.isArray(dadosAtual.items) ? dadosAtual.items : [];
+
+                    items.push({
+                        titulo: document.getElementById("momentoTitulo").value.trim(),
+                        categoria: document.getElementById("momentoCategoria").value,
+                        imagem: url,
+                    });
+
+                    await salvarListaMomentos(items);
+
+                    statusMomento.textContent = "Momento salvo!";
+                    document.getElementById("formMomento").reset();
+                    carregarMomentos();
+                } catch (err) {
+                    statusMomento.textContent = "Erro: " + err.message;
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            // ---------------- TikTok ----------------
+            async function carregarTiktok() {
+                const lista = document.getElementById("listaTiktok");
+                try {
+                    const resp = await fetch("/.netlify/functions/tiktok-manual-api", { cache: "no-store" });
+                    const dados = await resp.json();
+                    const videos = Array.isArray(dados.videos) ? dados.videos : [];
+
+                    if (!videos.length) {
+                        lista.innerHTML = '<p class="vazio">Nenhum vídeo cadastrado ainda.</p>';
+                        return;
+                    }
+
+                    lista.innerHTML = videos.map((v, i) => `
+                        <div class="lista-item">
+                            <div class="info">
+                                <div class="titulo">${escaparHtml(v.titulo || "(sem título — usa a legenda do TikTok)")}</div>
+                                <div class="sub">${escaparHtml(v.url)}</div>
+                            </div>
+                            <button class="btn-remover" data-remover-tiktok="${i}">Remover</button>
+                        </div>
+                    `).join("");
+
+                    lista.querySelectorAll("[data-remover-tiktok]").forEach((btn) => {
+                        btn.addEventListener("click", () => removerTiktok(Number(btn.dataset.removerTiktok)));
+                    });
+                } catch (err) {
+                    lista.innerHTML = '<p class="vazio">Não foi possível carregar os vídeos.</p>';
+                }
+            }
+
+            async function salvarListaTiktok(videos) {
+                const resp = await authFetch("/.netlify/functions/tiktok-manual-api", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ videos }),
+                });
+                const dados = await resp.json().catch(() => ({}));
+                if (!resp.ok || !dados.success) {
+                    throw new Error(dados.error || `Falha ao salvar (${resp.status})`);
+                }
+            }
+
+            async function removerTiktok(indice) {
+                if (!confirm("Remover este vídeo?")) return;
+                try {
+                    const resp = await fetch("/.netlify/functions/tiktok-manual-api", { cache: "no-store" });
+                    const dados = await resp.json();
+                    const videos = Array.isArray(dados.videos) ? dados.videos : [];
+                    videos.splice(indice, 1);
+                    await salvarListaTiktok(videos);
+                    carregarTiktok();
+                } catch (err) {
+                    alert("Erro ao remover: " + err.message);
+                }
+            }
+
+            document.getElementById("formTiktok").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const statusTiktok = document.getElementById("statusTiktok");
+                const btn = document.getElementById("btnSalvarTiktok");
+
+                btn.disabled = true;
+                statusTiktok.style.display = "block";
+                statusTiktok.textContent = "Salvando…";
+
+                try {
+                    const resp = await fetch("/.netlify/functions/tiktok-manual-api", { cache: "no-store" });
+                    const dados = await resp.json();
+                    const videos = Array.isArray(dados.videos) ? dados.videos : [];
+
+                    videos.push({
+                        url: document.getElementById("tiktokUrl").value.trim(),
+                        titulo: document.getElementById("tiktokTitulo").value.trim(),
+                    });
+
+                    await salvarListaTiktok(videos);
+
+                    statusTiktok.textContent = "Vídeo salvo!";
+                    document.getElementById("formTiktok").reset();
+                    carregarTiktok();
+                } catch (err) {
+                    statusTiktok.textContent = "Erro: " + err.message;
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+        })();
+    </script>
+
 </body>
+
 </html>

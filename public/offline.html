@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Você está offline — Meny Mendonça</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #0a140f;
+      color: #f3efe3;
+      padding: 2rem;
+      text-align: center;
+    }
+    .card { max-width: 26rem; }
+    img { width: 4rem; height: 4rem; margin-bottom: 1.5rem; border-radius: 50%; }
+    h1 { font-size: 1.4rem; margin: 0 0 0.75rem; }
+    p { color: #93a89b; line-height: 1.6; margin: 0 0 1.5rem; }
+    button {
+      background: #d4a24c;
+      color: #241705;
+      border: none;
+      padding: 0.85rem 1.6rem;
+      border-radius: 0.7rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(1.05); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="/assets/images/logo.png" alt="Meny Mendonça" onerror="this.style.display='none'" />
+    <h1>Você está sem conexão</h1>
+    <p>Não foi possível carregar essa página agora. Assim que a internet voltar, é só tentar de novo — lives, vídeos e agenda precisam de conexão pra atualizar.</p>
+    <button onclick="location.reload()">Tentar de novo</button>
+  </div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -23,7 +23,14 @@
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0a140f">
-    <link rel="apple-touch-icon" href="/assets/images/icons/icon-192.png">
+
+    <!-- iOS/Safari precisa dessas tags além do manifest.json — sem elas,
+         o site abre dentro do Safari (com barra de endereço) mesmo depois
+         de adicionado à Tela de Início, em vez de em tela cheia. -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Meny">
+    <link rel="apple-touch-icon" href="/assets/images/icons/icon-180.png">
     <script>
         // Registra o Service Worker só depois da página carregar, pra não
         // competir por rede com os recursos principais. Falha silenciosa
@@ -41,7 +48,9 @@
     <!-- Netlify Identity (necessário para exibir/ocultar o link de Login no menu) -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
-    <!-- Font-Awesome CSS (carregado apenas via CDN — removida a duplicata local) -->
+    <!-- Font-Awesome CSS -->
+    <link rel="stylesheet" href="assets/vendors/font-awesome/css/all.min.css" />
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <!-- Swiper CSS -->
@@ -59,8 +68,15 @@
 
     <!-- calendario -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales-all.global.min.js"></script>
-  
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales-all.global.min.js"></script>
+
+
+
+    <style>
+        .admin-link {
+            display: inline-block;
+        }
+    </style>
 
 </head>
 
@@ -91,9 +107,10 @@
             <a href="#social-spotlight">ao vivo</a>
             <a href="#about">Sobre</a>
             <a href="#portfolio">momentos</a>
-            <a href="#blog">destaques</a>
+            <a href="#blog">blog</a>
             <a href="#agenda">eventos</a>
             <a href="#contact">Redes Sociais</a>
+            <a href="#" id="btnLogin" class="admin-link">Entrar</a>
         </nav>
 
         <!-- Menubar -->
@@ -111,22 +128,20 @@
 
             <div class="content">
                 <div class="text">
-                    <span class="hero-badge" id="home-badge">streaming • música • presença</span>
+                    <span class="hero-badge">streaming • música • presença</span>
                     <h2>olá!</h2>
                     <h1>Eu sou <span class="typing-frame"><span class="typing-text"></span></span></h1>
-                    <p id="home-paragrafo1">Com mais de 40 anos vividos, encantando as pessoas com a minha voz nos
-                        momentos, dedico-me
+                    <p>Com mais de 40 anos vividos, encantando as pessoas com a minha voz nos momentos, dedico-me
                         também ao streaming há quatro anos, onde transformo transmissões em momentos de pura alegria
                         para o público.</p>
-                    <p class="hero-line" id="home-paragrafo2">Uma presença acolhedora, voz marcante e conteúdo pensado
-                        para aproximar
+                    <p class="hero-line">Uma presença acolhedora, voz marcante e conteúdo pensado para aproximar
                         pessoas.</p>
                     <a href="#about" class="btn">sobre mim <i class="fas fa-user"></i></a>
                 </div>
             </div>
 
             <div class="image">
-                <img src="assets/images/Home/Home-Image.png" alt="Home-Image" width="440" height="440" id="home-imagem">
+                <img src="assets/images/Home/Home-Image.png" alt="Home-Image">
             </div>
 
         </div>
@@ -192,15 +207,13 @@
         <div class="box-container">
 
             <div class="image">
-                <img src="assets/images/About/About-Image.png" alt="Foto de Meny Mendonça" loading="lazy" width="320"
-                    height="400" id="about-imagem" />
+                <img src="assets/images/About/About-Image.png" alt="Foto de Meny Mendonça" loading="lazy" />
             </div>
 
             <div class="content">
 
-                <h2 id="about-titulo">Meu nome é meny mendonça.</h2>
-                <p id="about-paragrafo">Recifense de coração vibrante, há mais de 20 anos transformo sonhos em realidade
-                    como empreendedora e
+                <h2>Meu nome é meny mendonça.</h2>
+                <p>Recifense de coração vibrante, há mais de 20 anos transformo sonhos em realidade como empreendedora e
                     encantando as pessoas com a minha voz nos momentos vagos. Mãe dedicada e apaixonada pela vida,
                     encontrei no streaming - onde estou há mais 4 anos - uma nova forma de espalhar leveza. Minha
                     missão?
@@ -211,21 +224,21 @@
 
                     <div class="info">
                         <h4>idade: <span id="idade"></span></h4>
-                        <h4>Sexo: <span id="about-sexo">Feminino</span></h4>
-                        <h4>Idioma: <span id="about-idioma">português</span></h4>
-                        <h4>Trabalho: <span id="about-trabalho">Streaming, empreendedora</span></h4>
+                        <h4>Sexo: <span>Feminino</span></h4>
+                        <h4>Idioma: <span>português</span></h4>
+                        <h4>Trabalho: <span>Streaming, empreendedora</span></h4>
                     </div>
 
                     <div class="counting">
 
                         <div class="box">
-                            <h1 class="count" data-count="4" id="about-contador1-numero">4+</h1>
-                            <h3 id="about-contador1-texto">anos de<br /> Streaming </h3>
+                            <h1 class="count" data-count="4">4+</h1>
+                            <h3>anos de<br /> Streaming </h3>
                         </div>
 
                         <div class="box">
-                            <h1 class="count" data-count="20" id="about-contador2-numero">20+</h1>
-                            <h3 id="about-contador2-texto">anos<br />cantando</h3>
+                            <h1 class="count" data-count="20">20+</h1>
+                            <h3>anos<br />cantando</h3>
                         </div>
 
                     </div>
@@ -251,22 +264,14 @@
         <div class="gallery">
 
             <ul class="controls">
-                <li class="button"><button type="button" class="btn active" data-filter="all"
-                        aria-pressed="true">Todos</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="família"
-                        aria-pressed="false">família</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="passeios"
-                        aria-pressed="false">passeio</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="lives"
-                        aria-pressed="false">lives</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="amigos"
-                        aria-pressed="false">amigos</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="inesquecíveis"
-                        aria-pressed="false">inesquecíveis</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="viagens"
-                        aria-pressed="false">viagens</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="diversos"
-                        aria-pressed="false">diversos</button></li>
+                <li class="button btn active" data-filter="all">Todos</li>
+                <li class="button btn" data-filter="família">família</li>
+                <li class="button btn" data-filter="passeio">passeios</li>
+                <li class="button btn" data-filter="lives">lives</li>
+                <li class="button btn" data-filter="amigos">amigos</li>
+                <li class="button btn" data-filter="inesquecíveis">inesquecíveis</li>
+                <li class="button btn" data-filter="viagens">viagens</li>
+                <li class="button btn" data-filter="diversos">diversos</li>
             </ul>
 
             <div class="box-container" id="portfolio-container">
@@ -284,7 +289,7 @@
     <section class="blog" id="blog">
 
         <div class="heading">
-            <h2>meus <span>destaques</span></h2>
+            <h2>meus <span>conteudos</span></h2>
             <p class="section-lead">Atualizações pensadas para levar o público do blog para o TikTok e o YouTube.</p>
         </div>
 
@@ -298,8 +303,8 @@
                                 <span class="live-badge__dot"></span> AO VIVO
                             </span>
                         </div>
-                        <h3>vídeos <br /> curtos</h3>
-                        <p id="tiktok-panel-desc">Destaques TikTok.</p>
+                        <h3>cortes curtos e virais</h3>
+                        <p id="tiktok-panel-desc">Posts rápidos com bastidores, lives e chamadas para ação.</p>
                     </div>
 
                     <a class="btn social-panel__btn" id="tiktok-panel-cta" target="_blank" rel="noopener noreferrer"
@@ -318,11 +323,9 @@
             <article class="social-panel social-panel--youtube">
                 <div class="social-panel__header">
                     <div>
-                        <div class="platform-tag-row">
-                            <span class="platform-tag platform-tag--youtube">YouTube</span>
-                        </div>
-                        <h3>vídeos <br /> completos</h3>
-                        <p>Destaques YouTube.</p>
+                        <span class="platform-tag platform-tag--youtube">YouTube</span>
+                        <h3>vídeos completos e compilados</h3>
+                        <p>Espaço ideal para conteúdos mais longos, séries e vídeos fixos.</p>
                     </div>
 
                     <a class="btn social-panel__btn" target="_blank" rel="noopener noreferrer"
@@ -348,7 +351,7 @@
     <section class="agenda" id="agenda">
 
         <div class="heading">
-            <h2 id="tituloSite">meus <span>eventos</span></h2>
+            <h2 id="tituloSite">minha <span>agenda</span></h2>
             <p class="section-lead">Veja os próximos compromissos, transmissões e datas importantes em um calendário
                 mais fácil de acompanhar.</p>
         </div>
@@ -472,9 +475,7 @@
         </div>
 
         <div class="content">
-            <p>desenvolvido por <span>FSO</span> | todos os direitos reservados
-                <a href="#" id="btnLogin" class="admin-link-footer">admin</a>
-            </p>
+            <p>desenvolvido por <span>FSO</span> | todos os direitos reservados</p>
 
             <p class="visit-counter">
                 <i class="fas fa-eye"></i> visitas: <strong id="contador-visitas">...</strong>
@@ -510,101 +511,6 @@
         })();
     </script>
 
-    <!-- Conteúdo dinâmico das seções Home e Sobre (textos, fotos e contadores) -->
-    <script>
-        // Expomos uma Promise global (em vez de só rodar um IIFE solto)
-        // porque o script do Typed.js, mais abaixo, precisa esperar essa
-        // busca terminar antes de decidir quais frases digitar — assim
-        // evitamos condição de corrida entre "conteúdo padrão do HTML" e
-        // "conteúdo vindo do painel admin".
-        window.MenyConteudoPromise = (async function () {
-            const padrao = {
-                home: { typedStrings: ["cantora", "streaming ", "mãe"] },
-                about: {},
-            };
-
-            try {
-                const resp = await fetch("/.netlify/functions/conteudo-api", { cache: "no-store" });
-                if (!resp.ok) return padrao;
-
-                const dados = await resp.json();
-                if (!dados) return padrao;
-
-                const home = dados.home || {};
-                const about = dados.about || {};
-
-                // ---------- Home ----------
-                const badgeEl = document.getElementById("home-badge");
-                if (badgeEl && home.badge) badgeEl.textContent = home.badge;
-
-                const p1El = document.getElementById("home-paragrafo1");
-                if (p1El && home.paragrafo1) p1El.textContent = home.paragrafo1;
-
-                const p2El = document.getElementById("home-paragrafo2");
-                if (p2El && home.paragrafo2) p2El.textContent = home.paragrafo2;
-
-                const homeImgEl = document.getElementById("home-imagem");
-                if (homeImgEl && home.imagem) homeImgEl.src = home.imagem;
-
-                // ---------- About ----------
-                const aboutTituloEl = document.getElementById("about-titulo");
-                if (aboutTituloEl && about.titulo) aboutTituloEl.textContent = about.titulo;
-
-                const aboutParagrafoEl = document.getElementById("about-paragrafo");
-                if (aboutParagrafoEl && about.paragrafo) aboutParagrafoEl.textContent = about.paragrafo;
-
-                const aboutImgEl = document.getElementById("about-imagem");
-                if (aboutImgEl && about.imagem) aboutImgEl.src = about.imagem;
-
-                const sexoEl = document.getElementById("about-sexo");
-                if (sexoEl && about.sexo) sexoEl.textContent = about.sexo;
-
-                const idiomaEl = document.getElementById("about-idioma");
-                if (idiomaEl && about.idioma) idiomaEl.textContent = about.idioma;
-
-                const trabalhoEl = document.getElementById("about-trabalho");
-                if (trabalhoEl && about.trabalho) trabalhoEl.textContent = about.trabalho;
-
-                // Os contadores usam "|" como separador de quebra de linha
-                // (definido no painel admin), convertido aqui para <br/>.
-                const contadores = Array.isArray(about.contadores) ? about.contadores : [];
-
-                [1, 2].forEach((n, i) => {
-                    const c = contadores[i];
-                    if (!c) return;
-
-                    const numEl = document.getElementById(`about-contador${n}-numero`);
-                    const txtEl = document.getElementById(`about-contador${n}-texto`);
-
-                    if (numEl && c.numero != null && c.numero !== "") {
-                        numEl.dataset.count = c.numero;
-                        numEl.textContent = c.numero + "+";
-                    }
-
-                    if (txtEl && c.texto) {
-                        txtEl.innerHTML = String(c.texto)
-                            .split("|")
-                            .map((parte) => parte.trim())
-                            .join("<br />");
-                    }
-                });
-
-                return {
-                    home: {
-                        typedStrings:
-                            Array.isArray(home.typedStrings) && home.typedStrings.length
-                                ? home.typedStrings
-                                : padrao.home.typedStrings,
-                    },
-                    about,
-                };
-            } catch (err) {
-                console.warn("Conteúdo dinâmico indisponível, usando textos padrão do HTML:", err);
-                return padrao;
-            }
-        })();
-    </script>
-
 
 
     <!-- JQuery -->
@@ -625,39 +531,19 @@
     <!-- Custom Script File -->
     <script src="assets/js/script.js"></script>
     <script src="assets/js/scroll-spy.js"></script>
+    <script src="assets/js/counter-up.js"></script>
     <script src="assets/js/blog.js"></script>
-
-    <!-- counter-up.js só é carregado depois que os data-count dos
-         contadores já foram atualizados pelo conteúdo dinâmico (Sobre),
-         pra ele nunca ler o número antigo que vinha hardcoded no HTML. -->
-    <script>
-        window.MenyConteudoPromise.then(() => {
-            const s = document.createElement("script");
-            s.src = "assets/js/counter-up.js";
-            document.body.appendChild(s);
-        });
-    </script>
 
     <!---------------- Custom Script ---------------->
 
     <!-- Typed Script -->
     <script>
-        // Espera o conteúdo dinâmico (se houver) antes de decidir quais
-        // frases digitar, pra não iniciar com o array padrão e depois
-        // trocar no meio da digitação.
-        (async function () {
-            const dados = await window.MenyConteudoPromise;
-            const strings =
-                dados && dados.home && Array.isArray(dados.home.typedStrings) && dados.home.typedStrings.length
-                    ? dados.home.typedStrings
-                    : ['cantora', 'streaming ', 'mãe'];
+        var typed = new Typed('.typing-text', {
 
-            new Typed('.typing-text', {
-                strings,
-                typeSpeed: 120,
-                loop: true
-            });
-        })();
+            strings: ['cantora', 'streaming ', 'mãe'],
+            typeSpeed: 120,
+            loop: true
+        });
     </script>
 
     <!-- agenda Script -->
@@ -672,13 +558,11 @@
                 return;
             }
 
-            const isMobile = window.matchMedia("(max-width: 600px)").matches;
-
             const calendar = new FullCalendar.Calendar(
                 calendarEl,
                 {
                     locale: "pt-br",
-                    initialView: isMobile ? "listWeek" : "dayGridMonth",
+                    initialView: "dayGridMonth",
                     firstDay: 0,
                     height: "auto",
 
@@ -686,23 +570,13 @@
                         today: "Hoje",
                         month: "Mês",
                         week: "Semana",
-                        day: "Dia",
-                        list: "Lista"
+                        day: "Dia"
                     },
 
                     headerToolbar: {
                         left: "prev,next today",
                         center: "title",
-                        right: isMobile
-                            ? "listWeek,dayGridMonth"
-                            : "dayGridMonth,timeGridWeek,timeGridDay"
-                    },
-
-                    windowResize(view) {
-                        const mobileNow = window.matchMedia("(max-width: 600px)").matches;
-                        if (mobileNow && view.view.type !== "listWeek" && view.view.type !== "timeGridDay") {
-                            calendar.changeView("listWeek");
-                        }
+                        right: "dayGridMonth,timeGridWeek,timeGridDay"
                     },
 
                     dayHeaderFormat: { weekday: "short" },

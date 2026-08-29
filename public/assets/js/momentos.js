@@ -33,11 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const container = document.getElementById("portfolio-container");
 
-    // Caminho absoluto (com "/" inicial): garante que o fetch busque sempre
-    // a partir da raiz do site, independente de essa galeria estar embutida
-    // em "/", "/momentos/" ou qualquer outra rota. "no-store" evita servir
-    // uma versão em cache do JSON logo após uma edição no CMS.
-    fetch("/assets/data/momentos.json", { cache: "no-store" })
+    // Vem da API (Netlify Blobs) agora, não mais de um JSON gravado via
+    // git — atualiza na hora, sem depender de deploy.
+    fetch("/.netlify/functions/momentos-api", { cache: "no-store" })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`momentos.json respondeu ${response.status}`);
@@ -73,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="content">
                         <h4>${escaparHtml(item.titulo)}</h4>
                         <p>${escaparHtml(item.categoria)}</p>
-                        <a href="${escaparHtml(item.imagem)}" class="view-btn">
+                        <a href="${escaparHtml(item.imagem)}" class="view-btn" aria-label="Ampliar imagem: ${escaparHtml(item.titulo)}">
                             <i class="fas fa-search-plus"></i>
                         </a>
                     </div>
@@ -95,7 +93,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             // ✅ botão ativo
-            const buttons = document.querySelectorAll('.controls .button');
+            // Seleciona o <button> real dentro de cada <li class="button">
+            // (estrutura trocada no HTML para permitir foco/ativação via
+            // teclado). O <li> continua existindo só como item de lista.
+            const buttons = document.querySelectorAll('.controls .button .btn');
 
             buttons.forEach(btn => {
                 btn.addEventListener('click', function () {
@@ -106,19 +107,46 @@ document.addEventListener("DOMContentLoaded", function () {
                         return;
                     }
 
-                    buttons.forEach(b => b.classList.remove('active'));
+                    buttons.forEach(b => {
+                        b.classList.remove('active');
+                        // Os botões de filtro viraram <button> reais (ver
+                        // index.html) para funcionar com teclado (Tab +
+                        // Enter/Espaço). aria-pressed comunica o estado
+                        // "ativo" para leitores de tela, já que a classe
+                        // .active sozinha é só visual.
+                        b.setAttribute('aria-pressed', 'false');
+                    });
                     this.classList.add('active');
+                    this.setAttribute('aria-pressed', 'true');
 
                     // normaliza também o valor do data-filter, por segurança
                     // (ex.: ".familia" continua ".familia", mas evita problemas
                     // se algum dia o HTML vier com acento/maiúscula)
                     const filtroBruto = this.getAttribute('data-filter');
+
+                    // Guarda defensiva: se por algum motivo o elemento clicado
+                    // não tiver data-filter (ex.: HTML e JS fora de sincronia
+                    // após um deploy parcial, ou cache de navegador servindo
+                    // uma versão antiga de um dos dois arquivos), evita o
+                    // TypeError "Cannot read properties of null" e avisa no
+                    // console em vez de quebrar a página.
+                    if (!filtroBruto) {
+                        console.warn(
+                            "Filtro de portfólio: elemento clicado não tem data-filter.",
+                            this
+                        );
+                        return;
+                    }
+
                     const filtro = filtroBruto === 'all'
                         ? 'all'
                         : '.' + normalizarCategoria(filtroBruto.replace('.', ''));
 
-                    mixer.filter(filtro).catch(() => {
-                        // engole rejeições de fila cheia em vez de quebrar o app
+                    mixer.filter(filtro).catch((erro) => {
+                        // Fila cheia (comportamento esperado, ver queueLimit acima)
+                        // não deveria travar a UI; qualquer outro erro (ex.:
+                        // seletor inválido) é logado para não passar em silêncio.
+                        console.warn("Filtro de portfólio não aplicado:", erro);
                     });
                 });
             });

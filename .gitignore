@@ -1,6 +1,8 @@
 # Local Netlify folder
 .netlify
 .env
+.env.*
+!.env.example
 .vscode
 
 # Build / local generated files

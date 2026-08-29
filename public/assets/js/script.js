@@ -14,27 +14,25 @@ $(document).ready(function(){
   });
 
   /*--------------- Scroll-Top ---------------*/
-  $(window).on('scroll',function(){
+  $(window).on('scroll', function () {
+    const scrollTop = $(this).scrollTop();
     
     $('#menu-btn').removeClass('fa-times');
     $('.navbar').removeClass('active');
 
     // STICKY HEADER
-    if($(window).scrollTop() > 0){
+    if(scrollTop > 0){
       $(".header").addClass("sticky");
     }else{
       $(".header").removeClass("sticky");
     }
 
-    $(window).scroll(function () {
-      if ($(this).scrollTop() > 100) {
-        $('.scroll-top').fadeIn();
-      } else {
-        $('.scroll-top').fadeOut();
-      }
-    });
+    if (scrollTop > 100) {
+      $('.scroll-top').fadeIn();
+    } else {
+      $('.scroll-top').fadeOut();
+    }
 
   });
 
 });
-

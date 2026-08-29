@@ -23,6 +23,34 @@ function isUrlTikTok(url) {
   return /tiktok\.com|v[mt]\.tiktok\.com/i.test(url || "");
 }
 
+// Posts de "foto" do TikTok (carrossel de imagens, não vídeo) usam
+// /photo/ na URL em vez de /video/. O endpoint de oEmbed do TikTok não
+// suporta esse formato e sempre responde 400 — confirmado em produção.
+// Sem essa checagem, cada post de foto gerava uma chamada garantida-pra-
+// falhar (função + TikTok), poluindo o console sem nenhum benefício.
+function isFotoTikTok(url) {
+  return /\/photo\//i.test(url || "");
+}
+
+// O CDN do TikTok (tiktokcdn.com) bloqueia hotlink baseado no cabeçalho
+// Referer quando o navegador carrega a imagem direto de outro domínio —
+// confirmado em produção (erro 403). Passar pela function-proxy
+// (tiktok-thumbnail.js) resolve isso, porque a busca acontece no
+// servidor, sem o Referer do navegador do visitante.
+function resolverThumbnail(url) {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    if (/tiktokcdn/i.test(u.hostname)) {
+      return `/.netlify/functions/tiktok-thumbnail?url=${encodeURIComponent(url)}`;
+    }
+  } catch {
+    // Não é uma URL absoluta (provavelmente já é um caminho local, tipo o
+    // fallback) — usa como está.
+  }
+  return url;
+}
+
 function normalizarUrlTikTok(url) {
   return (url || "").trim().split("?")[0];
 }
@@ -90,20 +118,27 @@ function renderizarSlides(container, posts, fallbackConfig) {
     const description = truncarTexto(limparTexto(post.description || post.content || ""), 160);
     const platformClass = (post.platform || fallbackConfig.platform).toLowerCase().replace(/\s+/g, "-");
     const thumbnail = post.thumbnail && post.thumbnail !== ""
-      ? post.thumbnail
+      ? resolverThumbnail(post.thumbnail)
       : fallbackConfig.fallbackImage;
 
     return `
       <div class="swiper-slide blog-item blog-item--${platformClass}">
         <div class="image">
-          <img src="${escaparHtml(thumbnail)}" alt="${escaparHtml(post.platform || fallbackConfig.platform)}" loading="lazy" />
+          <img
+            src="${escaparHtml(thumbnail)}"
+            data-fallback="${escaparHtml(fallbackConfig.fallbackImage)}"
+            onerror="this.onerror=null; this.src=this.dataset.fallback;"
+            alt="${escaparHtml(post.platform || fallbackConfig.platform)}"
+            loading="lazy"
+          />
         </div>
 
         <div class="content">
           <div class="intro">
             <h5><i class="fas fa-calendar-alt"></i><span>${date}</span></h5>
+             ${post.author ? `<h5><i class="fas fa-at"></i><span>${escaparHtml(post.author)}</span></h5>` : ""}
             <h5><i class="fas fa-user"></i><span>${escaparHtml(post.platform || fallbackConfig.platform)}</span></h5>
-            ${post.author ? `<h5><i class="fas fa-at"></i><span>${escaparHtml(post.author)}</span></h5>` : ""}
+           
           </div>
 
           <a class="main-heading" target="_blank" rel="noopener noreferrer" href="${escaparHtml(post.url)}">
@@ -171,12 +206,7 @@ function normalizarPostTikTok(item) {
 
 async function carregarTikTokManual() {
   try {
-    // Precisa bater exatamente com o FILE_PATH usado pela function de
-    // salvamento (netlify/functions/salvar-tiktok.js ou equivalente):
-    // "assets/data/tiktok-manual.json". Esse arquivo NÃO fica na raiz
-    // publicada — buscar "/tiktok-manual.json" sempre retorna 404/JSON
-    // antigo, porque é um arquivo diferente do que a function grava.
-    const response = await fetch("/assets/data/tiktok-manual.json", { cache: "no-store" });
+    const response = await fetch("/.netlify/functions/tiktok-manual-api", { cache: "no-store" });
     if (!response.ok) return [];
 
     const data = await response.json().catch(() => ({}));
@@ -227,6 +257,11 @@ async function enriquecerTikTok(posts) {
         return post;
       }
 
+      // Posts de foto não têm oEmbed — nem tenta, evita erro 400 garantido.
+      if (isFotoTikTok(post.url)) {
+        return post;
+      }
+
       const meta = await buscarMetaTikTok(post.url);
       if (!meta) return post;
 
@@ -238,7 +273,7 @@ async function enriquecerTikTok(posts) {
         title: faltaTitulo ? (extrairTituloLimpo(meta.title) || post.title) : post.title,
         thumbnail: post.thumbnail || meta.thumbnail,
         description: post.description || meta.title || "",
-        author: post.author || (meta.author ? `@${meta.author}` : ""),
+        author: post.author || (meta.author ? `${meta.author}` : ""),
       };
     })
   );
@@ -282,7 +317,7 @@ async function carregarBlog() {
     emptyTitle: "Ainda não há posts de TikTok carregados.",
     ctaLabel: "abrir perfil",
     ctaUrl: "https://www.tiktok.com/@meny.menycita",
-    fallbackImage: "assets/images/Blogs/blog-1.png",
+    fallbackImage: "assets/images/Blogs/tiktok.jpg",
   };
 
   const configYouTube = {
@@ -290,7 +325,7 @@ async function carregarBlog() {
     emptyTitle: "Ainda não há vídeos do YouTube carregados.",
     ctaLabel: "abrir canal",
     ctaUrl: "https://www.youtube.com/@menymendonca4269",
-    fallbackImage: "assets/images/Blogs/blog-2.png",
+    fallbackImage: "assets/images/Blogs/youtube.jpg",
   };
 
   const containerTikTok = document.getElementById("blog-tiktok-dinamico");
@@ -298,15 +333,14 @@ async function carregarBlog() {
 
   try {
     const [youtubeResponse, tiktokFeedResponse, manualTikTok] = await Promise.all([
-      // blog.json agora só tem YouTube (TikTok ganhou arquivo próprio —
-      // ver assets/data/tiktok-feed.json abaixo). Isso reflete os dois
-      // carrosséis serem independentes hoje, diferente da versão antiga
-      // em que os dois vinham juntos do mesmo blog.json.
-      fetch("/blog.json", { cache: "no-store" }).catch(() => ({ ok: false })),
-      // TikTok via RSS + manual, já mesclado no build.
-      fetch("/assets/data/tiktok-feed.json", { cache: "no-store" }).catch(() => ({ ok: false })),
+      // Antes: fetch("/blog.json"). Agora vem da API (Netlify Blobs),
+      // atualizada por uma função agendada a cada hora — sem depender
+      // de deploy pra refletir vídeo novo.
+      fetch("/.netlify/functions/feeds-api?platform=youtube", { cache: "no-store" }).catch(() => ({ ok: false })),
+      fetch("/.netlify/functions/feeds-api?platform=tiktok", { cache: "no-store" }).catch(() => ({ ok: false })),
       // TikTok manual, direto do CMS, sempre ao vivo — garante que um
-      // vídeo recém-salvo apareça na hora, mesmo antes do próximo build.
+      // vídeo recém-salvo apareça na hora, mesmo antes da próxima
+      // execução da função agendada.
       carregarTikTokManual(),
     ]);
 
@@ -374,8 +408,8 @@ function iniciarStatusLive() {
   };
 
   const textosBlog = {
-    normal: "Posts rápidos com bastidores, lives e chamadas para ação.",
-    live: "🔴 AO VIVO AGORA — clique e assista!"
+    normal: "Destaque do TikTok.",
+    live: "🔴 AO VIVO AGORA!"
   };
 
   function aplicarStatus(online) {

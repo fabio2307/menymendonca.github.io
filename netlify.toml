@@ -1,6 +1,8 @@
 [build]
-command = "npm run build"
 publish = "public"
+
+[functions."feeds-update"]
+  schedule = "@hourly"
 
 [[redirects]]
 from = "/admin"
