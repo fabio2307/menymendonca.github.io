@@ -20,6 +20,7 @@
 //       busca pública sem chave, gera o link da PÁGINA DE BUSCA da música
 //       (o painel avisa quais são, para trocar pelo link exato se quiser).
 
+const { adminLogado } = require("../lib/auth");
 const HEADERS = { "Content-Type": "application/json", "Cache-Control": "no-store" };
 const resposta = (statusCode, corpo) => ({ statusCode, headers: HEADERS, body: JSON.stringify(corpo) });
 const UA = { "User-Agent": "meny-site/1.0 (painel admin)" };
@@ -206,7 +207,7 @@ async function buscaPropria(url) {
 }
 
 exports.handler = async function (event, context) {
-    const user = context.clientContext && context.clientContext.user;
+    const user = adminLogado(context);
     if (!user) return resposta(401, { error: "Não autenticado" });
 
     const url = String((event.queryStringParameters && event.queryStringParameters.url) || "").trim();

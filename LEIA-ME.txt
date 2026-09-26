@@ -12,12 +12,19 @@ public/                     -> o que o Netlify publica (netlify.toml: publish = 
                                Links antigos (#about, #agenda, #contact, #portfolio, #blog)
                                continuam funcionando.
   admin.html                -> painel admin (Netlify Identity). Abas: Início, Sobre
-                               (com data de nascimento), Momentos, TikTok, Músicas, Aparência
+                               (com data de nascimento), Momentos, TikTok, Músicas, Redes sociais,
+                               Agenda, Aparência, Curtidas
   offline.html, sw.js, manifest.json -> PWA (sw.js atualizado p/ v3)
   assets/images/            -> só as imagens usadas
   assets/js/temas.js        -> temas de cores (usado pelo site e pelo painel)
-netlify/functions/          -> 14 Netlify Functions usadas pelo site e pelo admin
-                               (novas: musicas-api, musica-buscar)
+  assets/js/redes.js        -> catálogo das redes sociais (usado pelo site e pelo painel)
+netlify/functions/          -> 18 Netlify Functions usadas pelo site e pelo admin
+                               (novas: musicas-api, musica-buscar, curtidas-api, fontes-api,
+                               agenda-api, admin-check)
+netlify/lib/auth.js         -> quem é admin do painel (ver "Segurança do login")
+netlify/lib/agenda.js       -> leitura do Google Agenda (site e painel)
+netlify/lib/feeds.js        -> rotina de atualização dos vídeos (usada pelo feeds-update
+                               agendado e pelo botão "Buscar vídeos agora" do painel)
 netlify.toml                -> build, agendamento do feeds-update (a cada hora),
                                redirects /admin, /login e /feed.html -> /
 package.json / package-lock.json -> dependências das functions
@@ -59,3 +66,108 @@ Novidades (v7)
   YouTube, YouTube Music e Amazon. O Odesli (song.link) encerrou o acesso
   gratuito sem chave em set/2026; se um dia você tiver uma ODESLI_API_KEY,
   basta configurá-la no Netlify que a busca passa a usar o Odesli.
+
+⚠️ CURTIDAS — RECURSO REVERSÍVEL (v8)
+-------------------------------------
+O coração dos posts agora é contado no servidor (function curtidas-api) e
+o número aparece embaixo dele; o painel tem a aba "Curtidas" com o ranking.
+
+Travas de custo já ativas:
+  - no máximo CURTIDAS_LIMITE_DIA gravações por dia (padrão 3000);
+  - no máximo 20 curtidas a cada 10 min por conexão;
+  - 1 curtida por item por conexão (guarda só um código embaralhado, não o IP);
+  - a leitura das contagens fica 30s em cache no CDN do Netlify.
+
+COMO VOLTAR ATRÁS (se houver gasto excessivo ou abuso):
+  1) Mais rápido: painel > aba Curtidas > desmarcar "Curtidas ativas" > Salvar.
+     O site para de contar em até 1 minuto; o coração volta a ficar só no
+     navegador de cada visitante (como era antes).
+  2) Pelo Netlify: Environment variables > CURTIDAS_DESATIVADAS = 1 > novo deploy.
+  3) Remoção total: apagar netlify/functions/curtidas-api.js e fazer deploy.
+     O site continua funcionando normalmente sem ela.
+  Os dados ficam no Netlify Blobs, store "curtidas" (podem ser apagados no
+  painel do Netlify em Blobs, se quiser zerar).
+
+PWA — app no celular (v9)
+-------------------------
+- Android (Chrome/Edge/Samsung): o site pode ser instalado pelo convite do
+  navegador ou pelo botão "Instalar o app" (menu lateral e "Sobre mim").
+  Ícones "maskable" próprios (o logo não é cortado no Android) e atalhos
+  (Músicas, Eventos, Mensagem) ao segurar o ícone.
+- iPhone/iPad (Safari): o botão "Instalar o app" mostra o passo a passo
+  (Compartilhar > Adicionar à Tela de Início). Ícone 180px, título "Meny",
+  barra de status integrada e telas de abertura (assets/images/splash/).
+- Sem internet: abre a última versão do site já vista; páginas nunca abertas
+  mostram offline.html. O sw.js e o manifest não ficam presos em cache
+  (cabeçalhos no netlify.toml), então o app instalado recebe as atualizações.
+
+Redes sociais pelo painel (v10)
+-------------------------------
+- Aba "Redes sociais" do painel: YouTube, TikTok, Instagram, Facebook, Kwai,
+  X, Threads, WhatsApp, Telegram, Spotify, Twitch, Discord ou outro site.
+  Escreva o @ e o link é montado sozinho (ou cole o link). Dá para ocultar,
+  reordenar (↑ ↓), remover e adicionar (até 15). O painel só aceita links
+  https e avisa quando o link não parece ser da rede escolhida.
+- Os links aparecem no site em "Me acompanhe", no botão "Seguir" e na página
+  de contato. Ficam salvos junto do conteúdo (conteudo-api, campo "redes").
+  Sem nada salvo, o site usa os três links de antes (reserva em redes.js).
+- "Link da live": em branco = live do TikTok cadastrado. Todos os botões
+  "AO VIVO" usam esse link. O AVISO de que está ao vivo continua vindo do
+  monitor de lives (tiktok-live-97o2.onrender.com), configurado à parte.
+- "Origem dos vídeos automáticos": canal do YouTube (@, link ou ID UC...) e
+  RSS do TikTok. O painel testa antes de salvar (Netlify Blobs, store
+  "config", chave "fontes"). Botão "Buscar vídeos agora" atualiza na hora.
+  Se uma fonte falhar, a lista anterior é mantida (não apaga os vídeos).
+  As variáveis YOUTUBE_ID e TIKTOK_URL_RSS viraram RESERVA: só valem se o
+  campo do painel estiver em branco.
+
+Agenda pelo painel (v11)
+------------------------
+- Os eventos continuam no GOOGLE AGENDA. A aba "Agenda" do painel só escolhe
+  QUAL agenda o site mostra (ID, link de incorporar/compartilhar ou iCal) e
+  testa antes de salvar, mostrando os próximos eventos.
+  Ordem: painel > variável CALENDAR_ID > agenda que já era usada.
+- A chave do Google continua só na variável API_KEY. A agenda precisa estar
+  pública no Google ("Disponibilizar publicamente").
+- A function calendar agora devolve só título, datas, descrição, local e link
+  (antes repassava tudo do Google, inclusive e-mails de quem criou o evento)
+  e fica 5 minutos no cache do Netlify (evento novo aparece em até ~5 min).
+- Corrigido: eventos de "dia inteiro" apareciam no dia anterior no Brasil.
+
+Segurança do login (v11)
+------------------------
+O login é o Netlify Identity (a senha fica com o Netlify, nunca passa pelo
+nosso código). O que foi reforçado:
+- Só ADMIN entra no painel e salva dados. Admin = e-mail na variável
+  ADMIN_EMAILS (separados por vírgula) OU conta com a função "admin" no
+  Identity. Qualquer outra conta é recusada no painel E nas functions.
+  >>> FAÇA ISTO NO NETLIFY: crie ADMIN_EMAILS com o seu e-mail e faça novo
+  deploy. Enquanto ela estiver vazia, o painel mostra um aviso amarelo e
+  qualquer conta do Identity é aceita (como era antes).
+- Netlify > Site configuration > Identity > Registration: deixe "Invite only"
+  (ninguém cria conta sozinho). Em "External providers", deixe desligado o
+  que você não usa.
+- Senha: use uma senha longa e única; o Netlify cuida do limite de
+  tentativas. O painel sai sozinho depois de 60 minutos sem uso.
+- Upload de imagens: só aceita JPG, PNG, WEBP e GIF de verdade (confere o
+  arquivo) e até 5 MB. As imagens são servidas com proteção para nunca
+  virarem página/script.
+- Links de imagem e momentos: só do próprio site ou https.
+- Cabeçalhos (netlify.toml): o painel não pode ser aberto dentro de outro
+  site, não fica em cache e não aparece no Google; o site todo ganhou
+  nosniff, Referrer-Policy e Permissions-Policy.
+- Links de convite/recuperação de senha dos e-mails do Netlify continuam
+  indo para /admin.html.
+
+Recuperação de senha (v12)
+--------------------------
+- Corrigido: o painel iniciava o widget de login DUAS vezes. No link de
+  "recuperar senha" (e no de convite) o formulário de nova senha ficava
+  escondido atrás de uma camada vazia — parecia que nada acontecia.
+- A tela de login/recuperação agora aparece em português.
+- Se o link for aberto num navegador que já estava logado, a sessão antiga
+  é limpa para o formulário de nova senha aparecer.
+- Como usar: /admin > Entrar > "Esqueceu a senha?" > e-mail. O link do
+  e-mail abre o site, vai sozinho para o painel e pede a nova senha.
+  O link vale uma vez só e expira; se der "Usuário não encontrado", peça
+  outro. Confira também a pasta de spam.

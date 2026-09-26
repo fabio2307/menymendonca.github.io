@@ -1,4 +1,5 @@
 const { getStore } = require("@netlify/blobs");
+const { adminLogado } = require("../lib/auth");
 
 // Em produção, o Netlify injeta as credenciais do Blobs automaticamente.
 // Local (netlify dev), isso só funciona se o projeto estiver "linkado"
@@ -29,7 +30,7 @@ exports.handler = async function (event, context) {
   }
 
   if (event.httpMethod === "POST") {
-    const user = context.clientContext && context.clientContext.user;
+    const user = adminLogado(context);
     if (!user) {
       return { statusCode: 401, body: JSON.stringify({ error: "Não autenticado" }) };
     }
@@ -54,12 +55,29 @@ exports.handler = async function (event, context) {
       return { statusCode: 400, body: JSON.stringify({ error: "Cada item precisa de 'titulo' e 'categoria'" }) };
     }
 
-    await store.setJSON(CHAVE, { items: payload.items });
+    if (payload.items.length > 500) {
+      return { statusCode: 400, body: JSON.stringify({ error: "Máximo de 500 momentos" }) };
+    }
+    // Segurança: imagem só do próprio site ou https; textos com tamanho limitado
+    const imagemSegura = (v) => {
+      const t = String(v || "").trim();
+      if (!t) return "";
+      if (/^\/(?!\/)/.test(t)) return t.replace(/["'<>\s]/g, "");
+      try { return new URL(t).protocol === "https:" ? t : ""; } catch { return ""; }
+    };
+    const itens = payload.items.map((item) => ({
+      ...item,
+      titulo: item.titulo.slice(0, 150),
+      categoria: item.categoria.slice(0, 60),
+      imagem: imagemSegura(item.imagem),
+    }));
+
+    await store.setJSON(CHAVE, { items: itens });
 
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ success: true, total: payload.items.length }),
+      body: JSON.stringify({ success: true, total: itens.length }),
     };
   }
 

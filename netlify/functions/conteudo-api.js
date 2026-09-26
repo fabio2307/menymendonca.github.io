@@ -10,6 +10,7 @@
 // porque é sempre um objeto único, não uma coleção).
 
 const { getStore } = require("@netlify/blobs");
+const { adminLogado } = require("../lib/auth");
 
 const STORE_NAME = "conteudo";
 const CHAVE = "site";
@@ -52,14 +53,64 @@ function normalizarTema(tema) {
     return { id, destaque };
 }
 
+// Redes sociais (mesmos tipos de public/assets/js/redes.js)
+const TIPOS_REDE = ["youtube", "tiktok", "instagram", "facebook", "kwai", "x", "threads", "whatsapp", "telegram", "spotify", "twitch", "discord", "outra"];
+const REDES_PADRAO = {
+    lista: [
+        { tipo: "youtube", handle: "@menymendonca4269", url: "https://www.youtube.com/@menymendonca4269", visivel: true },
+        { tipo: "tiktok", handle: "@meny.menycita", url: "https://www.tiktok.com/@meny.menycita", visivel: true },
+        { tipo: "instagram", handle: "@meny.meny.meny", url: "https://www.instagram.com/meny.meny.meny", visivel: true },
+    ],
+    live: "",
+};
+function urlHttps(url) {
+    try {
+        const u = new URL(String(url || "").trim());
+        return u.protocol === "https:" ? u.toString() : "";
+    } catch {
+        return "";
+    }
+}
+function normalizarRedes(redes) {
+    if (!redes || !Array.isArray(redes.lista)) return REDES_PADRAO;
+    const lista = redes.lista
+        .filter((r) => r && TIPOS_REDE.includes(r.tipo))
+        .map((r) => ({
+            tipo: r.tipo,
+            handle: String(r.handle || "").replace(/\s+/g, "").slice(0, 60),
+            url: urlHttps(r.url),
+            visivel: r.visivel !== false,
+        }))
+        .filter((r) => r.url)
+        .slice(0, 15);
+    return { lista, live: urlHttps(redes.live) };
+}
+
+// Imagem: só caminho do próprio site ou link https (nada de javascript:, data:, etc.)
+function imagemSegura(valor, padrao) {
+    const v = String(valor || "").trim();
+    if (!v) return padrao;
+    if (/^\/(?!\/)/.test(v) || /^assets\//.test(v)) return v.replace(/["'<>\s]/g, "");
+    return urlHttps(v) || padrao;
+}
+
 function normalizarConteudo(dados) {
     // Faz um merge raso com o padrão, pra garantir que campos novos
     // (adicionados em atualizações futuras) sempre existam mesmo que
     // o registro salvo seja antigo.
+    const home = { ...CONTEUDO_PADRAO.home, ...(dados && dados.home) };
+    const about = { ...CONTEUDO_PADRAO.about, ...(dados && dados.about) };
+    home.imagem = imagemSegura(home.imagem, CONTEUDO_PADRAO.home.imagem);
+    about.imagem = imagemSegura(about.imagem, CONTEUDO_PADRAO.about.imagem);
     return {
-        home: { ...CONTEUDO_PADRAO.home, ...(dados && dados.home) },
-        about: { ...CONTEUDO_PADRAO.about, ...(dados && dados.about) },
+        home,
+        about,
         tema: normalizarTema(dados && dados.tema),
+        redes: normalizarRedes(dados && dados.redes),
+        // Recursos que podem ser ligados/desligados pelo painel
+        recursos: {
+            curtidas: !(dados && dados.recursos && dados.recursos.curtidas === false),
+        },
     };
 }
 
@@ -114,7 +165,7 @@ exports.handler = async (event, context) => {
     }
 
     if (event.httpMethod === "POST") {
-        const user = context.clientContext && context.clientContext.user;
+        const user = adminLogado(context);
         if (!user) {
             return {
                 statusCode: 401,

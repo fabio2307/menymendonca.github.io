@@ -7,6 +7,7 @@
 // Cada música: { id, titulo, artista, capa, links: { spotify, youtube, ... }, pagina }
 
 const { getStore } = require("@netlify/blobs");
+const { adminLogado } = require("../lib/auth");
 
 function criarStore(nome) {
     const opcoes = { name: nome, consistency: "strong" };
@@ -70,7 +71,7 @@ exports.handler = async function (event, context) {
     }
 
     if (event.httpMethod === "POST") {
-        const user = context.clientContext && context.clientContext.user;
+        const user = adminLogado(context);
         if (!user) return { statusCode: 401, headers: HEADERS, body: JSON.stringify({ error: "Não autenticado" }) };
 
         let payload;

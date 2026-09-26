@@ -5,8 +5,21 @@
     <meta charset="utf-8" />
     <title>Painel — Meny Mendonça</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <script>
+        // Link de recuperação de senha / convite aberto com alguém já logado neste
+        // navegador: o widget mostraria "Logado como..." em vez do formulário de
+        // nova senha. Limpa a sessão antiga antes do widget carregar.
+        (function () {
+            if (/(recovery|invite)_token=/.test(location.hash)) {
+                try { localStorage.removeItem("gotrue.user"); } catch (e) { /* ignora */ }
+            }
+        })();
+    </script>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script src="/assets/js/temas.js"></script>
+    <script src="/assets/js/redes.js"></script>
     <style>
         :root {
             color-scheme: dark;
@@ -189,7 +202,7 @@
         }
 
         .aba-btn {
-            flex: 1 1 0;
+            flex: 1 1 auto;
             min-width: 6rem;
             background: transparent;
             border: 1px solid var(--border-soft);
@@ -575,6 +588,32 @@
         .aviso-ruim { color: var(--danger) !important; }
         .aviso-bom { color: var(--emerald) !important; }
 
+        /* ---------- Segurança / Agenda ---------- */
+        .aviso-seguranca { border: 1px solid #d4a24c; background: rgba(212,162,76,0.08); color: var(--text); border-radius: 0.8rem; padding: 0.9rem 1rem; font-size: 0.82rem; line-height: 1.5; margin-bottom: 1.1rem; }
+        .aviso-seguranca code { background: rgba(255,255,255,0.06); padding: 0.05rem 0.35rem; border-radius: 0.3rem; }
+        .agenda-proximos { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; gap: 0.4rem; }
+        .agenda-proximos li { font-size: 0.82rem; border: 1px solid var(--border-soft); border-radius: 0.6rem; padding: 0.5rem 0.7rem; }
+        .agenda-proximos li span { color: var(--muted); margin-right: 0.5rem; }
+
+        /* ---------- Redes sociais ---------- */
+        .rede-item { border: 1px solid var(--border-soft); border-radius: 0.8rem; padding: 0.9rem; margin-bottom: 0.8rem; background: rgba(255,255,255,0.02); }
+        .rede-item.oculta { opacity: 0.6; }
+        .rede-topo { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.7rem; }
+        .rede-topo select { flex: 1 1 10rem; width: auto; }
+        .rede-topo .acoes-item { margin-left: auto; }
+        .rede-campos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 0.7rem; }
+        @media (max-width: 560px) { .rede-campos { grid-template-columns: 1fr; } }
+        .rede-campos input { width: 100%; }
+        .rede-aviso { font-size: 0.75rem; margin-top: 0.4rem; min-height: 1em; color: var(--muted); }
+        .rede-aviso.ruim { color: var(--danger); }
+        .rede-aviso.atencao { color: #d4a24c; }
+        .btn-add { background: transparent; border: 1px dashed var(--brass); color: var(--brass); width: 100%; min-height: 44px; }
+        .fonte-info { font-size: 0.78rem; color: var(--muted); margin-top: 0.35rem; line-height: 1.45; }
+        .fonte-info b { color: var(--text); font-weight: 600; }
+        .botoes-lado { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+        .botoes-lado .btn-primary { flex: 1 1 12rem; }
+        .botoes-lado .btn-mini { flex: 1 1 12rem; margin-top: 1.6rem; min-height: 44px; }
+
         /* ---------- Músicas ---------- */
         .busca-musica { display: flex; gap: 0.6rem; }
         .busca-musica input { flex: 1; min-width: 0; }
@@ -586,6 +625,8 @@
             border: 1px solid var(--border-soft); color: var(--text);
         }
         .link-busca { border-color: #d4a24c !important; background: rgba(212, 162, 76, 0.08) !important; }
+        .lista-item .posicao { flex: 0 0 2.2rem; text-align: center; color: var(--muted); font-weight: 700; }
+        .qtd-curtidas { flex: 0 0 auto; color: #ff7a8a; font-weight: 700; white-space: nowrap; }
         .separador { border: 0; border-top: 1px solid var(--border-soft); margin: 1.2rem 0; }
 
         /* ---------- Listas ---------- */
@@ -832,13 +873,22 @@
                 style="background:transparent;border:1px solid var(--border-soft);color:var(--muted);">Sair</button>
         </div>
 
+        <div class="aviso-seguranca" id="avisoSeguranca" hidden>
+            <strong>Segurança:</strong> qualquer conta cadastrada no Netlify Identity consegue entrar neste painel.
+            Para travar só no seu e-mail, crie no Netlify a variável <code>ADMIN_EMAILS</code> com o seu e-mail
+            (ou dê a função <code>admin</code> à sua conta em Identity) e confira se o cadastro está como <em>Invite only</em>.
+        </div>
+
         <div class="abas">
             <button class="aba-btn ativa" data-aba="inicio">Início</button>
             <button class="aba-btn" data-aba="sobre">Sobre</button>
             <button class="aba-btn" data-aba="momentos">Momentos</button>
             <button class="aba-btn" data-aba="tiktok">TikTok</button>
             <button class="aba-btn" data-aba="musicas">Músicas</button>
+            <button class="aba-btn" data-aba="redes">Redes sociais</button>
+            <button class="aba-btn" data-aba="agenda">Agenda</button>
             <button class="aba-btn" data-aba="aparencia">Aparência</button>
+            <button class="aba-btn" data-aba="curtidas">Curtidas</button>
         </div>
 
         <!-- Início (seção Home do site) -->
@@ -1143,6 +1193,95 @@
             </div>
         </section>
 
+        <!-- Curtidas (⚠️ recurso reversível) -->
+        <section class="painel-secao" id="secao-curtidas">
+            <div class="card">
+                <h2>Curtidas do site</h2>
+                <p class="card-hint">Conta as curtidas (coração) dadas no seu site — separadas das curtidas do TikTok e do YouTube.
+                    Se gerar gasto ou abuso, é só desligar aqui: o coração volta a funcionar só no navegador de cada visitante.</p>
+                <form id="formCurtidas">
+                    <label class="check"><input type="checkbox" id="curtidasAtivas" /> Curtidas ativas (contar e mostrar no site)</label>
+                    <p class="dica" id="curtidasUso" style="margin-top:0.6rem;"></p>
+                    <button type="submit" class="btn-primary" id="btnSalvarCurtidas">Salvar</button>
+                </form>
+                <div class="status" id="statusCurtidas" style="display:none;"></div>
+            </div>
+
+            <div class="card">
+                <h2>Mais curtidos</h2>
+                <div id="rankingCurtidas"><p class="vazio">Carregando…</p></div>
+            </div>
+        </section>
+
+        <!-- Redes sociais -->
+        <section class="painel-secao" id="secao-redes">
+            <div class="card">
+                <h2>Links das redes sociais</h2>
+                <p class="card-hint">Esses links aparecem no site em "Me acompanhe", no botão "Seguir" e na página de contato, nesta ordem.
+                    Escreva o @ e o link é montado sozinho — ou cole o link completo.</p>
+                <form id="formRedes" novalidate>
+                    <div id="listaRedes"></div>
+                    <button type="button" class="btn-add" id="btnAddRede">+ Adicionar rede</button>
+
+                    <hr class="separador" />
+                    <div class="campo">
+                        <label for="redesLive">Link da live</label>
+                        <input type="url" id="redesLive" placeholder="Automático: live do TikTok" />
+                        <span class="dica" id="redesLiveDica">Em branco = usa a live do seu TikTok (pelo @ cadastrado acima). Os botões "AO VIVO" do site levam para este link.
+                            O aviso de "estou ao vivo" continua vindo do monitor de lives, que acompanha a conta do TikTok configurada nele.</span>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="btnSalvarRedes">Salvar redes</button>
+                </form>
+                <div class="status" id="statusRedes" style="display:none;"></div>
+            </div>
+
+            <div class="card">
+                <h2>Origem dos vídeos automáticos</h2>
+                <p class="card-hint">De onde o site puxa sozinho os vídeos novos (a cada hora). Ao salvar, o painel testa se o canal/feed responde antes de gravar.</p>
+                <form id="formFontes" novalidate>
+                    <div class="campo">
+                        <label for="fonteYoutube">Canal do YouTube</label>
+                        <input type="text" id="fonteYoutube" placeholder="@seucanal, link do canal ou ID (UC...)" autocomplete="off" />
+                        <div class="fonte-info" id="fonteYoutubeInfo"></div>
+                    </div>
+                    <div class="campo">
+                        <label for="fonteTiktok">Feed RSS do TikTok</label>
+                        <input type="url" id="fonteTiktok" placeholder="https://rss.app/feeds/....xml" autocomplete="off" />
+                        <div class="fonte-info" id="fonteTiktokInfo"></div>
+                        <span class="dica">O TikTok não tem feed próprio: use o link gerado por um serviço como o rss.app. Em branco = usa a variável TIKTOK_URL_RSS do Netlify (se existir).</span>
+                    </div>
+                    <div class="fonte-info" id="fonteUltima"></div>
+                    <div class="botoes-lado">
+                        <button type="submit" class="btn-primary" id="btnSalvarFontes">Salvar e testar</button>
+                        <button type="button" class="btn-mini" id="btnAtualizarVideos">Buscar vídeos agora</button>
+                    </div>
+                </form>
+                <div class="status" id="statusFontes" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- Agenda (Google Agenda) -->
+        <section class="painel-secao" id="secao-agenda">
+            <div class="card">
+                <h2>Agenda do site</h2>
+                <p class="card-hint">Os eventos continuam sendo criados no <strong>Google Agenda</strong> (celular ou computador). Aqui você só escolhe
+                    <em>qual</em> agenda o site mostra. Um evento novo aparece no site em até 5 minutos.</p>
+                <form id="formAgenda" novalidate>
+                    <div class="campo">
+                        <label for="agendaId">ID ou link da agenda</label>
+                        <input type="text" id="agendaId" placeholder="algo@group.calendar.google.com ou link de compartilhamento" autocomplete="off" />
+                        <span class="dica">No Google Agenda (computador): Configurações &gt; clique na agenda &gt; "Integrar agenda" &gt; copie o <b>ID da agenda</b>.
+                            A agenda precisa estar como pública ("Disponibilizar publicamente"). Em branco = volta para a agenda padrão.</span>
+                        <div class="fonte-info" id="agendaInfo"></div>
+                        <ul class="agenda-proximos" id="agendaProximos"></ul>
+                    </div>
+                    <button type="submit" class="btn-primary" id="btnSalvarAgenda">Salvar e testar</button>
+                </form>
+                <div class="status" id="statusAgenda" style="display:none;"></div>
+            </div>
+        </section>
+
         <!-- Aparência -->
         <section class="painel-secao" id="secao-aparencia">
             <div class="card">
@@ -1205,7 +1344,49 @@
                 window.netlifyIdentity.logout();
             });
 
-            function mostrarPainel(user) {
+            // Sessão: sai sozinho depois de 60 min sem usar o painel
+            const LIMITE_INATIVO_MS = 60 * 60 * 1000;
+            const CHAVE_USO = "painel-ultimo-uso";
+            const marcarUso = () => { try { localStorage.setItem(CHAVE_USO, String(Date.now())); } catch { /* ignora */ } };
+            const inativoDemais = () => { try { const t = +localStorage.getItem(CHAVE_USO); return t > 0 && Date.now() - t > LIMITE_INATIVO_MS; } catch { return false; } };
+            ["click", "keydown", "touchstart"].forEach((ev) => document.addEventListener(ev, () => { if (window.netlifyIdentity?.currentUser()) marcarUso(); }, { passive: true }));
+            setInterval(() => {
+                if (window.netlifyIdentity?.currentUser() && inativoDemais()) {
+                    setStatus("Sessão encerrada por inatividade. Entre de novo.");
+                    window.netlifyIdentity.logout();
+                }
+            }, 60 * 1000);
+
+            // Confere no servidor se a conta tem permissão de admin
+            async function conferirPermissao(user) {
+                try {
+                    const token = await user.jwt();
+                    const resp = await fetch("/.netlify/functions/admin-check", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
+                    const d = await resp.json().catch(() => ({}));
+                    if (resp.status === 403 || (resp.ok && d.admin === false)) return { ok: false };
+                    if (resp.status === 401) return { ok: false, expirado: true };
+                    return { ok: true, modo: d.modo };
+                } catch {
+                    return { ok: true, modo: "" }; // sem rede: as functions continuam barrando sozinhas
+                }
+            }
+
+            async function mostrarPainel(user) {
+                if (inativoDemais()) {
+                    setStatus("Sessão encerrada por inatividade. Entre de novo.");
+                    try { localStorage.removeItem(CHAVE_USO); } catch { /* ignora */ }
+                    window.netlifyIdentity.logout();
+                    return;
+                }
+                const perm = await conferirPermissao(user);
+                if (!perm.ok) {
+                    setStatus(perm.expirado ? "Sua sessão expirou. Entre de novo."
+                        : `A conta ${user.email || ""} não tem permissão para usar este painel.`);
+                    window.netlifyIdentity.logout();
+                    return;
+                }
+                marcarUso();
+                document.getElementById("avisoSeguranca").hidden = perm.modo !== "compativel";
                 accessCard.style.display = "none";
                 painel.style.display = "block";
                 usuarioLogadoEl.textContent = user.email || "";
@@ -1214,9 +1395,13 @@
                 carregarTiktok();
                 carregarNascimento();
                 carregarMusicas();
+                carregarCurtidasAdmin();
+                carregarFontes();
+                carregarAgenda();
             }
 
             function mostrarLogin() {
+                try { localStorage.removeItem(CHAVE_USO); } catch { /* ignora */ }
                 accessCard.style.display = "block";
                 painel.style.display = "none";
             }
@@ -1238,7 +1423,16 @@
 
             window.netlifyIdentity.on("logout", mostrarLogin);
 
-            window.netlifyIdentity.init();
+            // Tela de login/recuperação em português
+            if (window.netlifyIdentity.setLocale) window.netlifyIdentity.setLocale("pt");
+
+            // O widget já se inicia sozinho quando a página termina de carregar.
+            // Chamar init() de novo criava um SEGUNDO modal: no link de recuperação
+            // de senha o formulário "nova senha" ficava escondido atrás de uma
+            // camada vazia (a recuperação parecia não funcionar).
+            if (document.readyState !== "loading" && !document.getElementById("netlify-identity-widget")) {
+                window.netlifyIdentity.init();
+            }
 
             // ---------------- Abas ----------------
             document.querySelectorAll(".aba-btn").forEach((btn) => {
@@ -1383,6 +1577,8 @@
                 preencherFormInicio();
                 preencherFormSobre();
                 preencherFormTema();
+                preencherFormRedes();
+                document.getElementById("curtidasAtivas").checked = !(conteudoAtual.recursos && conteudoAtual.recursos.curtidas === false);
             }
 
             async function salvarConteudo() {
@@ -2109,6 +2305,315 @@
                 try {
                     await salvarMusicas();
                     status.textContent = url ? "Playlist salva!" : "Playlist removida do site.";
+                } catch (err) {
+                    status.textContent = "Erro: " + err.message;
+                }
+            });
+
+
+            // ---------------- Redes sociais ----------------
+            const MR = window.MenyRedes;
+            let redesEdit = [];
+
+            function preencherFormRedes() {
+                const cfg = conteudoAtual.redes;
+                const lista = cfg && Array.isArray(cfg.lista) && cfg.lista.length ? cfg.lista : MR.PADRAO.lista;
+                redesEdit = lista.map(r => ({ tipo: r.tipo, handle: r.handle || "", url: r.url || "", visivel: r.visivel !== false, auto: Boolean(r.url) && r.url === MR.linkDoHandle(r.tipo, r.handle) }));
+                document.getElementById("redesLive").value = (cfg && cfg.live) || "";
+                renderRedesAdmin();
+            }
+
+            function conferirRede(r) {
+                if (!r.url) return { cls: "ruim", txt: MR.CATALOGO[r.tipo]?.modelo ? "Escreva o @ ou cole o link." : "Cole o link completo (https://...)." };
+                const c = MR.conferir(r.tipo, r.url);
+                if (!c.ok) return { cls: "ruim", txt: c.erro };
+                if (c.aviso) return { cls: "atencao", txt: c.aviso };
+                return { cls: "", txt: r.auto ? "Link montado a partir do @." : "" };
+            }
+
+            function atualizarLivePlaceholder() {
+                const auto = MR.linkLive({ lista: redesEdit });
+                document.getElementById("redesLive").placeholder = auto ? `Automático: ${auto}` : "Cadastre o TikTok acima ou cole o link da live";
+            }
+
+            function renderRedesAdmin() {
+                const box = document.getElementById("listaRedes");
+                if (!redesEdit.length) box.innerHTML = '<p class="vazio">Nenhuma rede cadastrada. O site vai mostrar só o botão de mensagem.</p>';
+                else box.innerHTML = redesEdit.map((r, i) => {
+                    const v = conferirRede(r);
+                    const opcoes = Object.entries(MR.CATALOGO).map(([id, c]) => `<option value="${id}" ${id === r.tipo ? "selected" : ""}>${escaparHtml(c.nome)}</option>`).join("");
+                    return `
+                    <div class="rede-item ${r.visivel ? "" : "oculta"}" data-i="${i}">
+                        <div class="rede-topo">
+                            <select data-campo="tipo" aria-label="Rede">${opcoes}</select>
+                            <label class="check"><input type="checkbox" data-campo="visivel" ${r.visivel ? "checked" : ""} /> Mostrar</label>
+                            <div class="acoes-item">
+                                <button type="button" class="btn-mini" data-subir="${i}" ${i === 0 ? "disabled" : ""} aria-label="Subir">↑</button>
+                                <button type="button" class="btn-mini" data-descer="${i}" ${i === redesEdit.length - 1 ? "disabled" : ""} aria-label="Descer">↓</button>
+                                <button type="button" class="btn-remover" data-remover="${i}">Remover</button>
+                            </div>
+                        </div>
+                        <div class="rede-campos">
+                            <input type="text" data-campo="handle" value="${escaparHtml(r.handle)}" placeholder="${r.tipo === "whatsapp" ? "Número com DDD" : "@usuario"}" aria-label="@ na rede" maxlength="60" />
+                            <input type="url" data-campo="url" value="${escaparHtml(r.url)}" placeholder="https://..." aria-label="Link" />
+                        </div>
+                        <div class="rede-aviso ${v.cls}">${escaparHtml(v.txt)}</div>
+                    </div>`;
+                }).join("");
+                atualizarLivePlaceholder();
+            }
+
+            const listaRedesEl = document.getElementById("listaRedes");
+            listaRedesEl.addEventListener("input", (e) => {
+                const item = e.target.closest(".rede-item"); if (!item) return;
+                const r = redesEdit[+item.dataset.i]; const campo = e.target.dataset.campo;
+                if (campo === "handle") {
+                    r.handle = e.target.value;
+                    if (r.auto || !r.url) {
+                        const montado = MR.linkDoHandle(r.tipo, r.handle);
+                        if (montado || r.auto) { r.url = montado; r.auto = Boolean(montado); item.querySelector('[data-campo="url"]').value = r.url; }
+                    }
+                } else if (campo === "url") { r.url = e.target.value.trim(); r.auto = false; }
+                else return;
+                const v = conferirRede(r);
+                const av = item.querySelector(".rede-aviso"); av.className = "rede-aviso " + v.cls; av.textContent = v.txt;
+                atualizarLivePlaceholder();
+            });
+            listaRedesEl.addEventListener("change", (e) => {
+                const item = e.target.closest(".rede-item"); if (!item) return;
+                const r = redesEdit[+item.dataset.i]; const campo = e.target.dataset.campo;
+                if (campo === "tipo") {
+                    r.tipo = e.target.value;
+                    if (r.auto || !r.url) { r.url = MR.linkDoHandle(r.tipo, r.handle); r.auto = Boolean(r.url); }
+                    renderRedesAdmin();
+                } else if (campo === "visivel") { r.visivel = e.target.checked; item.classList.toggle("oculta", !r.visivel); }
+            });
+            listaRedesEl.addEventListener("click", (e) => {
+                const b = e.target.closest("button"); if (!b) return;
+                if (b.dataset.subir) { const i = +b.dataset.subir; [redesEdit[i - 1], redesEdit[i]] = [redesEdit[i], redesEdit[i - 1]]; }
+                else if (b.dataset.descer) { const i = +b.dataset.descer; [redesEdit[i + 1], redesEdit[i]] = [redesEdit[i], redesEdit[i + 1]]; }
+                else if (b.dataset.remover) { const i = +b.dataset.remover; const r = redesEdit[i];
+                    if (!confirm(`Remover ${MR.CATALOGO[r.tipo]?.nome || r.tipo}${r.handle ? " (" + r.handle + ")" : ""}?`)) return;
+                    redesEdit.splice(i, 1); }
+                else return;
+                renderRedesAdmin();
+            });
+            document.getElementById("btnAddRede").addEventListener("click", () => {
+                if (redesEdit.length >= 15) { alert("Máximo de 15 redes."); return; }
+                const usados = new Set(redesEdit.map(r => r.tipo));
+                const tipo = Object.keys(MR.CATALOGO).find(t => !usados.has(t) && t !== "outra") || "outra";
+                redesEdit.push({ tipo, handle: "", url: "", visivel: true, auto: false });
+                renderRedesAdmin();
+                const ultimo = listaRedesEl.querySelector(".rede-item:last-child [data-campo='handle']");
+                if (ultimo) ultimo.focus();
+            });
+            document.getElementById("redesLive").addEventListener("input", atualizarLivePlaceholder);
+
+            document.getElementById("formRedes").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const status = document.getElementById("statusRedes");
+                const btn = document.getElementById("btnSalvarRedes");
+                status.style.display = "block";
+                const ruins = redesEdit.map((r, i) => ({ r, i, v: conferirRede(r) })).filter(x => x.v.cls === "ruim");
+                if (ruins.length) {
+                    status.textContent = `Confira ${ruins.length === 1 ? "a rede" : "as redes"}: ` + ruins.map(x => `${MR.CATALOGO[x.r.tipo]?.nome || x.r.tipo} (${x.v.txt})`).join("; ");
+                    const el = listaRedesEl.querySelector(`.rede-item[data-i="${ruins[0].i}"] input`); if (el) el.focus();
+                    return;
+                }
+                const live = document.getElementById("redesLive").value.trim();
+                if (live) { const c = MR.conferir("outra", live); if (!c.ok) { status.textContent = "Link da live: " + c.erro; return; } }
+                btn.disabled = true;
+                status.textContent = "Salvando…";
+                try {
+                    conteudoAtual.redes = {
+                        lista: redesEdit.map(r => ({ tipo: r.tipo, handle: r.handle.trim(), url: r.url.trim(), visivel: r.visivel })),
+                        live,
+                    };
+                    await salvarConteudo();
+                    status.textContent = "Redes salvas! O site já mostra os links novos (recarregue a página do site).";
+                } catch (err) {
+                    status.textContent = "Erro: " + err.message;
+                } finally { btn.disabled = false; }
+            });
+
+
+            // ---------------- Agenda (Google Agenda) ----------------
+            const ROTULO_AGENDA = { painel: "definida aqui no painel", variavel: "vinda da variável CALENDAR_ID", padrao: "agenda padrão do site" };
+            function mostrarAgenda(d) {
+                const t = d.teste || {};
+                const partes = [`Em uso: <b>${escaparHtml(d.calendarId || "")}</b> (${ROTULO_AGENDA[d.origem] || ""})`];
+                if (!d.chaveConfigurada) partes.push('<span class="aviso-ruim">A variável API_KEY não está configurada no Netlify — a agenda não aparece no site.</span>');
+                else if (t.ok) partes.push(`<span class="aviso-bom">Funcionando${t.titulo ? ` — "${escaparHtml(t.titulo)}"` : ""}: ${t.total} evento(s) futuro(s).</span>`);
+                else if (t.erro) partes.push(`<span class="aviso-ruim">${escaparHtml(t.erro)}</span>`);
+                document.getElementById("agendaInfo").innerHTML = partes.join("<br>");
+                document.getElementById("agendaProximos").innerHTML = (t.proximos || []).map((e) => {
+                    let quando = e.inicio;
+                    try { quando = e.inicio.length > 10 ? new Date(e.inicio).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : new Date(`${e.inicio}T00:00:00`).toLocaleDateString("pt-BR") + " (dia todo)"; } catch { /* mantém */ }
+                    return `<li><span>${escaparHtml(quando)}</span>${escaparHtml(e.titulo || "Evento")}</li>`;
+                }).join("");
+            }
+            async function carregarAgenda() {
+                try {
+                    const resp = await authFetch("/.netlify/functions/agenda-api", { cache: "no-store" });
+                    if (!resp.ok) throw new Error();
+                    const d = await resp.json();
+                    document.getElementById("agendaId").value = d.origem === "painel" ? d.calendarId : "";
+                    mostrarAgenda(d);
+                } catch {
+                    document.getElementById("agendaInfo").textContent = "Não foi possível ler a agenda (a function agenda-api está no ar?).";
+                }
+            }
+            document.getElementById("formAgenda").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const status = document.getElementById("statusAgenda");
+                const btn = document.getElementById("btnSalvarAgenda");
+                status.style.display = "block";
+                status.textContent = "Testando a agenda no Google…";
+                btn.disabled = true;
+                try {
+                    const resp = await authFetch("/.netlify/functions/agenda-api", {
+                        method: "POST", headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ agenda: document.getElementById("agendaId").value.trim() }),
+                    });
+                    const d = await resp.json().catch(() => ({}));
+                    if (!resp.ok || !d.success) { status.textContent = "Não salvei: " + (d.error || `erro ${resp.status}`); return; }
+                    document.getElementById("agendaId").value = d.origem === "painel" ? d.calendarId : "";
+                    mostrarAgenda(d);
+                    status.textContent = d.origem === "painel" ? "Agenda salva! O site passa a mostrar esta agenda em até 5 minutos." : "Voltou para a agenda padrão.";
+                } catch (err) {
+                    status.textContent = "Erro: " + err.message;
+                } finally { btn.disabled = false; }
+            });
+
+            // ---------------- Origem dos vídeos automáticos ----------------
+            const ROTULO_ORIGEM = { painel: "definido aqui no painel", variavel: "vindo da variável do Netlify", nenhuma: "não configurado" };
+            const dataHora = (iso) => { try { return new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }); } catch { return iso; } };
+
+            function mostrarFontes(d) {
+                const o = d.origem || {};
+                document.getElementById("fonteYoutubeInfo").innerHTML = d.youtubeId
+                    ? `Em uso: <b>${escaparHtml(d.youtubeId)}</b> (${ROTULO_ORIGEM[o.youtube] || ""})` : "Nenhum canal configurado — a lista de vídeos do YouTube não é atualizada.";
+                document.getElementById("fonteTiktokInfo").innerHTML = d.tiktokRss
+                    ? `Em uso (${ROTULO_ORIGEM[o.tiktok] || ""}): <b>${escaparHtml(d.tiktokRss)}</b>` : "Nenhum feed configurado — os vídeos do TikTok ficam só os adicionados na aba TikTok.";
+                const u = d.ultimaAtualizacao;
+                const partes = [];
+                if (u && u.em) {
+                    partes.push(`Última busca: <b>${escaparHtml(dataHora(u.em))}</b>`);
+                    if (typeof u.youtube === "number") partes.push(`YouTube: ${u.youtube} vídeo(s)`);
+                    if (typeof u.tiktok === "number") partes.push(`TikTok: ${u.tiktok} vídeo(s)`);
+                    if (u.falhas && u.falhas.length) partes.push(`<span class="aviso-ruim">Falhou: ${escaparHtml(u.falhas.join(", "))} (a lista anterior foi mantida)</span>`);
+                } else partes.push("Ainda não houve busca registrada.");
+                document.getElementById("fonteUltima").innerHTML = partes.join(" · ");
+            }
+
+            async function carregarFontes() {
+                try {
+                    const resp = await authFetch("/.netlify/functions/fontes-api", { cache: "no-store" });
+                    if (!resp.ok) throw new Error();
+                    const d = await resp.json();
+                    document.getElementById("fonteYoutube").value = d.origem && d.origem.youtube === "painel" ? d.youtubeId : "";
+                    document.getElementById("fonteTiktok").value = d.origem && d.origem.tiktok === "painel" ? d.tiktokRss : "";
+                    mostrarFontes(d);
+                } catch {
+                    document.getElementById("fonteUltima").textContent = "Não foi possível ler a configuração (a function fontes-api está no ar?).";
+                }
+            }
+
+            document.getElementById("formFontes").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const status = document.getElementById("statusFontes");
+                const btn = document.getElementById("btnSalvarFontes");
+                status.style.display = "block";
+                status.textContent = "Testando e salvando… (pode levar alguns segundos)";
+                btn.disabled = true;
+                try {
+                    const resp = await authFetch("/.netlify/functions/fontes-api", {
+                        method: "POST", headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ youtube: document.getElementById("fonteYoutube").value.trim(), tiktokRss: document.getElementById("fonteTiktok").value.trim() }),
+                    });
+                    const d = await resp.json().catch(() => ({}));
+                    if (!resp.ok || !d.success) {
+                        status.textContent = "Não salvei: " + (d.error || `erro ${resp.status}`);
+                        const campo = d.campo === "youtube" ? "fonteYoutube" : d.campo === "tiktokRss" ? "fonteTiktok" : "";
+                        if (campo) document.getElementById(campo).focus();
+                        return;
+                    }
+                    if (d.origem && d.origem.youtube === "painel") document.getElementById("fonteYoutube").value = d.youtubeId;
+                    const t = d.testes || {};
+                    const msgs = ["Salvo!"];
+                    if (t.youtube) msgs.push(`YouTube respondeu com ${t.youtube.itens} vídeo(s)${t.youtube.titulo ? ` (${t.youtube.titulo})` : ""}.`);
+                    if (t.tiktok) msgs.push(`Feed do TikTok respondeu com ${t.tiktok.itens} item(ns).`);
+                    msgs.push('Clique em "Buscar vídeos agora" para atualizar o site já, ou espere a próxima busca automática.');
+                    status.textContent = msgs.join(" ");
+                    mostrarFontes(d);
+                } catch (err) {
+                    status.textContent = "Erro: " + err.message;
+                } finally { btn.disabled = false; }
+            });
+
+            document.getElementById("btnAtualizarVideos").addEventListener("click", async () => {
+                const status = document.getElementById("statusFontes");
+                const btn = document.getElementById("btnAtualizarVideos");
+                status.style.display = "block";
+                status.textContent = "Buscando vídeos novos…";
+                btn.disabled = true;
+                try {
+                    const resp = await authFetch("/.netlify/functions/fontes-api?acao=atualizar", { method: "POST" });
+                    const d = await resp.json().catch(() => ({}));
+                    if (!resp.ok) throw new Error(d.error || `erro ${resp.status}`);
+                    mostrarFontes(d);
+                    const u = d.ultimaAtualizacao || {};
+                    status.textContent = (u.falhas && u.falhas.length)
+                        ? `Busca feita, mas falhou: ${u.falhas.join(", ")} (a lista anterior foi mantida).`
+                        : "Pronto! Vídeos atualizados — recarregue o site para ver.";
+                } catch (err) {
+                    status.textContent = "Erro: " + err.message;
+                } finally { btn.disabled = false; }
+            });
+
+            // ---------------- Curtidas (⚠️ recurso reversível) ----------------
+            async function carregarCurtidasAdmin() {
+                const box = document.getElementById("rankingCurtidas");
+                const uso = document.getElementById("curtidasUso");
+                try {
+                    const resp = await authFetch("/.netlify/functions/curtidas-api", { cache: "no-store" });
+                    if (!resp.ok) throw new Error();
+                    const d = await resp.json();
+                    if (d.uso) {
+                        const pct = Math.round((d.uso.hoje / d.uso.limite) * 100);
+                        uso.textContent = `Hoje: ${d.uso.hoje} de ${d.uso.limite} gravações permitidas por dia (${pct}%). Passando do limite, novas curtidas ficam só no navegador até amanhã.`
+                            + (d.uso.desligadoPorVariavel ? " ⚠️ Desligado também pela variável CURTIDAS_DESATIVADAS no Netlify." : "");
+                        uso.className = "dica " + (pct >= 80 ? "aviso-ruim" : "");
+                    }
+                    const itens = Object.entries(d.itens || {}).filter(([, v]) => v && v.n > 0).sort((a, b) => b[1].n - a[1].n);
+                    const total = itens.reduce((s, [, v]) => s + v.n, 0);
+                    if (!itens.length) { box.innerHTML = '<p class="vazio">Nenhuma curtida ainda.</p>'; return; }
+                    const rotuloTipo = { youtube: "YouTube", tiktok: "TikTok", momentos: "Momento" };
+                    box.innerHTML = `<p class="card-hint" style="margin:0 0 0.8rem;">Total: <strong>${total}</strong> curtida(s) em ${itens.length} item(ns).</p>`
+                        + itens.slice(0, 50).map(([chave, v], i) => `
+                        <div class="lista-item">
+                            <div class="posicao">${i + 1}º</div>
+                            <div class="info">
+                                <div class="titulo">${escaparHtml(v.titulo || chave)}</div>
+                                <div class="sub">${escaparHtml(rotuloTipo[v.tipo] || "Item")}</div>
+                            </div>
+                            <div class="qtd-curtidas">♥ ${v.n}</div>
+                        </div>`).join("");
+                } catch {
+                    box.innerHTML = '<p class="vazio">Não foi possível carregar as curtidas (a function curtidas-api está no ar?).</p>';
+                }
+            }
+
+            document.getElementById("formCurtidas").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const status = document.getElementById("statusCurtidas");
+                status.style.display = "block";
+                status.textContent = "Salvando…";
+                try {
+                    const ativas = document.getElementById("curtidasAtivas").checked;
+                    conteudoAtual.recursos = { ...(conteudoAtual.recursos || {}), curtidas: ativas };
+                    await salvarConteudo();
+                    status.textContent = ativas ? "Curtidas ativadas." : "Curtidas desligadas. O site para de contar em até 1 minuto (tempo do cache).";
                 } catch (err) {
                     status.textContent = "Erro: " + err.message;
                 }

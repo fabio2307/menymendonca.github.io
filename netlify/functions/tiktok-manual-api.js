@@ -1,4 +1,5 @@
 const { getStore } = require("@netlify/blobs");
+const { adminLogado } = require("../lib/auth");
 
 // Ver momentos-api.js para a explicação do fallback siteID/token.
 function criarStore(nome) {
@@ -37,7 +38,7 @@ exports.handler = async function (event, context) {
   }
 
   if (event.httpMethod === "POST") {
-    const user = context.clientContext && context.clientContext.user;
+    const user = adminLogado(context);
     if (!user) {
       return { statusCode: 401, body: JSON.stringify({ success: false, error: "Não autenticado" }) };
     }

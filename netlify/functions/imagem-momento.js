@@ -1,4 +1,7 @@
 const { getStore } = require("@netlify/blobs");
+const { adminLogado } = require("../lib/auth");
+
+const TIPOS_IMAGEM = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 // Ver momentos-api.js para a explicação do fallback siteID/token.
 function criarStore() {
@@ -26,7 +29,9 @@ exports.handler = async function (event, context) {
       return { statusCode: 404, body: "Imagem não encontrada" };
     }
 
-    const contentType = (resultado.metadata && resultado.metadata.contentType) || "image/jpeg";
+    // Só serve tipos de imagem (arquivos antigos com outro tipo viram jpeg)
+    const tipoSalvo = resultado.metadata && resultado.metadata.contentType;
+    const contentType = TIPOS_IMAGEM.includes(tipoSalvo) ? tipoSalvo : "image/jpeg";
     const buffer = Buffer.from(resultado.data);
 
     return {
@@ -38,6 +43,9 @@ exports.handler = async function (event, context) {
         // mudar, ela vira uma chave/URL nova, não a mesma URL com
         // conteúdo diferente.
         "Cache-Control": "public, max-age=31536000, immutable",
+        // O navegador nunca trata o arquivo como página/script
+        "X-Content-Type-Options": "nosniff",
+        "Content-Security-Policy": "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox",
       },
       body: buffer.toString("base64"),
       isBase64Encoded: true,
@@ -45,7 +53,7 @@ exports.handler = async function (event, context) {
   }
 
   if (event.httpMethod === "DELETE") {
-    const user = context.clientContext && context.clientContext.user;
+    const user = adminLogado(context);
     if (!user) {
       return { statusCode: 401, body: JSON.stringify({ error: "Não autenticado" }) };
     }

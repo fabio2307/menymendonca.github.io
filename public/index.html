@@ -24,7 +24,30 @@
     <meta name="theme-color" content="#07160f">
     <link rel="icon" type="image/png" href="/assets/images/icons/icon-192.png">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/assets/images/icons/icon-192.png">
+    <!-- PWA: Android (manifest) + iPhone/iPad (metas da Apple) -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Meny">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="application-name" content="Meny">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/icons/icon-180.png">
+    <!-- telas de abertura do app no iPhone/iPad (o iOS não usa o manifest para isso) -->
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1320x2868.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/assets/images/splash/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,6 +61,7 @@
     <!-- Temas: aplica logo no início o último tema visto, pra não piscar
          o verde antes de o tema escolhido no painel chegar. -->
     <script src="/assets/js/temas.js"></script>
+    <script src="/assets/js/redes.js"></script>
     <script>
         try {
             var temaSalvo = JSON.parse(localStorage.getItem("meny-tema") || "null");
@@ -147,6 +171,7 @@
         .social-row:hover { background: rgba(var(--green-rgb), .12); color: var(--white); }
         .social-row .fab { width: 2rem; text-align: center; font-size: 1.7rem; color: var(--green); }
         .social-row .i { margin-left: auto; font-size: 1.4rem; opacity: .6; }
+        .social-row .i.rede-ico { margin-left: 0; opacity: 1; color: var(--green); width: 2rem; font-size: 1.7rem; flex-shrink: 0; }
         .side-foot { margin-top: auto; font-size: 1.15rem; color: var(--muted); line-height: 1.7; }
         .side-foot a { color: var(--grey); text-decoration: underline; text-underline-offset: 2px; }
 
@@ -266,7 +291,17 @@
         .player .thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
         .player.vertical .thumb { object-fit: cover; }
         .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 3; }
-        .player .open-ext { position: absolute; left: 1.2rem; bottom: 1.2rem; z-index: 4; }
+        .player .open-ext { position: absolute; left: 1.2rem; top: 6.4rem; z-index: 5; }
+        /* camada de toque sobre o vídeo do YouTube (deixa livre a barra de controles de baixo) */
+        .tap-layer { position: absolute; inset: 0 0 5.6rem 0; z-index: 4; cursor: pointer; display: grid; place-items: center; }
+        .tap-layer .estado {
+            width: 7.2rem; height: 7.2rem; border-radius: 50%; display: grid; place-items: center;
+            background: rgba(var(--black-rgb), .55); backdrop-filter: blur(6px);
+            border: 2px solid rgba(var(--green-rgb), .6); color: var(--green); font-size: 2.6rem;
+            opacity: 0; transform: scale(.85); transition: opacity .2s, transform .2s; pointer-events: none;
+        }
+        .tap-layer .estado .play { margin-left: .3rem; }
+        .tap-layer.pausado .estado { opacity: 1; transform: scale(1); }
 
         .center-btn {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -374,7 +409,8 @@
 
         .empty { display: grid; place-items: center; text-align: center; padding: 4rem 2rem; color: var(--muted); font-size: 1.5rem; }
         .feed .empty { height: 100%; }
-        .empty .i { font-size: 4rem; color: var(--green); margin: 0 auto 1.2rem; }
+        /* só o ícone grande da mensagem vazia (não os ícones de botões dentro dela) */
+        .empty > div > .i { font-size: 4rem; color: var(--green); margin: 0 auto 1.2rem; }
 
         /* =========================================================
            PÁGINAS: título padrão
@@ -517,7 +553,7 @@
         .form-msg { font-size: 1.4rem; min-height: 2rem; font-weight: 600; }
         .form-msg.ok { color: var(--green); }
         .form-msg.err { color: #ff6b81; }
-        .contact-socials { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 2.8rem; }
+        .contact-socials { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 1rem; margin-bottom: 2.8rem; }
         .contact-socials a {
             display: flex; flex-direction: column; align-items: center; gap: .6rem; text-align: center;
             padding: 1.6rem 1rem; border-radius: 1.4rem;
@@ -527,6 +563,7 @@
         }
         .contact-socials a:hover { border-color: rgba(var(--green-rgb), .4); color: var(--white); }
         .contact-socials .fab { font-size: 2.6rem; color: var(--green); }
+        .contact-socials .i.rede-ico { font-size: 2.6rem; color: var(--green); }
         .contact-socials span { overflow-wrap: anywhere; font-size: 1.1rem; }
         .contact-socials strong { font-size: 1.4rem; color: var(--white); }
 
@@ -548,8 +585,11 @@
         .sheet h3 { font-size: 1.7rem; margin-bottom: 1.4rem; display: flex; justify-content: space-between; align-items: center; }
         .close-btn { width: 3.6rem; height: 3.6rem; border-radius: 50%; display: grid; place-items: center; background: rgba(var(--white-rgb), .08); font-size: 1.8rem; }
         .sheet .social-row { padding: 1.3rem 1.4rem; font-size: 1.45rem; }
-        .sheet .social-row .fab { font-size: 2.2rem; width: 2.8rem; }
+        .sheet .social-row .fab, .sheet .social-row .i.rede-ico { font-size: 2.2rem; width: 2.8rem; }
         .sheet .social-row small { display: block; color: var(--muted); font-size: 1.2rem; }
+        .sheet .msg-row { margin-top: 1.2rem; position: relative; }
+        .sheet .msg-row .msg-ico { margin-left: 0; opacity: 1; color: var(--green); font-size: 2.2rem; width: 2.8rem; }
+        .sheet .msg-row::before { content: ""; position: absolute; left: 0; right: 0; top: -.7rem; border-top: 1px solid var(--line); }
         .sheet p.desc { color: var(--grey); font-size: 1.4rem; line-height: 1.6; margin: 1rem 0 1.8rem; white-space: pre-line; }
         .sheet .when { display: flex; align-items: center; gap: .6rem; color: var(--green); font-size: 1.35rem; font-weight: 600; }
 
@@ -570,6 +610,20 @@
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
         .bottom-nav { display: none; }
+
+        /* ---------- Instalar o app (PWA) ---------- */
+        .install-btn {
+            display: flex; align-items: center; justify-content: center; gap: .8rem; width: 100%;
+            padding: 1.1rem 1.4rem; border-radius: 1.2rem; font-size: 1.35rem; font-weight: 700;
+            background: rgba(var(--green-rgb), .12); color: var(--green); border: 1px dashed rgba(var(--green-rgb), .45);
+        }
+        .install-btn:hover { background: rgba(var(--green-rgb), .2); }
+        .install-perfil { max-width: 36rem; margin: 2.4rem auto 0; }
+        .ios-passos { list-style: none; display: flex; flex-direction: column; gap: 1rem; margin: .4rem 0 1.6rem; }
+        .ios-passos li { display: flex; align-items: center; gap: 1.2rem; font-size: 1.45rem; color: var(--grey); }
+        .ios-passos b { color: var(--white); }
+        .ios-passos .n { flex: none; width: 3rem; height: 3rem; border-radius: 50%; display: grid; place-items: center; background: rgba(var(--green-rgb), .15); color: var(--green); font-weight: 800; }
+        .ios-share { display: inline-block; width: 1.8rem; height: 1.8rem; vertical-align: -.35rem; color: #0a84ff; }
 
         /* ---------- Músicas ---------- */
         .playlist-card {
@@ -627,9 +681,9 @@
         @media (max-width: 860px) {
             .app { grid-template-columns: 1fr; }
             .sidebar, .nav-arrows { display: none; }
-            .stage { height: calc(100dvh - var(--nav-h)); }
+            .stage { height: calc(100dvh - var(--nav-h) - env(safe-area-inset-bottom)); }
 
-            .post, .skeleton { height: calc(100dvh - var(--nav-h)); padding: 0; gap: 0; }
+            .post, .skeleton { height: calc(100dvh - var(--nav-h) - env(safe-area-inset-bottom)); padding: 0; gap: 0; }
             .player { height: 100%; width: 100%; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
             .caption { right: calc(var(--rail-w) + 1rem); bottom: 1.6rem; }
             .rail { position: absolute; right: .6rem; bottom: 1.6rem; z-index: 4; padding: 0; gap: 1.4rem; }
@@ -640,11 +694,17 @@
             .form .row { grid-template-columns: 1fr; }
             .profile-actions .btn { padding: 1rem 1.4rem; font-size: 1.3rem; }
             .stats { gap: 2rem; }
-            .toast { bottom: calc(var(--nav-h) + 2rem); }
+            .toast { bottom: calc(var(--nav-h) + 2rem + env(safe-area-inset-bottom)); }
+            /* app instalado no iPhone: conteúdo abaixo do relógio/entalhe */
+            .top-tabs { padding-top: calc(1.8rem + env(safe-area-inset-top)); }
+            .live-pill { top: calc(1.7rem + env(safe-area-inset-top)); }
+            .feed-pills { top: calc(6rem + env(safe-area-inset-top)); }
+            .player .open-ext { top: calc(6.4rem + env(safe-area-inset-top)); }
+            .page { padding-top: calc(2.4rem + env(safe-area-inset-top)); }
 
             .bottom-nav {
                 display: grid; grid-template-columns: repeat(5, 1fr); align-items: center;
-                position: fixed; left: 0; right: 0; bottom: 0; height: var(--nav-h);
+                position: fixed; left: 0; right: 0; bottom: 0; height: calc(var(--nav-h) + env(safe-area-inset-bottom));
                 padding-bottom: env(safe-area-inset-bottom);
                 background: var(--black); border-top: 1px solid var(--line); z-index: 30;
             }
@@ -732,7 +792,7 @@
             <img src="/assets/images/logo.png" alt="Meny Mendonça">
         </a>
 
-        <a class="live-card live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer" data-live-link>
+        <a class="live-card live-only flex" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer" data-live-link>
             <img src="/assets/images/About/About-Image.png" alt="" data-avatar>
             <div><strong><span class="live-dot"></span>AO VIVO AGORA</strong><span>Toque para assistir no TikTok</span></div>
         </a>
@@ -752,6 +812,7 @@
             <div class="social-list" data-socials></div>
         </div>
 
+        <button type="button" class="install-btn" data-instalar hidden><svg class="i"><use href="#i-plus"/></svg>Instalar o app</button>
         <p class="side-foot">desenvolvido por FSO</p>
     </aside>
 
@@ -761,7 +822,7 @@
         <!-- FEED (Para você / Destaques / Momentos) -->
         <section class="view" data-view="feed">
             <div class="top-tabs" role="tablist" aria-label="Filtrar feed">
-                <a class="live-pill" id="livePill" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer">
+                <a class="live-pill" id="livePill" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer">
                     <span class="live-dot"></span> <span class="txt-full">AO VIVO</span><span class="txt-short">LIVE</span>
                 </a>
                 <button type="button" role="tab" data-tab="momentos">Momentos</button>
@@ -781,13 +842,13 @@
 
         <!-- SOBRE MIM (perfil) -->
         <section class="view page" data-view="perfil" hidden>
-<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
+<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
             <div class="page-inner">
                 <div class="profile-head">
                     <div class="profile-cover" id="home-imagem" style="background-image:url('/assets/images/Home/Home-Image.png')" aria-hidden="true"></div>
                     <div class="pic-wrap">
                         <img class="pic" id="about-imagem" src="/assets/images/About/About-Image.png" alt="Foto de Meny Mendonça">
-                        <a class="live-tag live-only" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer">AO VIVO</a>
+                        <a class="live-tag live-only" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer">AO VIVO</a>
                     </div>
                     <h1 id="about-titulo">Meny Mendonça</h1>
                     <span class="handle">cantora · streamer · empreendedora</span>
@@ -798,6 +859,7 @@
                     <div class="stat"><strong id="stat1-num">4+</strong><span id="stat1-txt">anos de streaming</span></div>
                     <div class="stat"><strong id="stat2-num">20+</strong><span id="stat2-txt">anos cantando</span></div>
                     <div class="stat"><strong id="stat3-num">—</strong><span>vídeos e momentos</span></div>
+                    <div class="stat" id="statCurtidas" hidden><strong id="stat4-num">0</strong><span>curtidas no site</span></div>
                 </div>
 
                 <div class="profile-actions">
@@ -827,6 +889,8 @@
                 </div>
                 <div class="grid" id="profileGrid"></div>
 
+                <button type="button" class="install-btn install-perfil" data-instalar hidden><svg class="i"><use href="#i-plus"/></svg>Instalar o app no celular</button>
+
                 <p class="visits">
                     <svg class="i"><use href="#i-eye"/></svg> visitas: <strong id="contador-visitas">…</strong>
                     <a href="/admin.html">admin</a>
@@ -836,7 +900,7 @@
 
         <!-- MÚSICAS -->
         <section class="view page" data-view="musicas" hidden>
-            <a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
+            <a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
             <div class="page-inner">
                 <h2 class="page-title">minhas <span>músicas</span></h2>
                 <p class="page-lead">Músicas que eu canto e indico — toque para ouvir onde preferir.</p>
@@ -851,7 +915,7 @@
 
         <!-- EVENTOS -->
         <section class="view page" data-view="eventos" hidden>
-<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
+<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
             <div class="page-inner">
                 <h2 class="page-title">meus <span>eventos</span></h2>
                 <p class="page-lead">Próximas lives, transmissões e datas importantes.</p>
@@ -861,7 +925,7 @@
 
         <!-- CONTATO -->
         <section class="view page" data-view="contato" hidden>
-<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
+<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
             <div class="page-inner">
                 <h2 class="page-title">minhas <span>redes sociais</span></h2>
                 <p class="page-lead">Onde me encontrar — ou deixe sua mensagem que eu te respondo logo, logo.</p>
@@ -899,13 +963,13 @@
     <h3><span id="socialSheetTitle">Me acompanhe</span>
         <button type="button" class="close-btn" data-close aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
     </h3>
-    <a class="social-row live-row live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer">
-        <span class="live-dot"></span><span>Assistir a live agora<small>@meny.menycita · TikTok</small></span>
+    <a class="social-row live-row live-only flex" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer">
+        <span class="live-dot"></span><span>Assistir a live agora<small><span data-live-handle>@meny.menycita</span> · TikTok</small></span>
         <svg class="i"><use href="#i-external"/></svg>
     </a>
     <div class="social-list" data-socials data-detailed></div>
     <a class="social-row msg-row" href="#contato" data-close-sheet>
-        <svg class="i" style="color:var(--green);font-size:2rem;width:2.8rem"><use href="#i-mail"/></svg>
+        <svg class="i msg-ico"><use href="#i-mail"/></svg>
         <span>Mandar uma mensagem<small>formulário de contato do site</small></span>
         <svg class="i"><use href="#i-right"/></svg>
     </a>
@@ -929,6 +993,20 @@
         <button type="button" class="btn btn-primary" id="msShare"><svg class="i fill"><use href="#i-share"/></svg>Compartilhar</button>
     </div>
     <a class="ms-all" id="msTodas" target="_blank" rel="noopener noreferrer" hidden>ver em todas as plataformas</a>
+</dialog>
+
+<dialog class="sheet" id="iosSheet" aria-labelledby="iosTitulo">
+    <div class="grab"></div>
+    <h3><span id="iosTitulo">Instalar no iPhone</span>
+        <button type="button" class="close-btn" data-close aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+    </h3>
+    <ol class="ios-passos">
+        <li><span class="n">1</span><span>Toque em <b>Compartilhar</b>
+            <svg class="ios-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>
+            na barra do Safari</span></li>
+        <li><span class="n">2</span><span>Escolha <b>Adicionar à Tela de Início</b></span></li>
+        <li><span class="n">3</span><span>Toque em <b>Adicionar</b> — pronto, o app da Meny fica no seu celular</span></li>
+    </ol>
 </dialog>
 
 <dialog class="sheet" id="eventSheet" aria-labelledby="evTitle">
@@ -966,13 +1044,30 @@
         document.querySelectorAll(".avatar img, img[data-avatar]").forEach(img => { img.src = url; });
     }
 
-    // Todas as redes com o mesmo peso — nenhuma é "a principal".
-    const REDES = [
-        { id: "youtube",   nome: "YouTube",   icone: "fa-youtube",   handle: "@menymendonca4269", url: "https://www.youtube.com/@menymendonca4269", acao: "vídeos completos e lives" },
-        { id: "tiktok",    nome: "TikTok",    icone: "fa-tiktok",    handle: "@meny.menycita",    url: "https://www.tiktok.com/@meny.menycita",   acao: "clipes curtos e lives" },
-        { id: "instagram", nome: "Instagram", icone: "fa-instagram", handle: "@meny.meny.meny",   url: "https://www.instagram.com/meny.meny.meny", acao: "fotos e stories" },
-    ];
-    const rede = id => REDES.find(r => r.id === id);
+    /* ---------- Redes sociais (editáveis no painel, aba "Redes sociais") ----------
+       Catálogo em /assets/js/redes.js. Enquanto o conteudo-api não responde
+       (ou se ele falhar), valem os links padrão do catálogo. */
+    const CATALOGO_REDES = window.MenyRedes?.CATALOGO || {};
+    const montarRede = r => {
+        const c = CATALOGO_REDES[r.tipo] || { nome: r.tipo, icone: null, acao: "" };
+        const handle = r.handle ? (r.tipo === "whatsapp" || r.handle.startsWith("@") ? r.handle : "@" + r.handle) : "";
+        return { id: r.tipo, nome: c.nome, icone: c.icone, acao: c.acao, handle, url: r.url, visivel: r.visivel !== false };
+    };
+    let REDES = (window.MenyRedes?.PADRAO.lista || []).map(montarRede);
+    // Vídeos do YouTube/TikTok precisam do nome e do @ da rede mesmo se ela estiver oculta no painel
+    const rede = id => REDES.find(r => r.id === id)
+        || montarRede((window.MenyRedes?.PADRAO.lista || []).find(r => r.tipo === id) || { tipo: id, handle: "", url: "" });
+    const iconeRede = r => r.icone ? `<i class="fab ${r.icone}" aria-hidden="true"></i>` : icon("network", "rede-ico");
+    let LIVE_URL = window.MenyRedes ? MenyRedes.linkLive(null) : "https://www.tiktok.com/@meny.menycita/live";
+
+    function aplicarRedes(cfg) {
+        if (cfg && Array.isArray(cfg.lista) && cfg.lista.length) REDES = cfg.lista.map(montarRede);
+        LIVE_URL = (window.MenyRedes && MenyRedes.linkLive(cfg)) || LIVE_URL;
+        $$("[data-live-link]").forEach(a => { a.href = LIVE_URL; });
+        const tt = rede("tiktok");
+        $$("[data-live-handle]").forEach(el => { el.textContent = tt.handle || "TikTok"; });
+        renderRedes();
+    }
 
     const FALLBACK_IMG = "/assets/images/Home/Home-Image.png";
     const FALLBACK_PLAT = { youtube: "/assets/images/Blogs/youtube.jpg", tiktok: "/assets/images/Blogs/tiktok.jpg" };
@@ -1053,18 +1148,18 @@
     function renderRedes() {
         $$("[data-socials]").forEach(box => {
             const det = box.hasAttribute("data-detailed");
-            box.innerHTML = REDES.map(r => `
-                <a class="social-row" href="${r.url}" target="_blank" rel="noopener noreferrer">
-                    <i class="fab ${r.icone}" aria-hidden="true"></i>
-                    <span>${r.nome}${det ? `<small>${r.handle} · ${r.acao}</small>` : ""}</span>
+            box.innerHTML = REDES.filter(r => r.visivel).map(r => `
+                <a class="social-row" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">
+                    ${iconeRede(r)}
+                    <span>${esc(r.nome)}${det ? `<small>${esc([r.handle, r.acao].filter(Boolean).join(" · "))}</small>` : ""}</span>
                     ${icon("external")}
                 </a>`).join("");
         });
         $$("[data-socials-cards]").forEach(box => {
-            box.innerHTML = REDES.map(r => `
-                <a href="${r.url}" target="_blank" rel="noopener noreferrer">
-                    <i class="fab ${r.icone}" aria-hidden="true"></i>
-                    <strong>${r.nome}</strong><span>${r.handle}</span>
+            box.innerHTML = REDES.filter(r => r.visivel).map(r => `
+                <a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">
+                    ${iconeRede(r)}
+                    <strong>${esc(r.nome)}</strong><span>${esc(r.handle)}</span>
                 </a>`).join("");
         });
     }
@@ -1316,7 +1411,7 @@
                     <span class="live-tag live-only">LIVE</span>
                 </button>
                 <button type="button" class="act act-like ${liked ? "on" : ""}" aria-pressed="${liked}">
-                    <span class="ic">${icon("heart", "fill")}</span><span>Curtir</span>
+                    <span class="ic">${icon("heart", "fill")}</span><span class="n-curtidas">${rotuloCurtidas(item)}</span>
                 </button>
                 ${daRede
                     ? `<a class="act" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" aria-label="Comentar no ${r.nome}">
@@ -1389,19 +1484,58 @@
     }
 
     /* ---------- Player ---------- */
-    function pararTodos() {
-        $$(".player iframe", feed).forEach(f => {
-            f.parentElement.querySelector(".center-btn").hidden = false;
-            f.remove();
-        });
+    /* ---------- Controle do YouTube (API por postMessage) ----------
+       No celular, o toque dentro do player do YouTube só mostra/esconde
+       os controles dele, e o play com som pode ser bloqueado. Aqui uma
+       camada transparente recebe o toque e manda "play"/"pause" para o
+       player (enablejsapi=1), como no TikTok. Se o player não responder,
+       a camada sai e o toque volta a ir direto para o YouTube. */
+    const YT_ORIGEM = /^https:\/\/www\.youtube(-nocookie)?\.com$/;
+    function ytComando(iframe, func) {
+        try { iframe.contentWindow.postMessage(JSON.stringify({ event: "command", func, args: [] }), "*"); } catch { /* frame fechado */ }
     }
+    function ytOuvir(iframe) {
+        try { iframe.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), "*"); } catch { /* frame fechado */ }
+    }
+    window.addEventListener("message", e => {
+        if (!YT_ORIGEM.test(e.origin)) return;
+        let d; try { d = typeof e.data === "string" ? JSON.parse(e.data) : e.data; } catch { return; }
+        const estado = d?.info?.playerState ?? (d?.event === "onStateChange" ? d.info : undefined);
+        const iframe = [...document.querySelectorAll(".player iframe")].find(f => f.contentWindow === e.source);
+        if (!iframe) return;
+        const player = iframe.parentElement;
+        player.dataset.ytOk = "1";
+        if (typeof estado !== "number") return;
+        player.dataset.yt = estado;                           // 1 tocando · 2 pausado · 0 fim · 3 carregando · 5/-1 parado
+        const camada = player.querySelector(".tap-layer");
+        if (camada) camada.classList.toggle("pausado", ![1, 3].includes(estado));
+    });
+    function alternarPlay(player) {
+        const iframe = player.querySelector("iframe");
+        const camada = player.querySelector(".tap-layer");
+        if (!iframe || !camada) return;
+        const tocando = ["1", "3"].includes(player.dataset.yt);
+        ytComando(iframe, tocando ? "pauseVideo" : "playVideo");
+        camada.classList.toggle("pausado", tocando);          // resposta visual imediata
+        if (!tocando) {
+            // Se em 1,5s não começar a tocar (ex.: iPhone exige tocar no próprio
+            // player para liberar o som), tira a camada e deixa o toque com o YouTube.
+            const antes = Date.now();
+            setTimeout(() => {
+                if (!["1", "3"].includes(player.dataset.yt) && player.dataset.ytAcao == antes) camada.remove();
+            }, 1500);
+            player.dataset.ytAcao = antes;
+        }
+    }
+
     // O player do TikTok só roda incorporado em site https (produção).
     // No "netlify dev" (http://localhost) ele responde "Server error" —
     // nesse caso abrimos o vídeo direto no TikTok.
     const EMBED_TIKTOK_OK = location.protocol === "https:";
 
     function fecharPlayer(player) {
-        player.querySelectorAll("iframe, .open-ext").forEach(el => el.remove());
+        player.querySelectorAll("iframe, .open-ext, .tap-layer").forEach(el => el.remove());
+        delete player.dataset.yt; delete player.dataset.ytOk;
         const b = player.querySelector(".center-btn");
         if (b) b.hidden = false;
     }
@@ -1418,15 +1552,25 @@
             window.open(item.url, "_blank", "noopener");
             return;
         }
-        if (player.querySelector("iframe")) return;
+        if (player.querySelector("iframe")) { alternarPlay(player); return; }
         pararTodos();
+        const ehYT = item.platform === "youtube";
         const f = document.createElement("iframe");
-        f.src = item.embed;
+        f.src = ehYT ? `${item.embed}&enablejsapi=1&origin=${encodeURIComponent(location.origin)}` : item.embed;
         f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
         f.allowFullscreen = true;
         f.referrerPolicy = "strict-origin-when-cross-origin";
         f.title = item.title;
         player.appendChild(f);
+        if (ehYT) {
+            player.insertAdjacentHTML("beforeend",
+                `<div class="tap-layer" aria-label="Pausar ou continuar o vídeo"><span class="estado">${icon("play", "fill play")}</span></div>`);
+            f.addEventListener("load", () => {
+                ytOuvir(f);
+                // Player não conversou com a página? Tira a camada: toque direto no YouTube.
+                setTimeout(() => { if (!player.dataset.ytOk) player.querySelector(".tap-layer")?.remove(); }, 3000);
+            });
+        }
         // Atalho sempre visível caso a rede recuse o player incorporado
         player.insertAdjacentHTML("beforeend",
             `<a class="open-ext chip" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">${icon("external")} abrir no ${rede(item.platform).nome}</a>`);
@@ -1435,15 +1579,68 @@
 
     /* ---------- Curtir / salvar / compartilhar ---------- */
     function pulse(btn) { btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }
+    /* ---------------------------------------------------------
+       ⚠️ RECURSO REVERSÍVEL — contagem de curtidas no servidor
+       (netlify/functions/curtidas-api.js). Desliga pelo painel
+       (aba Curtidas) ou pela variável CURTIDAS_DESATIVADAS=1; nesses
+       casos, ou se a function não existir, o coração volta a funcionar
+       só no navegador de quem curtiu, como antes.
+       --------------------------------------------------------- */
+    const curtidasSrv = { ativo: false, itens: {} };
+    const numeroCurto = n => n < 1000 ? String(n)
+        : n < 1e6 ? `${(n / 1000).toFixed(n < 10000 ? 1 : 0).replace(".", ",").replace(/,0$/, "")} mil`
+        : `${(n / 1e6).toFixed(1).replace(".", ",").replace(/,0$/, "")} mi`;
+    function rotuloCurtidas(item) {
+        const n = curtidasSrv.ativo ? (curtidasSrv.itens[item.key]?.n || 0) : 0;
+        return n > 0 ? numeroCurto(n) : "Curtir";
+    }
+    function atualizarRotulosCurtidas() {
+        $$(".post", feed).forEach(p => {
+            const item = lista[+p.dataset.i];
+            const el = p.querySelector(".n-curtidas");
+            if (item && el) el.textContent = rotuloCurtidas(item);
+        });
+        const total = Object.values(curtidasSrv.itens).reduce((s, x) => s + (x.n || 0), 0);
+        $("#statCurtidas").hidden = !(curtidasSrv.ativo && total > 0);
+        $("#stat4-num").textContent = numeroCurto(total);
+    }
+    async function carregarCurtidas(recursos) {
+        if (recursos && recursos.curtidas === false) return;          // desligado no painel
+        const d = await jsonOu("/.netlify/functions/curtidas-api", null);
+        if (!d || !d.ativo) return;                                    // sem function ou desligado
+        curtidasSrv.ativo = true;
+        curtidasSrv.itens = d.itens || {};
+        atualizarRotulosCurtidas();
+    }
+    async function enviarCurtida(item, on) {
+        const reg = curtidasSrv.itens[item.key] || (curtidasSrv.itens[item.key] = { n: 0 });
+        const antes = reg.n || 0;
+        reg.n = Math.max(0, antes + (on ? 1 : -1));                   // otimista
+        atualizarRotulosCurtidas();
+        try {
+            const r = await fetch("/.netlify/functions/curtidas-api", {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chave: item.key, acao: on ? "curtir" : "descurtir", titulo: item.title, tipo: item.platform }),
+            });
+            const d = await r.json().catch(() => ({}));
+            if (r.ok && typeof d.total === "number") reg.n = d.total;
+            else if (d.desativado) { curtidasSrv.ativo = false; }       // desligaram agora: volta ao modo local
+            else reg.n = antes;                                        // limite/erro: fica só no navegador
+        } catch { reg.n = antes; }
+        atualizarRotulosCurtidas();
+    }
+
     function alternarCurtida(post, forcar) {
         const item = lista[+post.dataset.i];
         const btn = post.querySelector(".act-like");
-        const on = forcar ?? !curtidos.has(item.key);
+        const antes = curtidos.has(item.key);
+        const on = forcar ?? !antes;
         on ? curtidos.add(item.key) : curtidos.delete(item.key);
         store.set("meny-curtidos", [...curtidos]);
         btn.classList.toggle("on", on);
         btn.setAttribute("aria-pressed", on);
         if (on) pulse(btn);
+        if (on !== antes && curtidasSrv.ativo) enviarCurtida(item, on);
     }
     function coracao(player, x, y) {
         player.insertAdjacentHTML("beforeend", `<svg class="i fill burst" style="left:${x}px;top:${y}px" aria-hidden="true"><use href="#i-heart"/></svg>`);
@@ -1584,8 +1781,10 @@
 
     async function carregarSobre() {
         const d = await jsonOu("/.netlify/functions/conteudo-api", null);
+        carregarCurtidas(d && d.recursos);
         if (!d) return;                       // sem API: fica o texto padrão do HTML
         aplicarTemaSite(d.tema);
+        aplicarRedes(d.redes);
         const home = d.home || {}, about = d.about || {};
 
         // Campo presente mas vazio no painel = esconder o bloco na página.
@@ -1653,7 +1852,8 @@
         const d = await jsonOu("/.netlify/functions/calendar", { items: [] });
         eventos = (Array.isArray(d.items) ? d.items : []).map(ev => ({
             title: ev.summary || "Evento",
-            start: new Date(ev.start?.dateTime || ev.start?.date),
+            // dia inteiro ("2026-10-12") = meia-noite no horário local, não em UTC (senão cai no dia anterior no Brasil)
+            start: ev.start?.dateTime ? new Date(ev.start.dateTime) : new Date(`${ev.start?.date}T00:00:00`),
             allDay: !ev.start?.dateTime,
             desc: limpar(ev.description),
             url: ev.htmlLink,
@@ -1896,7 +2096,6 @@
        do perfil, card na sidebar, faixa nas páginas, 1ª opção do
        "Me acompanhe" e o avatar passa a abrir a live direto.
        ========================================================= */
-    const LIVE_URL = "https://www.tiktok.com/@meny.menycita/live";
     let aoVivo = false;
     const tituloBase = () => document.title.replace(/^🔴 AO VIVO · /, "");
     function aplicarLive(online) {
@@ -1954,9 +2153,36 @@
         enriquecerTikTok();
     });
 
+    /* =========================================================
+       PWA: Service Worker + botão "Instalar o app"
+       - Android/Chrome/Edge: usa o convite nativo (beforeinstallprompt)
+       - iPhone/iPad (Safari): mostra o passo a passo (Compartilhar >
+         Adicionar à Tela de Início), porque o iOS não tem convite nativo
+       - Já instalado (aberto como app): o botão não aparece
+       ========================================================= */
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
     }
+    const rodandoComoApp = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    const ehIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    let conviteInstalar = null;
+    const mostrarInstalar = (sim) => $$("[data-instalar]").forEach(b => { b.hidden = !sim; });
+    if (!rodandoComoApp) {
+        if (ehIOS) mostrarInstalar(true);
+        window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); conviteInstalar = e; mostrarInstalar(true); });
+    }
+    window.addEventListener("appinstalled", () => { conviteInstalar = null; mostrarInstalar(false); toast("App instalado! 🎉"); });
+    document.addEventListener("click", async e => {
+        if (!e.target.closest("[data-instalar]")) return;
+        if (conviteInstalar) {
+            conviteInstalar.prompt();
+            const { outcome } = await conviteInstalar.userChoice.catch(() => ({}));
+            if (outcome === "accepted") mostrarInstalar(false);
+            conviteInstalar = null;
+        } else if (ehIOS) {
+            $("#iosSheet").showModal();
+        }
+    });
 })();
 </script>
 </body>

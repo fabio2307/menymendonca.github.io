@@ -8,13 +8,14 @@
 // dar F5.
 //
 // Sempre que bumpar essa versão, caches antigos são apagados no "activate".
-const CACHE_VERSION = "v4"; // v4: temas (assets/js/temas.js)
+const CACHE_VERSION = "v6"; // v6: redes sociais vindas do painel (redes.js) | v5: PWA revisado
 const STATIC_CACHE = `meny-static-${CACHE_VERSION}`;
 const PAGES_CACHE = `meny-pages-${CACHE_VERSION}`;
 
 // App shell: arquivos estáticos que raramente mudam, seguros para
 // precachear na instalação.
 const PRECACHE_URLS = [
+  "/",
   "/offline.html",
   "/manifest.json",
   "/assets/images/logo.png",
@@ -23,7 +24,10 @@ const PRECACHE_URLS = [
   "/assets/images/Blogs/youtube.jpg",
   "/assets/images/Blogs/tiktok.jpg",
   "/assets/images/icons/icon-192.png",
+  "/assets/images/icons/icon-512.png",
+  "/assets/images/icons/icon-maskable-512.png",
   "/assets/js/temas.js",
+  "/assets/js/redes.js",
 ];
 
 // Nunca interceptar/cachear nada que bata com esses prefixos — passa direto
@@ -88,18 +92,29 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((resposta) => {
-          const copia = resposta.clone();
-          caches.open(PAGES_CACHE).then((cache) => cache.put(request, copia));
+          if (resposta && resposta.ok) {
+            const copia = resposta.clone();
+            // guarda sem a querystring: "/?pwa=1" (abrir pelo ícone) e "/"
+            // viram a mesma página no cache
+            caches.open(PAGES_CACHE).then((cache) => cache.put(url.origin + url.pathname, copia));
+          }
           return resposta;
         })
-        .catch(
-          () =>
-            caches.match(request).then((cached) => cached) ||
-            caches.match("/offline.html")
-        )
+        .catch(async () => {
+          // Antes: "promise || fallback" nunca chegava ao offline.html
+          // (uma Promise é sempre "verdadeira"). Agora espera de verdade.
+          const cached =
+            (await caches.match(url.origin + url.pathname)) ||
+            (await caches.match(request, { ignoreSearch: true })) ||
+            (url.pathname === "/" || url.pathname === "/index.html" ? await caches.match("/") : null);
+          return cached || (await caches.match("/offline.html")) || Response.error();
+        })
     );
     return;
   }
+
+  // Telas de abertura do iPhone: grandes e usadas só na instalação — rede direta.
+  if (url.pathname.startsWith("/assets/images/splash/")) return;
 
   // Assets estáticos (CSS, JS, imagens, fontes): serve do cache na hora
   // (rápido) e atualiza em segundo plano pra próxima visita — nunca

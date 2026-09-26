@@ -14,6 +14,7 @@
 //   POST (logado no admin) -> body { data: "AAAA-MM-DD" | "", ocultar: bool }
 
 const { getStore } = require("@netlify/blobs");
+const { adminLogado } = require("../lib/auth");
 
 function criarStore() {
     const opcoes = { name: "config", consistency: "strong" };
@@ -48,7 +49,7 @@ function calcularIdade(dataNascimento) {
 const resposta = (statusCode, corpo) => ({ statusCode, headers: HEADERS, body: JSON.stringify(corpo) });
 
 exports.handler = async function (event, context) {
-    const user = context.clientContext && context.clientContext.user;
+    const user = adminLogado(context);
     const store = criarStore();
 
     let salvo = null;
