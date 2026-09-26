@@ -13,3 +13,10 @@ status = 301
 from = "/login"
 to = "/admin.html"
 status = 301
+
+# Endereço usado durante o desenvolvimento do layout novo
+[[redirects]]
+from = "/feed.html"
+to = "/"
+status = 301
+force = true

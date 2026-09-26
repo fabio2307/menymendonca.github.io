@@ -8,7 +8,7 @@
 // dar F5.
 //
 // Sempre que bumpar essa versão, caches antigos são apagados no "activate".
-const CACHE_VERSION = "v2";
+const CACHE_VERSION = "v4"; // v4: temas (assets/js/temas.js)
 const STATIC_CACHE = `meny-static-${CACHE_VERSION}`;
 const PAGES_CACHE = `meny-pages-${CACHE_VERSION}`;
 
@@ -17,22 +17,13 @@ const PAGES_CACHE = `meny-pages-${CACHE_VERSION}`;
 const PRECACHE_URLS = [
   "/offline.html",
   "/manifest.json",
-  "/assets/css/main.css",
-  "/assets/css/responsive.css",
-  "/assets/vendors/font-awesome/css/all.min.css",
-  "/assets/vendors/swiper/swiper.css",
-  "/assets/vendors/magnific-popup/magnific-popup.css",
-  "/assets/vendors/jquery/jquery-3.6.0.js",
-  "/assets/vendors/swiper/swiper.js",
-  "/assets/vendors/magnific-popup/jquery.magnific-popup.js",
-  "/assets/vendors/typed/typed.js",
-  "/assets/js/blog.js",
-  "/assets/js/momentos.js",
-  "/assets/js/script.js",
-  "/assets/js/scroll-spy.js",
-  "/assets/js/counter-up.js",
   "/assets/images/logo.png",
   "/assets/images/Home/Home-Image.png",
+  "/assets/images/About/About-Image.png",
+  "/assets/images/Blogs/youtube.jpg",
+  "/assets/images/Blogs/tiktok.jpg",
+  "/assets/images/icons/icon-192.png",
+  "/assets/js/temas.js",
 ];
 
 // Nunca interceptar/cachear nada que bata com esses prefixos — passa direto

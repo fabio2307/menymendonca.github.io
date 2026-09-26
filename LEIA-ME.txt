@@ -1,0 +1,61 @@
+SITE MENY MENDONÇA — pacote limpo (layout novo como página principal)
+=====================================================================
+
+Estrutura
+---------
+public/                     -> o que o Netlify publica (netlify.toml: publish = "public")
+  index.html                -> PÁGINA PRINCIPAL (layout estilo feed):
+                               #inicio  Para você     #videos  Destaques (YouTube/TikTok)
+                               #momentos Momentos      #eventos Agenda (Google Agenda)
+                               #perfil  Sobre mim      #contato Redes + formulário
+                               #musicas Músicas        #musica/<id> link direto de uma música
+                               Links antigos (#about, #agenda, #contact, #portfolio, #blog)
+                               continuam funcionando.
+  admin.html                -> painel admin (Netlify Identity). Abas: Início, Sobre
+                               (com data de nascimento), Momentos, TikTok, Músicas, Aparência
+  offline.html, sw.js, manifest.json -> PWA (sw.js atualizado p/ v3)
+  assets/images/            -> só as imagens usadas
+  assets/js/temas.js        -> temas de cores (usado pelo site e pelo painel)
+netlify/functions/          -> 14 Netlify Functions usadas pelo site e pelo admin
+                               (novas: musicas-api, musica-buscar)
+netlify.toml                -> build, agendamento do feeds-update (a cada hora),
+                               redirects /admin, /login e /feed.html -> /
+package.json / package-lock.json -> dependências das functions
+.env.example                -> variáveis de ambiente necessárias (preencha no .env
+                               local e no painel do Netlify)
+
+Como rodar localmente
+---------------------
+1) npm install
+2) copie .env.example para .env e preencha
+3) npx netlify dev   ->  http://localhost:8888
+(Live Server do VS Code NÃO roda as functions.)
+
+O que foi removido na limpeza (e por quê)
+-----------------------------------------
+- index antigo, index0.html, feed.html      -> substituídos pelo novo index.html
+- assets/css, assets/js, assets/vendors     -> só o site antigo usava (jQuery, Swiper,
+                                               Magnific, Typed, Font Awesome local, FullCalendar)
+- assets/logo.png, *-Image1.png             -> duplicata / sem uso
+- blog1.json                                -> dados de reserva agora estão dentro do index.html
+- decap-cms.js (raiz)                       -> fora da pasta publicada, nunca era servido
+- _redirects (raiz)                         -> ignorado pelo Netlify (fica fora de public/)
+- deno.lock, public/.gitignore              -> sem uso
+- .github/workflows/blog.yml                -> rodava "node updateBlog.js", arquivo que não
+                                               existe mais (falhava a cada 6h); substituído
+                                               pela function agendada feeds-update
+- netlify/functions/migrate-json-to-blobs.js -> migração de uso único, já feita
+- dependências cheerio e dotenv             -> nenhuma function usa
+
+Novidades (v7)
+--------------
+- Data de nascimento editável no painel (aba Sobre). Fica guardada só no
+  servidor (Netlify Blobs, store "config"); o site recebe apenas a idade.
+  Opção "não mostrar a idade". IDADE_NASC continua valendo como reserva.
+- Temas: aba Aparência do painel (Esmeralda, Noite roxa, Pôr do sol, Oceano,
+  Dourado, Claro + cor de destaque personalizada com aviso de contraste).
+- Músicas: aba Músicas do painel com busca automática de links. Sem chave,
+  usa Deezer e Apple Music (links exatos) + páginas de busca para Spotify,
+  YouTube, YouTube Music e Amazon. O Odesli (song.link) encerrou o acesso
+  gratuito sem chave em set/2026; se um dia você tiver uma ODESLI_API_KEY,
+  basta configurá-la no Netlify que a busca passa a usar o Odesli.

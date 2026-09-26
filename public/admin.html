@@ -6,6 +6,7 @@
     <title>Painel — Meny Mendonça</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script src="/assets/js/temas.js"></script>
     <style>
         :root {
             color-scheme: dark;
@@ -538,6 +539,55 @@
             }
         }
 
+        /* ---------- Aparência (temas) ---------- */
+        .grade-temas { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.7rem; margin-bottom: 1.2rem; }
+        .tema-card {
+            display: flex; flex-direction: column; gap: 0.35rem; text-align: left; min-height: 0;
+            padding: 0.6rem; border-radius: 0.8rem; background: transparent;
+            border: 2px solid var(--border-soft); color: var(--text);
+        }
+        .tema-card.ativo { border-color: var(--brass); box-shadow: 0 0 0 3px rgba(212, 162, 76, 0.18); }
+        .tema-card strong { font-size: 0.85rem; }
+        .tema-card small { font-size: 0.7rem; color: var(--muted); line-height: 1.3; font-weight: 400; }
+        .tema-mini {
+            display: flex; flex-direction: column; gap: 0.3rem; padding: 0.6rem; border-radius: 0.55rem;
+            background: var(--f); border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .tm-bar { height: 0.4rem; width: 80%; border-radius: 1rem; background: var(--tx); opacity: 0.85; }
+        .tm-bar.curta { width: 50%; background: var(--ap); }
+        .tm-btn { align-self: flex-start; margin-top: 0.2rem; padding: 0.15rem 0.5rem; border-radius: 0.35rem; background: var(--d); color: var(--sd); font-size: 0.65rem; font-weight: 700; }
+        .previa-tema {
+            border-radius: 0.9rem; padding: 1rem; margin: 0.4rem 0 0.2rem;
+            background: var(--black); color: var(--white); border: 1px solid rgba(var(--white-rgb), 0.1);
+        }
+        .previa-tema .pv-titulo { font-size: 1.05rem; font-weight: 700; }
+        .previa-tema .pv-titulo span { color: var(--green); }
+        .previa-tema p { margin: 0.3rem 0 0.8rem; font-size: 0.8rem; color: var(--muted); }
+        .previa-tema .pv-card { padding: 0.7rem; border-radius: 0.7rem; background: var(--surface-2); color: var(--grey); font-size: 0.8rem; margin-bottom: 0.8rem; }
+        .previa-tema .pv-botoes { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .previa-tema .pv-btn { padding: 0.45rem 0.9rem; border-radius: 0.5rem; background: var(--green); color: var(--on-green); font-weight: 700; font-size: 0.8rem; }
+        .previa-tema .pv-btn.ghost { background: rgba(var(--white-rgb), 0.08); color: var(--white); }
+        .previa-tema .pv-live { background: #ff0033; color: #fff; }
+        .linha-cor { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+        .linha-cor input[type="color"] { width: 3.2rem; height: 2.4rem; padding: 0.1rem; border-radius: 0.5rem; border: 1px solid var(--border-soft); background: transparent; }
+        .check { display: flex !important; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text) !important; font-size: 0.88rem !important; }
+        .check input { width: 1.1rem; height: 1.1rem; accent-color: var(--brass); }
+        .aviso-ruim { color: var(--danger) !important; }
+        .aviso-bom { color: var(--emerald) !important; }
+
+        /* ---------- Músicas ---------- */
+        .busca-musica { display: flex; gap: 0.6rem; }
+        .busca-musica input { flex: 1; min-width: 0; }
+        .busca-musica button { flex: 0 0 auto; background: var(--emerald); color: #06140e; }
+        .grade-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0 0.9rem; }
+        .acoes-item { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: flex-end; }
+        .btn-mini {
+            min-height: 40px; padding: 0.35rem 0.65rem; font-size: 0.8rem; background: transparent;
+            border: 1px solid var(--border-soft); color: var(--text);
+        }
+        .link-busca { border-color: #d4a24c !important; background: rgba(212, 162, 76, 0.08) !important; }
+        .separador { border: 0; border-top: 1px solid var(--border-soft); margin: 1.2rem 0; }
+
         /* ---------- Listas ---------- */
 
         .lista-item {
@@ -787,6 +837,8 @@
             <button class="aba-btn" data-aba="sobre">Sobre</button>
             <button class="aba-btn" data-aba="momentos">Momentos</button>
             <button class="aba-btn" data-aba="tiktok">TikTok</button>
+            <button class="aba-btn" data-aba="musicas">Músicas</button>
+            <button class="aba-btn" data-aba="aparencia">Aparência</button>
         </div>
 
         <!-- Início (seção Home do site) -->
@@ -837,7 +889,7 @@
         <section class="painel-secao" id="secao-sobre">
             <div class="card">
                 <h2>Textos, foto e contadores da seção Sobre</h2>
-                <p class="card-hint">A idade continua calculada automaticamente e não é editável aqui.</p>
+                <p class="card-hint">A idade é calculada automaticamente a partir da data de nascimento abaixo.</p>
 
                 <form id="formSobre">
                     <div class="preview-foto">
@@ -869,6 +921,19 @@
                     <div class="campo">
                         <label for="sobreTrabalho">Trabalho</label>
                         <input type="text" id="sobreTrabalho" placeholder="Streaming, empreendedora" />
+                    </div>
+
+                    <div class="linha-dupla">
+                        <div class="campo">
+                            <label for="sobreNascimento">Data de nascimento</label>
+                            <input type="date" id="sobreNascimento" min="1900-01-01" />
+                            <span class="dica">Fica guardada só no servidor — o site mostra apenas a idade.</span>
+                        </div>
+                        <div class="campo">
+                            <label>&nbsp;</label>
+                            <label class="check"><input type="checkbox" id="sobreOcultarIdade" /> Não mostrar a idade no site</label>
+                            <span class="dica" id="nascimentoInfo"></span>
+                        </div>
                     </div>
 
                     <div class="linha-dupla">
@@ -1001,6 +1066,116 @@
                 </div>
             </div>
         </section>
+
+        <!-- Músicas -->
+        <section class="painel-secao" id="secao-musicas">
+            <div class="card">
+                <h2 id="tituloFormMusica">Adicionar música</h2>
+                <p class="card-hint">Cole o link da música em qualquer plataforma e clique em <strong>Buscar</strong>: o título, a capa e os links das outras plataformas são preenchidos sozinhos. Deezer e Apple Music vêm com o link exato; Spotify, YouTube e Amazon podem vir como <em>página de busca</em> da música (marcados em amarelo) — troque pelo link exato se quiser. Confira antes de salvar.</p>
+
+                <div class="campo">
+                    <label for="musicaBusca">Link da música (Spotify, YouTube, Deezer, Apple Music…)</label>
+                    <div class="busca-musica">
+                        <input type="url" id="musicaBusca" placeholder="https://open.spotify.com/track/..." />
+                        <button type="button" class="btn" id="btnBuscarMusica">Buscar</button>
+                    </div>
+                    <span class="dica" id="musicaBuscaInfo"></span>
+                </div>
+
+                <hr class="separador" />
+
+                <form id="formMusica">
+                    <div class="preview-foto">
+                        <img id="musicaCapaPreview" src="assets/images/Home/Home-Image.png" alt="" />
+                        <div class="preview-texto">Capa da música. Vem da busca automática, ou envie uma imagem sua abaixo.</div>
+                    </div>
+                    <input type="hidden" id="musicaCapaUrl" />
+
+                    <div class="linha-dupla">
+                        <div class="campo">
+                            <label for="musicaTitulo">Título</label>
+                            <input type="text" id="musicaTitulo" placeholder="Nome da música" />
+                        </div>
+                        <div class="campo">
+                            <label for="musicaArtista">Artista</label>
+                            <input type="text" id="musicaArtista" placeholder="Quem canta" />
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="musicaCapaArquivo">Trocar capa (opcional)</label>
+                        <input type="file" id="musicaCapaArquivo" accept="image/*" />
+                    </div>
+
+                    <p class="card-hint" style="margin:0.4rem 0 0.8rem;">Links por plataforma (deixe em branco as que não tiver):</p>
+                    <div class="grade-links" id="musicaLinks"></div>
+
+                    <button type="submit" class="btn-primary" id="btnSalvarMusica">Adicionar música</button>
+                    <button type="button" class="btn" id="btnCancelarEdicao"
+                        style="display:none;width:100%;margin-top:0.6rem;background:transparent;border:1px solid var(--border-soft);color:var(--muted);">Cancelar edição</button>
+                </form>
+                <div class="status" id="statusMusica" style="display:none;"></div>
+            </div>
+
+            <div class="card">
+                <h2>Músicas publicadas</h2>
+                <p class="card-hint">A ordem aqui é a ordem do site. Use ↑ ↓ para reorganizar.</p>
+                <div id="listaMusicas"><p class="vazio">Carregando…</p></div>
+            </div>
+
+            <div class="card">
+                <h2>Playlist completa (opcional)</h2>
+                <p class="card-hint">Link de uma playlist sua (Spotify, YouTube, Deezer…). Aparece como um botão em destaque no topo da página de músicas.</p>
+                <form id="formPlaylist">
+                    <div class="linha-dupla">
+                        <div class="campo">
+                            <label for="playlistUrl">Link da playlist</label>
+                            <input type="url" id="playlistUrl" placeholder="https://open.spotify.com/playlist/..." />
+                        </div>
+                        <div class="campo">
+                            <label for="playlistTitulo">Nome</label>
+                            <input type="text" id="playlistTitulo" placeholder="Minha playlist" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Salvar playlist</button>
+                </form>
+                <div class="status" id="statusPlaylist" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- Aparência -->
+        <section class="painel-secao" id="secao-aparencia">
+            <div class="card">
+                <h2>Tema do site</h2>
+                <p class="card-hint">Escolha as cores do site. O selo "AO VIVO" continua sempre vermelho.</p>
+                <form id="formTema">
+                    <div class="grade-temas" id="gradeTemas"></div>
+
+                    <div class="campo">
+                        <label class="check"><input type="checkbox" id="temaUsarCor" /> Usar uma cor de destaque personalizada</label>
+                        <div class="linha-cor" style="margin-top:0.5rem;">
+                            <input type="color" id="temaCor" value="#00ffa9" disabled aria-label="Cor de destaque" />
+                            <span class="dica" id="avisoContraste" style="margin:0;"></span>
+                        </div>
+                    </div>
+
+                    <label class="campo" style="display:block;margin-bottom:0.3rem;font-size:0.82rem;color:var(--muted);">Prévia</label>
+                    <div class="previa-tema" id="previaTema">
+                        <div class="pv-titulo">meus <span>destaques</span></div>
+                        <p>Assim ficam títulos, textos e botões no site.</p>
+                        <div class="pv-card">Um cartão de conteúdo, como os eventos da agenda.</div>
+                        <div class="pv-botoes">
+                            <span class="pv-btn">Seguir</span>
+                            <span class="pv-btn ghost">Mensagem</span>
+                            <span class="pv-btn pv-live">● AO VIVO</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="btnSalvarTema">Salvar tema</button>
+                </form>
+                <div class="status" id="statusTema" style="display:none;"></div>
+            </div>
+        </section>
     </div>
 
     <script>
@@ -1037,6 +1212,8 @@
                 carregarConteudo();
                 carregarMomentos();
                 carregarTiktok();
+                carregarNascimento();
+                carregarMusicas();
             }
 
             function mostrarLogin() {
@@ -1205,6 +1382,7 @@
                 }
                 preencherFormInicio();
                 preencherFormSobre();
+                preencherFormTema();
             }
 
             async function salvarConteudo() {
@@ -1300,6 +1478,9 @@
                     };
 
                     await salvarConteudo();
+                    statusSobre.textContent = "Textos salvos. Salvando data de nascimento…";
+                    await salvarNascimento();
+                    carregarNascimento();
 
                     statusSobre.textContent = "Seção Sobre salva!";
                     document.getElementById("sobreImagem").value = "";
@@ -1586,6 +1767,350 @@
                     statusTiktok.textContent = "Erro: " + err.message;
                 } finally {
                     btn.disabled = false;
+                }
+            });
+
+            // ---------------- Data de nascimento (idade) ----------------
+            // A data fica guardada só no servidor (function idade); o site
+            // recebe apenas a idade calculada.
+            async function carregarNascimento() {
+                const campo = document.getElementById("sobreNascimento");
+                const ocultar = document.getElementById("sobreOcultarIdade");
+                const info = document.getElementById("nascimentoInfo");
+                try {
+                    const resp = await authFetch("/.netlify/functions/idade", { cache: "no-store" });
+                    const d = await resp.json().catch(() => ({}));
+                    campo.value = d.data || "";
+                    ocultar.checked = !!d.ocultar;
+                    info.textContent = d.origem === "variavel"
+                        ? `Hoje a data vem da configuração do Netlify (IDADE_NASC). Idade atual: ${d.idade} anos. Salvando aqui, passa a valer a do painel.`
+                        : d.idade != null ? `Idade exibida no site: ${d.idade} anos.` : "Nenhuma data cadastrada ainda.";
+                } catch (err) {
+                    info.textContent = "Não foi possível carregar a data de nascimento.";
+                }
+            }
+            document.getElementById("sobreNascimento").max = new Date().toISOString().slice(0, 10);
+
+            async function salvarNascimento() {
+                const resp = await authFetch("/.netlify/functions/idade", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        data: document.getElementById("sobreNascimento").value,
+                        ocultar: document.getElementById("sobreOcultarIdade").checked,
+                    }),
+                });
+                const d = await resp.json().catch(() => ({}));
+                if (!resp.ok || !d.success) throw new Error(d.error || `Falha ao salvar a data (${resp.status})`);
+                return d;
+            }
+
+            // ---------------- Aparência (temas) ----------------
+            let temaSelecionado = { id: "esmeralda", destaque: null };
+
+            function desenharTemas() {
+                const T = window.MenyTemas;
+                const grade = document.getElementById("gradeTemas");
+                if (!T) { grade.innerHTML = '<p class="vazio">Não foi possível carregar os temas.</p>'; return; }
+                grade.innerHTML = Object.keys(T.TEMAS).map((id) => {
+                    const t = T.TEMAS[id];
+                    return `
+                        <button type="button" class="tema-card ${id === temaSelecionado.id ? "ativo" : ""}" data-tema="${id}"
+                            style="--f:${t.fundo};--s:${t.superficie};--d:${t.destaque};--tx:${t.texto};--ap:${t.apagado};--sd:${t.sobreDestaque}">
+                            <span class="tema-mini">
+                                <span class="tm-bar"></span><span class="tm-bar curta"></span>
+                                <span class="tm-btn">Seguir</span>
+                            </span>
+                            <strong>${escaparHtml(t.nome)}</strong>
+                            <small>${escaparHtml(t.descricao)}</small>
+                        </button>`;
+                }).join("");
+                grade.querySelectorAll("[data-tema]").forEach((b) => b.addEventListener("click", () => {
+                    temaSelecionado.id = b.dataset.tema;
+                    desenharTemas();
+                    atualizarPreviaTema();
+                }));
+            }
+
+            function atualizarPreviaTema() {
+                const T = window.MenyTemas;
+                if (!T) return;
+                const usarCor = document.getElementById("temaUsarCor").checked;
+                const cor = document.getElementById("temaCor");
+                cor.disabled = !usarCor;
+                temaSelecionado.destaque = usarCor ? cor.value : null;
+                const t = T.resolver(temaSelecionado);
+                const vars = T.variaveis(t);
+                const previa = document.getElementById("previaTema");
+                Object.keys(vars).forEach((k) => previa.style.setProperty(k, vars[k]));
+
+                // aviso de contraste da cor personalizada
+                const aviso = document.getElementById("avisoContraste");
+                if (usarCor) {
+                    const c = T.contraste(t.destaque, t.fundo);
+                    aviso.textContent = c < 3
+                        ? `⚠️ Contraste baixo (${c.toFixed(1)}:1) com o fundo deste tema — textos e botões ficarão difíceis de ler. Escolha uma cor ${t.claro ? "mais escura" : "mais clara"}.`
+                        : `Contraste ok (${c.toFixed(1)}:1).`;
+                    aviso.className = "dica " + (c < 3 ? "aviso-ruim" : "aviso-bom");
+                } else {
+                    aviso.textContent = "";
+                    cor.value = t.destaque;   // mostra a cor do tema escolhido
+                }
+            }
+            document.getElementById("temaUsarCor").addEventListener("change", atualizarPreviaTema);
+            document.getElementById("temaCor").addEventListener("input", atualizarPreviaTema);
+
+            function preencherFormTema() {
+                const tema = conteudoAtual.tema || {};
+                temaSelecionado = { id: tema.id || "esmeralda", destaque: tema.destaque || null };
+                document.getElementById("temaUsarCor").checked = !!tema.destaque;
+                if (tema.destaque) document.getElementById("temaCor").value = tema.destaque;
+                else if (window.MenyTemas) document.getElementById("temaCor").value = window.MenyTemas.resolver(temaSelecionado).destaque;
+                desenharTemas();
+                atualizarPreviaTema();
+            }
+
+            document.getElementById("formTema").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const status = document.getElementById("statusTema");
+                const btn = document.getElementById("btnSalvarTema");
+                btn.disabled = true;
+                status.style.display = "block";
+                status.textContent = "Salvando…";
+                try {
+                    conteudoAtual.tema = { id: temaSelecionado.id, destaque: temaSelecionado.destaque };
+                    await salvarConteudo();
+                    status.textContent = "Tema salvo! Recarregue o site para ver.";
+                } catch (err) {
+                    status.textContent = "Erro: " + err.message;
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            // ---------------- Músicas ----------------
+            const PLATAFORMAS_MUSICA = [
+                ["spotify", "Spotify"], ["youtube", "YouTube"], ["youtubeMusic", "YouTube Music"],
+                ["deezer", "Deezer"], ["appleMusic", "Apple Music"], ["amazonMusic", "Amazon Music"],
+                ["soundcloud", "SoundCloud"], ["tidal", "Tidal"], ["audiomack", "Audiomack"],
+            ];
+            let musicasDados = { items: [], playlist: null };
+            let musicaEditando = -1;   // índice da música em edição (-1 = nova)
+            let musicaPagina = "";
+
+            document.getElementById("musicaLinks").innerHTML = PLATAFORMAS_MUSICA.map(([k, nome]) => `
+                <div class="campo">
+                    <label for="ml-${k}">${nome}</label>
+                    <input type="url" id="ml-${k}" data-plataforma="${k}" placeholder="https://..." />
+                </div>`).join("");
+
+            document.getElementById("musicaLinks").addEventListener("input", (e) => {
+                if (e.target.matches("[data-plataforma]")) e.target.classList.remove("link-busca");
+            });
+
+            function limparFormMusica() {
+                document.querySelectorAll("#musicaLinks .link-busca").forEach((i) => i.classList.remove("link-busca"));
+                document.getElementById("formMusica").reset();
+                document.getElementById("musicaCapaUrl").value = "";
+                document.getElementById("musicaCapaPreview").src = "assets/images/Home/Home-Image.png";
+                musicaEditando = -1;
+                musicaPagina = "";
+                document.getElementById("btnSalvarMusica").textContent = "Adicionar música";
+                document.getElementById("btnCancelarEdicao").style.display = "none";
+                document.getElementById("musicaBuscaInfo").textContent = "";
+            }
+
+            function preencherFormMusica(m) {
+                document.getElementById("musicaTitulo").value = m.titulo || "";
+                document.getElementById("musicaArtista").value = m.artista || "";
+                document.getElementById("musicaCapaUrl").value = m.capa || "";
+                document.getElementById("musicaCapaPreview").src = m.capa || "assets/images/Home/Home-Image.png";
+                PLATAFORMAS_MUSICA.forEach(([k]) => {
+                    document.getElementById(`ml-${k}`).value = (m.links && m.links[k]) || "";
+                });
+                musicaPagina = m.pagina || "";
+            }
+
+            document.getElementById("btnBuscarMusica").addEventListener("click", async () => {
+                const link = document.getElementById("musicaBusca").value.trim();
+                const info = document.getElementById("musicaBuscaInfo");
+                const btn = document.getElementById("btnBuscarMusica");
+                if (!link) { info.textContent = "Cole o link de uma música primeiro."; return; }
+                btn.disabled = true;
+                info.textContent = "Buscando nas plataformas…";
+                try {
+                    const resp = await authFetch(`/.netlify/functions/musica-buscar?url=${encodeURIComponent(link)}`);
+                    const d = await resp.json().catch(() => ({}));
+                    if (!resp.ok) throw new Error(d.error || `Erro ${resp.status}`);
+                    // preenche mantendo o que você já digitou à mão nos campos vazios do resultado
+                    const atual = {
+                        titulo: document.getElementById("musicaTitulo").value.trim(),
+                        artista: document.getElementById("musicaArtista").value.trim(),
+                    };
+                    preencherFormMusica({
+                        titulo: d.titulo || atual.titulo,
+                        artista: d.artista || atual.artista,
+                        capa: d.capa || document.getElementById("musicaCapaUrl").value,
+                        links: d.links || {},
+                        pagina: d.pagina,
+                    });
+                    const nomes = Object.fromEntries(PLATAFORMAS_MUSICA);
+                    const buscas = Array.isArray(d.buscas) ? d.buscas : [];
+                    const exatas = Object.keys(d.links || {}).filter((k) => !buscas.includes(k));
+                    document.querySelectorAll("#musicaLinks [data-plataforma]").forEach((inp) => {
+                        inp.classList.toggle("link-busca", buscas.includes(inp.dataset.plataforma));
+                    });
+                    info.textContent = exatas.length || buscas.length
+                        ? `Links exatos: ${exatas.map((k) => nomes[k]).join(", ") || "nenhum"}.`
+                          + (buscas.length ? ` Páginas de busca: ${buscas.map((k) => nomes[k]).join(", ")} — troque pelo link exato se quiser.` : "")
+                          + " Confira antes de salvar."
+                        : "Não encontrei links em outras plataformas — preencha à mão.";
+                } catch (err) {
+                    info.textContent = /à mão/.test(err.message) ? err.message : err.message + " Você pode preencher os links à mão.";
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            document.getElementById("musicaCapaArquivo").addEventListener("change", (e) => {
+                const f = e.target.files[0];
+                if (f) document.getElementById("musicaCapaPreview").src = URL.createObjectURL(f);
+            });
+
+            async function carregarMusicas() {
+                const lista = document.getElementById("listaMusicas");
+                try {
+                    const resp = await fetch("/.netlify/functions/musicas-api", { cache: "no-store" });
+                    const d = await resp.json();
+                    musicasDados = { items: Array.isArray(d.items) ? d.items : [], playlist: d.playlist || null };
+                } catch (err) {
+                    lista.innerHTML = '<p class="vazio">Não foi possível carregar as músicas.</p>';
+                    return;
+                }
+                document.getElementById("playlistUrl").value = musicasDados.playlist?.url || "";
+                document.getElementById("playlistTitulo").value = musicasDados.playlist?.titulo || "";
+                desenharListaMusicas();
+            }
+
+            function desenharListaMusicas() {
+                const lista = document.getElementById("listaMusicas");
+                const items = musicasDados.items;
+                if (!items.length) {
+                    lista.innerHTML = '<p class="vazio">Nenhuma música cadastrada ainda.</p>';
+                    return;
+                }
+                lista.innerHTML = items.map((m, i) => `
+                    <div class="lista-item">
+                        <img src="${escaparHtml(m.capa || "assets/images/Home/Home-Image.png")}" alt="" onerror="this.style.visibility='hidden'" />
+                        <div class="info">
+                            <div class="titulo">${escaparHtml(m.titulo)}</div>
+                            <div class="sub">${escaparHtml(m.artista || "")} · ${Object.keys(m.links || {}).length} plataforma(s)</div>
+                        </div>
+                        <div class="acoes-item">
+                            <button type="button" class="btn-mini" data-subir="${i}" ${i === 0 ? "disabled" : ""} aria-label="Subir">↑</button>
+                            <button type="button" class="btn-mini" data-descer="${i}" ${i === items.length - 1 ? "disabled" : ""} aria-label="Descer">↓</button>
+                            <button type="button" class="btn-mini" data-editar="${i}">Editar</button>
+                            <button type="button" class="btn-remover" data-remover-musica="${i}">Remover</button>
+                        </div>
+                    </div>`).join("");
+            }
+
+            async function salvarMusicas() {
+                const resp = await authFetch("/.netlify/functions/musicas-api", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(musicasDados),
+                });
+                const d = await resp.json().catch(() => ({}));
+                if (!resp.ok || !d.success) throw new Error(d.error || `Falha ao salvar (${resp.status})`);
+                musicasDados = { items: d.items, playlist: d.playlist };
+            }
+
+            document.getElementById("listaMusicas").addEventListener("click", async (e) => {
+                const b = e.target.closest("button");
+                if (!b) return;
+                const items = musicasDados.items;
+                const troca = (a, c) => { [items[a], items[c]] = [items[c], items[a]]; };
+                try {
+                    if (b.dataset.subir) { troca(+b.dataset.subir, +b.dataset.subir - 1); await salvarMusicas(); }
+                    else if (b.dataset.descer) { troca(+b.dataset.descer, +b.dataset.descer + 1); await salvarMusicas(); }
+                    else if (b.dataset.editar) {
+                        musicaEditando = +b.dataset.editar;
+                        preencherFormMusica(items[musicaEditando]);
+                        document.getElementById("btnSalvarMusica").textContent = "Salvar alterações";
+                        document.getElementById("btnCancelarEdicao").style.display = "block";
+                        document.getElementById("formMusica").scrollIntoView({ behavior: "smooth" });
+                        return;
+                    } else if (b.dataset.removerMusica) {
+                        if (!confirm("Remover esta música?")) return;
+                        items.splice(+b.dataset.removerMusica, 1);
+                        await salvarMusicas();
+                        if (musicaEditando >= 0) limparFormMusica();
+                    }
+                    desenharListaMusicas();
+                } catch (err) {
+                    alert("Erro: " + err.message);
+                    carregarMusicas();
+                }
+            });
+
+            document.getElementById("btnCancelarEdicao").addEventListener("click", limparFormMusica);
+
+            document.getElementById("formMusica").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const status = document.getElementById("statusMusica");
+                const btn = document.getElementById("btnSalvarMusica");
+                const links = {};
+                document.querySelectorAll("#musicaLinks [data-plataforma]").forEach((inp) => {
+                    if (inp.value.trim()) links[inp.dataset.plataforma] = inp.value.trim();
+                });
+                const titulo = document.getElementById("musicaTitulo").value.trim();
+                status.style.display = "block";
+                if (!titulo || !Object.keys(links).length) {
+                    status.textContent = "Preencha o título e pelo menos um link (use o botão Buscar ou cole à mão).";
+                    return;
+                }
+                btn.disabled = true;
+                try {
+                    let capa = document.getElementById("musicaCapaUrl").value.trim();
+                    const arquivo = document.getElementById("musicaCapaArquivo").files[0];
+                    if (arquivo) {
+                        status.textContent = "Enviando capa…";
+                        capa = await enviarImagem(arquivo);
+                    }
+                    status.textContent = "Salvando…";
+                    const musica = {
+                        id: musicaEditando >= 0 ? musicasDados.items[musicaEditando].id : "m" + Date.now().toString(36),
+                        titulo,
+                        artista: document.getElementById("musicaArtista").value.trim(),
+                        capa, links, pagina: musicaPagina,
+                    };
+                    if (musicaEditando >= 0) musicasDados.items[musicaEditando] = musica;
+                    else musicasDados.items.push(musica);
+                    await salvarMusicas();
+                    status.textContent = musicaEditando >= 0 ? "Música atualizada!" : "Música adicionada!";
+                    limparFormMusica();
+                    desenharListaMusicas();
+                } catch (err) {
+                    status.textContent = "Erro: " + err.message;
+                    carregarMusicas();
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            document.getElementById("formPlaylist").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const status = document.getElementById("statusPlaylist");
+                status.style.display = "block";
+                status.textContent = "Salvando…";
+                const url = document.getElementById("playlistUrl").value.trim();
+                musicasDados.playlist = url ? { url, titulo: document.getElementById("playlistTitulo").value.trim() } : null;
+                try {
+                    await salvarMusicas();
+                    status.textContent = url ? "Playlist salva!" : "Playlist removida do site.";
+                } catch (err) {
+                    status.textContent = "Erro: " + err.message;
                 }
             });
         })();

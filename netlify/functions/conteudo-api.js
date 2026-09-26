@@ -43,6 +43,15 @@ const CONTEUDO_PADRAO = {
     },
 };
 
+// Temas aceitos (mesmos ids de public/assets/js/temas.js)
+const TEMAS_VALIDOS = ["esmeralda", "ametista", "pordosol", "oceano", "dourado", "claro"];
+
+function normalizarTema(tema) {
+    const id = tema && TEMAS_VALIDOS.includes(tema.id) ? tema.id : "esmeralda";
+    const destaque = tema && /^#[0-9a-f]{6}$/i.test(String(tema.destaque || "")) ? String(tema.destaque).toLowerCase() : null;
+    return { id, destaque };
+}
+
 function normalizarConteudo(dados) {
     // Faz um merge raso com o padrão, pra garantir que campos novos
     // (adicionados em atualizações futuras) sempre existam mesmo que
@@ -50,6 +59,7 @@ function normalizarConteudo(dados) {
     return {
         home: { ...CONTEUDO_PADRAO.home, ...(dados && dados.home) },
         about: { ...CONTEUDO_PADRAO.about, ...(dados && dados.about) },
+        tema: normalizarTema(dados && dados.tema),
     };
 }
 
@@ -98,7 +108,7 @@ exports.handler = async (event, context) => {
             return {
                 statusCode: 200,
                 headers,
-                body: JSON.stringify(CONTEUDO_PADRAO),
+                body: JSON.stringify(normalizarConteudo(CONTEUDO_PADRAO)),
             };
         }
     }

@@ -1,877 +1,1963 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Title -->
-    <title>Meny | Página Pessoal</title>
-
-    <!-- SEO básico -->
-    <meta name="description"
-        content="Meny Mendonça — streamer, cantora e criadora de conteúdo. Acompanhe minhas lives, vídeos e agenda de eventos.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Meny Mendonça</title>
+    <meta name="description" content="Meny Mendonça — streamer, cantora e criadora de conteúdo. Vídeos, momentos, eventos e contato em um só lugar.">
     <meta property="og:title" content="Meny Mendonça">
-    <meta property="og:description"
-        content="Streamer, cantora e criadora de conteúdo. Acompanhe minhas lives, vídeos e agenda de eventos.">
+    <meta property="og:description" content="Streamer, cantora e criadora de conteúdo. Acompanhe minhas lives, vídeos e agenda de eventos.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="assets/images/Home/Home-Image.png">
-    <link rel="icon" href="/favicon.ico">
+    <meta property="og:image" content="/assets/images/Home/Home-Image.png">
 
-    <!-- PWA -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0a140f">
-    <link rel="apple-touch-icon" href="/assets/images/icons/icon-192.png">
     <script>
-        // Registra o Service Worker só depois da página carregar, pra não
-        // competir por rede com os recursos principais. Falha silenciosa
-        // (console.warn) se o navegador não suportar ou o registro falhar
-        // — o site funciona 100% normal sem PWA, isso é só um extra.
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("/sw.js").catch((err) => {
-                    console.warn("Service Worker não registrado:", err);
-                });
-            });
-        }
+        // Links dos e-mails do Netlify Identity (convite, recuperação de
+        // senha, confirmação) chegam na página inicial com um token no
+        // hash — o login vive em /admin.html, então encaminhamos pra lá.
+        (function () {
+            var h = window.location.hash;
+            if (/(invite|recovery|confirmation|email_change)_token/.test(h)) {
+                window.location.replace("/admin.html" + h);
+            }
+        })();
+    </script>
+    <meta name="theme-color" content="#07160f">
+    <link rel="icon" type="image/png" href="/assets/images/icons/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/images/icons/icon-192.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome só para os 3 logos das redes (fa-tiktok, fa-youtube,
+         fa-instagram — conferidos na 6.5.1). Os ícones de interface são SVG
+         embutido (sprite abaixo), então nunca somem se o CDN falhar. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css">
+
+    <!-- Temas: aplica logo no início o último tema visto, pra não piscar
+         o verde antes de o tema escolhido no painel chegar. -->
+    <script src="/assets/js/temas.js"></script>
+    <script>
+        try {
+            var temaSalvo = JSON.parse(localStorage.getItem("meny-tema") || "null");
+            if (temaSalvo && window.MenyTemas) MenyTemas.aplicar(temaSalvo);
+        } catch (e) { /* sem storage: fica o tema padrão */ }
     </script>
 
-    <!-- Netlify Identity (necessário para exibir/ocultar o link de Login no menu) -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+        /* =========================================================
+           Paleta verde da marca (mesma do site anterior)
+           ========================================================= */
+        /* Valores do tema Esmeralda (padrão). O tema escolhido no painel
+           sobrescreve estas variáveis via assets/js/temas.js. */
+        :root {
+            --green: #00ffa9;        --green-rgb: 0, 255, 169;
+            --green-deep: #0b3d2a;
+            --green-mid: #1f7a4d;
+            --on-green: #07160f;     /* texto em cima da cor de destaque */
+            --black: #07160f;        --black-rgb: 7, 22, 15;
+            --surface-2: #0d2119;    --surface-rgb: 13, 33, 25;
+            --white: #ffffff;        --white-rgb: 255, 255, 255;
+            --grey: #d7e2dd;
+            --muted: #8fa89c;
+            --surface: rgba(var(--surface-rgb), 0.82);
+            --surface-strong: rgba(var(--black-rgb), 0.96);
+            --line: rgba(var(--white-rgb), 0.08);
+            --live: #ff0033;         /* AO VIVO é sempre vermelho, em qualquer tema */
 
-    <!-- Font-Awesome CSS (carregado apenas via CDN — removida a duplicata local) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+            --rail-w: 6.4rem;
+            --nav-h: 6.2rem;
+            --sidebar-w: 25rem;
+        }
 
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="assets/vendors/swiper/swiper.css" />
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 62.5%; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            height: 100dvh;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        a { color: inherit; text-decoration: none; }
+        button, input, textarea { font: inherit; color: inherit; }
+        button { background: none; border: 0; cursor: pointer; }
+        img { display: block; max-width: 100%; }
+        :focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: .6rem; }
+        [hidden] { display: none !important; }
 
-    <!-- Magnific-Popup CSS -->
-    <link rel="stylesheet" href="assets/vendors/magnific-popup/magnific-popup.css" />
+        /* Barras de rolagem finas, na cor da marca */
+        * { scrollbar-width: thin; scrollbar-color: rgba(var(--green-rgb), .35) transparent; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(var(--green-rgb), .28); border-radius: 10px;
+            border: 1px solid transparent; background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(var(--green-rgb), .6); background-clip: padding-box; }
+        ::-webkit-scrollbar-corner { background: transparent; }
 
-    <!-- MixItUp -->
-    <script src="https://cdn.jsdelivr.net/npm/mixitup/dist/mixitup.min.js"></script>
+        .i { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .i.fill { fill: currentColor; stroke: none; }
+        .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-    <!-- Custom Stylesheets -->
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="stylesheet" href="assets/css/responsive.css" />
+        /* =========================================================
+           Estrutura: sidebar (desktop) + palco
+           ========================================================= */
+        .app { display: grid; grid-template-columns: var(--sidebar-w) 1fr; height: 100dvh; }
 
-    <!-- calendario -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales-all.global.min.js"></script>
-  
+        .sidebar {
+            border-right: 1px solid var(--line);
+            padding: 2.4rem 1.6rem;
+            display: flex; flex-direction: column; gap: 2rem;
+            background: radial-gradient(circle at top left, rgba(var(--green-rgb), 0.12), transparent 45%), var(--black);
+            overflow-y: auto;
+        }
+        .brand { display: flex; align-items: center; gap: 1rem; padding: 0 .6rem; }
+        .brand img { height: 4.4rem; width: auto; }
 
+        .side-nav { display: flex; flex-direction: column; gap: .2rem; }
+        .nav-item {
+            display: flex; align-items: center; gap: 1.4rem;
+            padding: 1.1rem 1.4rem; border-radius: 1.2rem;
+            font-size: 1.55rem; font-weight: 600; text-align: left;
+            color: var(--grey);
+            transition: background .2s, color .2s;
+        }
+        .nav-item .i { font-size: 2.2rem; }
+        .nav-item:hover { background: rgba(var(--white-rgb), .05); }
+        .nav-item.active { color: var(--green); background: rgba(var(--green-rgb), .07); }
+
+        .side-card {
+            border: 1px solid var(--line); background: var(--surface);
+            border-radius: 1.6rem; padding: 1.6rem;
+            font-size: 1.3rem; color: var(--muted);
+        }
+        .side-card h4 { color: var(--white); font-size: 1.3rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: .08em; }
+        .social-list { display: flex; flex-direction: column; gap: .6rem; }
+        .social-row {
+            display: flex; align-items: center; gap: 1rem;
+            padding: .8rem 1rem; border-radius: 1rem;
+            background: rgba(var(--white-rgb), .04);
+            color: var(--grey); font-size: 1.3rem; font-weight: 500;
+            transition: background .2s, color .2s;
+        }
+        .social-row:hover { background: rgba(var(--green-rgb), .12); color: var(--white); }
+        .social-row .fab { width: 2rem; text-align: center; font-size: 1.7rem; color: var(--green); }
+        .social-row .i { margin-left: auto; font-size: 1.4rem; opacity: .6; }
+        .side-foot { margin-top: auto; font-size: 1.15rem; color: var(--muted); line-height: 1.7; }
+        .side-foot a { color: var(--grey); text-decoration: underline; text-underline-offset: 2px; }
+
+        .stage { position: relative; height: 100dvh; overflow: hidden; }
+        .view { height: 100%; }
+        /* o feed é sempre um "palco" escuro; no tema claro ele recebe as
+           cores escuras via JS (MenyTemas.variaveisPalco) */
+        .view[data-view=feed] { background: var(--black); color: var(--white); }
+        .page { height: 100%; overflow-y: auto; padding: 3.2rem 2rem 6rem; }
+        .page-inner { max-width: 72rem; margin: 0 auto; }
+
+        /* =========================================================
+           FEED (layout vertical estilo TikTok)
+           ========================================================= */
+        .top-tabs {
+            position: absolute; z-index: 20; top: 0; left: 0; right: 0;
+            display: flex; justify-content: center; gap: 2.4rem;
+            padding: 1.8rem 1rem 3rem;
+            background: linear-gradient(180deg, rgba(var(--black-rgb), .8), transparent);
+            pointer-events: none;
+        }
+        .top-tabs button {
+            pointer-events: auto; position: relative;
+            font-size: 1.6rem; font-weight: 600; color: rgba(var(--white-rgb), .6);
+            padding-bottom: .6rem; transition: color .2s;
+        }
+        .top-tabs button.active { color: var(--white); }
+        .top-tabs button.active::after {
+            content: ""; position: absolute; left: 50%; bottom: 0;
+            width: 2.4rem; height: .3rem; border-radius: 1rem; transform: translateX(-50%);
+            background: var(--green); box-shadow: 0 0 1rem var(--green);
+        }
+        .live-pill {
+            pointer-events: auto; position: absolute; left: 1.6rem; top: 1.6rem;
+            display: none; align-items: center; gap: .6rem;
+            padding: .4rem 1rem; border-radius: .6rem;
+            background: var(--live); color: #fff;
+            font-size: 1.1rem; font-weight: 800; letter-spacing: .06em;
+        }
+        .live-pill.on { display: inline-flex; }
+        body.is-live .live-pill { display: inline-flex; }
+
+        /* ===== Estado AO VIVO (body.is-live) ===== */
+        .live-only { display: none !important; }
+        body.is-live .live-only { display: revert !important; }
+        body.is-live .live-only.flex { display: flex !important; }
+
+        /* anel animado no avatar e na foto do perfil, estilo TikTok */
+        @keyframes liveRing { 0%,100% { box-shadow: 0 0 0 2px var(--live), 0 0 0 4px rgba(255,0,51,.35); } 50% { box-shadow: 0 0 0 2px var(--live), 0 0 0 8px rgba(255,0,51,0); } }
+        body.is-live .avatar img { border-color: var(--live); animation: liveRing 1.6s ease-in-out infinite; }
+        .live-tag {
+            position: absolute; left: 50%; bottom: -.9rem; transform: translateX(-50%);
+            padding: .1rem .6rem; border-radius: .4rem; background: var(--live); color: #fff;
+            font-size: .9rem; font-weight: 800; letter-spacing: .06em; line-height: 1.5; border: 2px solid var(--black);
+        }
+        body.is-live .avatar .plus { display: none; }
+        body.is-live .profile-head .pic { border-color: var(--live); animation: liveRing 1.6s ease-in-out infinite; }
+        .pic-wrap { position: relative; }
+        .pic-wrap .live-tag { bottom: -1rem; font-size: 1.1rem; padding: .2rem .9rem; }
+        .live-tag { white-space: nowrap; }
+        @media (max-width: 860px) {
+            /* no celular o selo fica compacto e as abas abrem espaço pra ele */
+            .live-pill { left: 1rem; top: 1.7rem; padding: .3rem .7rem; font-size: 1rem; }
+            .live-pill .txt-full { display: none; }
+            body.is-live .top-tabs { padding-left: 7rem; gap: 1.6rem; }
+        }
+        @media (min-width: 861px) { .live-pill .txt-short { display: none; } }
+
+        /* card na sidebar e faixa no topo das páginas */
+        .live-card {
+            align-items: center; gap: 1.2rem; padding: 1.2rem 1.4rem; border-radius: 1.4rem;
+            background: linear-gradient(135deg, rgba(255,0,51,.22), rgba(255,0,51,.06));
+            border: 1px solid rgba(255,0,51,.45); color: var(--white);
+            transition: transform .15s, background .2s;
+        }
+        .live-card:hover { transform: translateY(-1px); background: linear-gradient(135deg, rgba(255,0,51,.32), rgba(255,0,51,.1)); }
+        .live-card img { width: 4.4rem; height: 4.4rem; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px var(--live); flex: none; }
+        .live-card strong { display: flex; align-items: center; gap: .6rem; font-size: 1.3rem; letter-spacing: .06em; color: #ff5c7a; }
+        .live-card span { font-size: 1.3rem; color: var(--grey); }
+        .live-card .live-dot { background: var(--live); }
+        .live-banner {
+            align-items: center; justify-content: center; gap: .8rem;
+            position: sticky; top: -3.2rem; z-index: 5; margin: -3.2rem -2rem 2rem; padding: 1rem 1.6rem;
+            background: var(--live); color: #fff; font-size: 1.35rem; font-weight: 700;
+        }
+        .live-banner .live-dot { background: #fff; }
+        .live-banner u { text-underline-offset: 3px; }
+        .sheet .live-row { background: rgba(255,0,51,.16); border: 1px solid rgba(255,0,51,.45); margin-bottom: .6rem; }
+        .sheet .live-row .live-dot { background: var(--live); width: 1rem; height: 1rem; margin: 0 .9rem; }
+        body.is-live .bottom-nav .create { box-shadow: -3px 0 0 var(--live), 3px 0 0 var(--white); }
+        .live-dot { width: .7rem; height: .7rem; border-radius: 50%; background: #fff; animation: pulse 1.2s infinite; }
+        @keyframes pulse { 50% { opacity: .25; } }
+
+        .feed {
+            height: 100%; overflow-y: scroll;
+            scroll-snap-type: y mandatory; scrollbar-width: none; overscroll-behavior: contain;
+        }
+        .feed::-webkit-scrollbar { display: none; }
+
+        .post {
+            position: relative; height: 100dvh;
+            scroll-snap-align: start; scroll-snap-stop: always;
+            display: flex; justify-content: center; align-items: center; gap: 1.6rem;
+            padding: 2rem;
+        }
+        .player {
+            position: relative;
+            height: min(calc(100dvh - 4rem), 88rem); aspect-ratio: 9 / 16;
+            border-radius: 1.6rem; overflow: hidden; background: #000;
+            box-shadow: 0 2rem 6rem rgba(0,0,0,.5), 0 0 0 1px var(--line);
+            cursor: pointer; isolation: isolate;
+        }
+        .player .bg {
+            position: absolute; inset: -2rem; background-size: cover; background-position: center;
+            filter: blur(24px) brightness(.45) saturate(1.2); z-index: -1;
+        }
+        .player .thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+        .player.vertical .thumb { object-fit: cover; }
+        .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 3; }
+        .player .open-ext { position: absolute; left: 1.2rem; bottom: 1.2rem; z-index: 4; }
+
+        .center-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 7.2rem; height: 7.2rem; border-radius: 50%;
+            display: grid; place-items: center;
+            background: rgba(var(--black-rgb), .55); backdrop-filter: blur(6px);
+            border: 2px solid rgba(var(--green-rgb), .6);
+            color: var(--green); font-size: 2.6rem;
+            transition: transform .2s, background .2s; z-index: 2;
+        }
+        .center-btn .play { margin-left: .3rem; }
+        .player:hover .center-btn { transform: translate(-50%, -50%) scale(1.08); background: rgba(var(--green-rgb), .18); }
+
+        .shade {
+            position: absolute; inset: auto 0 0 0; height: 55%;
+            background: linear-gradient(0deg, rgba(var(--black-rgb), .95) 0%, rgba(var(--black-rgb), .6) 45%, transparent 100%);
+            pointer-events: none; z-index: 1;
+        }
+        .chip {
+            display: inline-flex; align-items: center; gap: .6rem;
+            padding: .5rem 1rem; border-radius: 10rem;
+            background: rgba(var(--black-rgb), .7); backdrop-filter: blur(6px);
+            border: 1px solid var(--line);
+            font-size: 1.2rem; font-weight: 600;
+        }
+        .chip .fab, .chip .i { color: var(--green); font-size: 1.3rem; }
+        /* o selo da plataforma fica junto da legenda (e não no canto de cima),
+           para nunca colidir com as abas nem com o trilho de ações */
+        .caption .chip { margin-bottom: .8rem; }
+        .player.tiktok iframe { background: #000; }
+
+        .caption { position: absolute; left: 1.6rem; right: 1.6rem; bottom: 1.8rem; z-index: 2; pointer-events: none; }
+        .caption > * { pointer-events: auto; }
+        .caption .author { font-size: 1.6rem; font-weight: 700; display: inline-flex; align-items: center; gap: .6rem; }
+        .caption .author .i { color: var(--green); font-size: 1.5rem; }
+        .caption .date { color: var(--muted); font-weight: 500; font-size: 1.3rem; }
+        .caption .title { font-size: 1.5rem; font-weight: 600; margin-top: .6rem; line-height: 1.35; }
+        .caption .desc {
+            font-size: 1.35rem; line-height: 1.45; color: var(--grey); margin-top: .4rem;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .caption .desc.open { -webkit-line-clamp: unset; }
+        .caption .more { font-size: 1.3rem; font-weight: 700; margin-top: .2rem; }
+        .tag { color: var(--green); font-weight: 600; }
+        .source {
+            margin-top: 1rem; display: inline-flex; align-items: center; gap: .6rem;
+            font-size: 1.25rem; color: var(--grey);
+        }
+        .source .i { color: var(--green); }
+
+        /* ---------- Trilho de ações ---------- */
+        .rail {
+            display: flex; flex-direction: column; align-items: center; gap: 1.6rem;
+            align-self: flex-end; padding-bottom: 2.4rem; width: var(--rail-w);
+        }
+        .avatar { position: relative; margin-bottom: 1rem; }
+        .avatar img { width: 5.2rem; height: 5.2rem; border-radius: 50%; object-fit: cover; border: 2px solid var(--white); }
+        .avatar .plus {
+            position: absolute; left: 50%; bottom: -1rem; transform: translateX(-50%);
+            width: 2.2rem; height: 2.2rem; border-radius: 50%;
+            display: grid; place-items: center;
+            background: var(--green); color: var(--on-green); font-size: 1.3rem;
+        }
+        .act { display: flex; flex-direction: column; align-items: center; gap: .4rem; font-size: 1.2rem; font-weight: 600; }
+        .act .ic {
+            width: 4.8rem; height: 4.8rem; border-radius: 50%;
+            display: grid; place-items: center;
+            background: rgba(var(--white-rgb), .08); font-size: 2.2rem;
+            transition: transform .15s, background .2s, color .2s;
+        }
+        .act:hover .ic { background: rgba(var(--green-rgb), .14); }
+        .act:active .ic { transform: scale(.88); }
+        .act.on .ic { color: var(--green); }
+        .act.pop .ic { animation: pop .35s ease; }
+        @keyframes pop { 40% { transform: scale(1.3); } }
+
+        .burst {
+            position: absolute; z-index: 5; pointer-events: none;
+            width: 9rem; height: 9rem; color: var(--green);
+            filter: drop-shadow(0 0 1.6rem rgba(var(--green-rgb), .6));
+            animation: burst .8s ease-out forwards;
+        }
+        @keyframes burst {
+            0% { transform: translate(-50%, -50%) scale(.3) rotate(-15deg); opacity: 0; }
+            25% { transform: translate(-50%, -50%) scale(1.15) rotate(-8deg); opacity: 1; }
+            100% { transform: translate(-50%, -130%) scale(1) rotate(0); opacity: 0; }
+        }
+
+        .nav-arrows {
+            position: absolute; right: 2.4rem; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 1.2rem; z-index: 20;
+        }
+        .nav-arrows button {
+            width: 4.8rem; height: 4.8rem; border-radius: 50%;
+            display: grid; place-items: center;
+            background: rgba(var(--white-rgb), .08); font-size: 2.2rem;
+            transition: background .2s, color .2s;
+        }
+        .nav-arrows button:hover { background: rgba(var(--green-rgb), .16); color: var(--green); }
+        .nav-arrows button:disabled { opacity: .3; cursor: default; }
+
+        .skeleton { height: 100dvh; display: grid; place-items: center; }
+        .skeleton .player { cursor: default; background: linear-gradient(110deg, var(--surface-2) 30%, rgba(var(--green-rgb), .1) 50%, var(--surface-2) 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+
+        .empty { display: grid; place-items: center; text-align: center; padding: 4rem 2rem; color: var(--muted); font-size: 1.5rem; }
+        .feed .empty { height: 100%; }
+        .empty .i { font-size: 4rem; color: var(--green); margin: 0 auto 1.2rem; }
+
+        /* =========================================================
+           PÁGINAS: título padrão
+           ========================================================= */
+        .page-title { font-size: 2.6rem; font-weight: 800; margin-bottom: .4rem; }
+        .page-title span { color: var(--green); }
+        .page-lead { color: var(--muted); font-size: 1.4rem; margin-bottom: 2.4rem; }
+
+        .pills { display: flex; gap: .8rem; overflow-x: auto; padding-bottom: .4rem; margin-bottom: 1.6rem; scrollbar-width: none; }
+        .pills::-webkit-scrollbar { display: none; }
+        .pill {
+            flex: none; padding: .7rem 1.4rem; border-radius: 10rem;
+            background: rgba(var(--white-rgb), .06); color: var(--grey);
+            font-size: 1.3rem; font-weight: 600; text-transform: capitalize;
+            transition: background .2s, color .2s;
+        }
+        .pill:hover { background: rgba(var(--white-rgb), .1); }
+        .pill.active { background: var(--green); color: var(--on-green); }
+        .feed-pills { position: absolute; top: 6rem; left: 0; right: 0; z-index: 15; justify-content: center; padding: 0 1.6rem; pointer-events: none; }
+        .feed-pills .pill { pointer-events: auto; background: rgba(var(--black-rgb), .7); backdrop-filter: blur(6px); }
+        .feed-pills .pill.active { background: var(--green); }
+
+        /* ---------- Perfil (Sobre) ---------- */
+        .profile-head { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 7rem; }
+        .profile-cover {
+            position: absolute; inset: 0 0 auto 0; height: 13rem; border-radius: 1.6rem; overflow: hidden; z-index: -1;
+            background: var(--surface-2) center / cover no-repeat;
+        }
+        .profile-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(var(--black-rgb), .2), var(--black)); }
+        .profile-head { isolation: isolate; }
+        .profile-head .pic {
+            width: 11rem; height: 11rem; border-radius: 50%; object-fit: cover;
+            border: 3px solid var(--green); box-shadow: 0 0 3rem rgba(var(--green-rgb), .25);
+        }
+        .profile-head h1 { font-size: 2.4rem; margin-top: 1.2rem; text-transform: capitalize; }
+        .profile-head .handle { color: var(--muted); font-size: 1.4rem; }
+        .badge-line { margin-top: .8rem; font-size: 1.25rem; color: var(--green); font-weight: 600; letter-spacing: .04em; }
+
+        .stats { display: flex; justify-content: center; gap: 3.2rem; margin: 2rem 0; }
+        .stat { text-align: center; }
+        .stat strong { display: block; font-size: 2.2rem; font-weight: 800; }
+        .stat span { color: var(--muted); font-size: 1.2rem; }
+
+        .profile-actions { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: .8rem;
+            padding: 1.1rem 2.2rem; border-radius: 1rem;
+            font-weight: 700; font-size: 1.4rem;
+            transition: transform .15s, box-shadow .2s, background .2s;
+        }
+        .btn .i { font-size: 1.7rem; }
+        .btn-primary { background: var(--green); color: var(--on-green); }
+        .btn-primary:hover { box-shadow: 0 0 2.4rem rgba(var(--green-rgb), .35); transform: translateY(-1px); }
+        .btn-ghost { background: rgba(var(--white-rgb), .08); }
+        .btn-ghost:hover { background: rgba(var(--white-rgb), .14); }
+        .btn:disabled { opacity: .6; cursor: progress; }
+
+        .bio { margin: 2.4rem auto 0; max-width: 56rem; text-align: center; color: var(--grey); font-size: 1.45rem; line-height: 1.65; }
+        .bio p + p { margin-top: .8rem; }
+        .roles { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; margin-top: 1.4rem; }
+        .roles .chip { background: rgba(var(--green-rgb), .1); border-color: rgba(var(--green-rgb), .25); color: var(--white); text-transform: capitalize; }
+
+        .info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+            gap: 1rem; margin-top: 2.4rem;
+        }
+        .info-grid div {
+            background: var(--surface); border: 1px solid var(--line); border-radius: 1.2rem;
+            padding: 1.2rem 1.4rem;
+        }
+        .info-grid dt { font-size: 1.15rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+        .info-grid dd { font-size: 1.45rem; font-weight: 600; margin-top: .2rem; text-transform: capitalize; }
+
+        .profile-tabs {
+            display: flex; justify-content: center; border-bottom: 1px solid var(--line);
+            margin: 3.2rem 0 .4rem; position: sticky; top: -3.2rem; background: var(--black); z-index: 2;
+        }
+        .profile-tabs button {
+            flex: 1; max-width: 18rem; display: flex; justify-content: center; align-items: center; gap: .8rem;
+            padding: 1.2rem; font-size: 1.4rem; font-weight: 600; color: var(--muted);
+            border-bottom: 2px solid transparent;
+        }
+        .profile-tabs button .i { font-size: 1.8rem; }
+        .profile-tabs button.active { color: var(--white); border-color: var(--green); }
+
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .3rem; }
+        .tile {
+            position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: var(--surface-2);
+            border-radius: .4rem;
+        }
+        .tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+        .tile:hover img { transform: scale(1.05); }
+        .tile::after { content: ""; position: absolute; inset: 50% 0 0; background: linear-gradient(0deg, rgba(0,0,0,.7), transparent); }
+        .tile .meta {
+            position: absolute; left: .8rem; right: .8rem; bottom: .7rem; z-index: 1;
+            display: flex; align-items: center; gap: .5rem; font-size: 1.15rem; font-weight: 600;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .tile .meta .fab, .tile .meta .i { color: var(--green); flex: none; }
+        .tile .meta span { overflow: hidden; text-overflow: ellipsis; }
+
+        .visits { margin-top: 3.2rem; text-align: center; color: var(--muted); font-size: 1.25rem; display: flex; justify-content: center; align-items: center; gap: .6rem; }
+        .visits .i { color: var(--green); }
+        .visits a { margin-left: 1.2rem; color: var(--muted); text-decoration: underline; }
+
+        /* ---------- Eventos ---------- */
+        .month { font-size: 1.3rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: .1em; margin: 2.4rem 0 1rem; }
+        .month:first-child { margin-top: 0; }
+        .event {
+            display: flex; gap: 1.6rem; align-items: center; width: 100%; text-align: left;
+            padding: 1.4rem; border-radius: 1.4rem; margin-bottom: 1rem;
+            background: var(--surface); border: 1px solid var(--line);
+            transition: border-color .2s, transform .15s;
+        }
+        .event:hover { border-color: rgba(var(--green-rgb), .4); transform: translateY(-1px); }
+        .event .day {
+            flex: none; width: 6rem; height: 6.4rem; border-radius: 1.2rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(var(--green-rgb), .1); border: 1px solid rgba(var(--green-rgb), .25);
+        }
+        .event .day strong { font-size: 2.2rem; line-height: 1; }
+        .event .day span { font-size: 1.1rem; color: var(--green); text-transform: uppercase; font-weight: 700; margin-top: .3rem; }
+        .event h3 { font-size: 1.55rem; font-weight: 600; }
+        .event p { display: flex; align-items: center; gap: .5rem; color: var(--muted); font-size: 1.25rem; margin-top: .3rem; }
+        .event .go { margin-left: auto; font-size: 2rem; color: var(--muted); }
+        .event.today .day { background: var(--green); color: var(--on-green); }
+        .event.today .day span { color: var(--on-green); }
+
+        /* ---------- Contato ---------- */
+        .form { display: flex; flex-direction: column; gap: 1.2rem; }
+        .form label { font-size: 1.25rem; font-weight: 600; color: var(--grey); display: flex; flex-direction: column; gap: .5rem; }
+        .form input, .form textarea {
+            width: 100%; padding: 1.3rem 1.4rem; border-radius: 1.2rem;
+            background: var(--surface); border: 1px solid var(--line);
+            font-size: 1.5rem; outline: none; transition: border-color .2s;
+            resize: vertical;
+        }
+        .form input:focus, .form textarea:focus { border-color: var(--green); }
+        .form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+        .form-msg { font-size: 1.4rem; min-height: 2rem; font-weight: 600; }
+        .form-msg.ok { color: var(--green); }
+        .form-msg.err { color: #ff6b81; }
+        .contact-socials { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 2.8rem; }
+        .contact-socials a {
+            display: flex; flex-direction: column; align-items: center; gap: .6rem; text-align: center;
+            padding: 1.6rem 1rem; border-radius: 1.4rem;
+            background: var(--surface); border: 1px solid var(--line);
+            font-size: 1.2rem; color: var(--muted);
+            transition: border-color .2s;
+        }
+        .contact-socials a:hover { border-color: rgba(var(--green-rgb), .4); color: var(--white); }
+        .contact-socials .fab { font-size: 2.6rem; color: var(--green); }
+        .contact-socials span { overflow-wrap: anywhere; font-size: 1.1rem; }
+        .contact-socials strong { font-size: 1.4rem; color: var(--white); }
+
+        /* ---------- Diálogos (redes, evento, foto) ---------- */
+        dialog {
+            border: 0; padding: 0; color: var(--white); background: transparent;
+            max-width: none; max-height: none;
+        }
+        dialog::backdrop { background: rgba(var(--black-rgb), .7); backdrop-filter: blur(4px); }
+        .sheet {
+            position: fixed; inset: auto 0 0 0; margin: 0 auto;
+            width: min(100%, 48rem);
+            background: var(--surface-2); border: 1px solid var(--line); border-bottom: 0;
+            border-radius: 2rem 2rem 0 0; padding: 1rem 2rem calc(2.4rem + env(safe-area-inset-bottom));
+        }
+        .sheet[open] { animation: up .25s ease-out; }
+        @keyframes up { from { transform: translateY(100%); } }
+        .sheet .grab { width: 4rem; height: .4rem; border-radius: 1rem; background: rgba(var(--white-rgb), .2); margin: 0 auto 1.6rem; }
+        .sheet h3 { font-size: 1.7rem; margin-bottom: 1.4rem; display: flex; justify-content: space-between; align-items: center; }
+        .close-btn { width: 3.6rem; height: 3.6rem; border-radius: 50%; display: grid; place-items: center; background: rgba(var(--white-rgb), .08); font-size: 1.8rem; }
+        .sheet .social-row { padding: 1.3rem 1.4rem; font-size: 1.45rem; }
+        .sheet .social-row .fab { font-size: 2.2rem; width: 2.8rem; }
+        .sheet .social-row small { display: block; color: var(--muted); font-size: 1.2rem; }
+        .sheet p.desc { color: var(--grey); font-size: 1.4rem; line-height: 1.6; margin: 1rem 0 1.8rem; white-space: pre-line; }
+        .sheet .when { display: flex; align-items: center; gap: .6rem; color: var(--green); font-size: 1.35rem; font-weight: 600; }
+
+        .lightbox { width: 100vw; height: 100dvh; }
+        .lightbox .lb-inner { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; gap: 1.2rem; }
+        .lightbox img { max-width: 100%; max-height: calc(100dvh - 12rem); border-radius: 1.2rem; object-fit: contain; }
+        .lightbox .cap { font-size: 1.5rem; font-weight: 600; text-align: center; }
+        .lightbox .close-btn { position: absolute; top: 1.6rem; right: 1.6rem; }
+
+        .toast {
+            position: fixed; left: 50%; bottom: 3rem;
+            transform: translate(-50%, 2rem); opacity: 0;
+            padding: 1rem 1.8rem; border-radius: 1rem;
+            background: var(--surface-strong); border: 1px solid rgba(var(--green-rgb), .35);
+            font-size: 1.4rem; font-weight: 600; z-index: 100;
+            transition: opacity .25s, transform .25s; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+        .bottom-nav { display: none; }
+
+        /* ---------- Músicas ---------- */
+        .playlist-card {
+            display: flex; align-items: center; gap: 1.4rem; padding: 1.4rem 1.6rem; margin-bottom: 2rem;
+            border-radius: 1.6rem; color: var(--white);
+            background: linear-gradient(135deg, rgba(var(--green-rgb), .22), rgba(var(--green-rgb), .05));
+            border: 1px solid rgba(var(--green-rgb), .35); transition: transform .15s;
+        }
+        .playlist-card:hover { transform: translateY(-1px); }
+        .playlist-card .pl-icon { width: 4.8rem; height: 4.8rem; border-radius: 1.2rem; display: grid; place-items: center; background: var(--green); color: var(--on-green); font-size: 2.4rem; flex: none; }
+        .playlist-card strong { display: block; font-size: 1.55rem; }
+        .playlist-card small { color: var(--muted); font-size: 1.25rem; }
+        .playlist-card > .i { margin-left: auto; color: var(--muted); font-size: 1.6rem; }
+        .song {
+            display: flex; align-items: center; gap: 1.4rem; width: 100%; text-align: left;
+            padding: 1rem; border-radius: 1.4rem; margin-bottom: .8rem;
+            background: var(--surface); border: 1px solid var(--line);
+            transition: border-color .2s, transform .15s;
+        }
+        .song:hover { border-color: rgba(var(--green-rgb), .4); transform: translateY(-1px); }
+        .song .n { width: 2.4rem; text-align: center; color: var(--muted); font-size: 1.3rem; font-weight: 700; flex: none; }
+        .song img { width: 5.6rem; height: 5.6rem; border-radius: 1rem; object-fit: cover; flex: none; background: var(--surface-2); }
+        .song .t { min-width: 0; flex: 1; }
+        .song .t strong { display: block; font-size: 1.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .song .t span { display: block; color: var(--muted); font-size: 1.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .song .plats { display: flex; gap: .6rem; color: var(--muted); font-size: 1.5rem; flex: none; }
+        .song .plats .i { font-size: 1.5rem; }
+        .song .go { color: var(--green); font-size: 2.2rem; flex: none; }
+
+        .music-sheet .ms-head { display: flex; gap: 1.4rem; align-items: center; margin-bottom: 1.6rem; }
+        .music-sheet .ms-head img { width: 7.2rem; height: 7.2rem; border-radius: 1.2rem; object-fit: cover; background: var(--surface); flex: none; }
+        .music-sheet .ms-head div { flex: 1; min-width: 0; }
+        .music-sheet h3 { font-size: 1.7rem; margin: 0; display: block; }
+        .music-sheet .ms-head p { color: var(--muted); font-size: 1.35rem; margin-top: .2rem; }
+        .ms-player { aspect-ratio: 16 / 9; border-radius: 1.2rem; overflow: hidden; margin-bottom: 1.4rem; background: #000; }
+        .ms-player iframe { width: 100%; height: 100%; border: 0; }
+        .ms-label { font-size: 1.2rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .8rem; }
+        .ms-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-bottom: 1.4rem; }
+        .ms-links a {
+            display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.2rem; border-radius: 1.2rem;
+            background: rgba(var(--white-rgb), .05); border: 1px solid var(--line);
+            font-size: 1.35rem; font-weight: 600; transition: background .2s, border-color .2s;
+        }
+        .ms-links a:hover { background: rgba(var(--green-rgb), .12); border-color: rgba(var(--green-rgb), .4); }
+        .ms-links .fab, .ms-links .i { font-size: 2rem; width: 2.2rem; text-align: center; color: var(--green); flex: none; }
+        .ms-actions { display: flex; gap: .8rem; }
+        .ms-actions .btn { flex: 1; }
+        .ms-all { display: block; text-align: center; margin-top: 1.2rem; font-size: 1.25rem; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+        .music-sheet { max-height: 92dvh; overflow-y: auto; }
+        @media (max-width: 480px) { .song .plats { display: none; } }
+
+        /* =========================================================
+           Mobile
+           ========================================================= */
+        @media (max-width: 860px) {
+            .app { grid-template-columns: 1fr; }
+            .sidebar, .nav-arrows { display: none; }
+            .stage { height: calc(100dvh - var(--nav-h)); }
+
+            .post, .skeleton { height: calc(100dvh - var(--nav-h)); padding: 0; gap: 0; }
+            .player { height: 100%; width: 100%; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
+            .caption { right: calc(var(--rail-w) + 1rem); bottom: 1.6rem; }
+            .rail { position: absolute; right: .6rem; bottom: 1.6rem; z-index: 4; padding: 0; gap: 1.4rem; }
+            .act .ic { background: none; font-size: 3rem; filter: drop-shadow(0 1px 4px rgba(0,0,0,.5)); }
+            .act { text-shadow: 0 1px 4px rgba(0,0,0,.6); }
+
+            .page { padding: 2.4rem 1.6rem 4rem; }
+            .form .row { grid-template-columns: 1fr; }
+            .profile-actions .btn { padding: 1rem 1.4rem; font-size: 1.3rem; }
+            .stats { gap: 2rem; }
+            .toast { bottom: calc(var(--nav-h) + 2rem); }
+
+            .bottom-nav {
+                display: grid; grid-template-columns: repeat(5, 1fr); align-items: center;
+                position: fixed; left: 0; right: 0; bottom: 0; height: var(--nav-h);
+                padding-bottom: env(safe-area-inset-bottom);
+                background: var(--black); border-top: 1px solid var(--line); z-index: 30;
+            }
+            .bottom-nav .nav-item {
+                flex-direction: column; gap: .3rem; padding: .4rem 0; border-radius: 0;
+                font-size: 1.05rem; color: var(--muted); background: none; justify-content: center;
+            }
+            .bottom-nav .nav-item .i { font-size: 2.3rem; }
+            .bottom-nav .nav-item.active { color: var(--white); background: none; }
+            .bottom-nav .nav-item.active .i { color: var(--green); }
+            .bottom-nav .create {
+                justify-self: center; width: 5rem; height: 3.4rem; border-radius: 1rem;
+                display: grid; place-items: center;
+                background: var(--green); color: var(--on-green); font-size: 2rem;
+                box-shadow: -3px 0 0 var(--green-mid), 3px 0 0 var(--white);
+            }
+        }
+
+        /* Telas baixas (painel lateral, celular deitado, notebook pequeno):
+           trilho mais compacto para não subir por cima do conteúdo */
+        @media (max-width: 860px) and (max-height: 720px) {
+            .rail { gap: 1rem; bottom: 1.2rem; }
+            .avatar { margin-bottom: .6rem; }
+            .avatar img { width: 4.4rem; height: 4.4rem; }
+            .act .ic { width: 4rem; height: 4rem; font-size: 2.5rem; }
+            .act { font-size: 1.05rem; gap: .2rem; }
+            .center-btn { width: 6rem; height: 6rem; font-size: 2.2rem; }
+        }
+        @media (max-width: 860px) and (max-height: 560px) {
+            .act > span:last-child { display: none; }
+            .rail { gap: .6rem; }
+            .caption .desc, .source { display: none; }
+        }
+        @media (min-width: 861px) and (max-height: 640px) {
+            .rail { gap: 1rem; }
+            .act .ic { width: 4rem; height: 4rem; font-size: 1.9rem; }
+            .act > span:last-child { display: none; }
+        }
+        @media (min-width: 861px) and (max-width: 1180px) {
+            .nav-arrows { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+    </style>
 </head>
-
 <body>
 
+<!-- ===================== Ícones (SVG embutido) ===================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10.5 6-3.5v10l-6-3.5"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21s-7.6-4.7-9.6-9.4C1.1 8.4 3.3 4.8 6.9 4.8c2 0 3.5 1.1 5.1 3 1.6-1.9 3.1-3 5.1-3 3.6 0 5.8 3.6 4.5 6.8C19.6 16.3 12 21 12 21z"/></symbol>
+    <symbol id="i-comment" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.5-5A8.5 8.5 0 1 1 21 11.5z"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.2L6 21z"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M13.5 4.5 21 11l-7.5 6.5V14c-5 0-8.3 1.4-10.5 5 .8-5.4 3.8-10 10.5-11z"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M12 2.5 14.6 4.4 17.8 4.3 18.8 7.3 21.4 9.2 20.4 12 21.4 14.8 18.8 16.7 17.8 19.7 14.6 19.6 12 21.5 9.4 19.6 6.2 19.7 5.2 16.7 2.6 14.8 3.6 12 2.6 9.2 5.2 7.3 6.2 4.3 9.4 4.4z" fill="currentColor" stroke="none"/><path d="m8.2 12 2.6 2.6 5-5.2" style="stroke: var(--on-green)" stroke-width="2.2"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></symbol>
+    <symbol id="i-seed" viewBox="0 0 24 24"><path d="M12 21v-9M12 12C12 7 8 4 3 4c0 5 4 8 9 8zM12 14c0-4 3-7 9-7 0 4-3 7-9 7z"/></symbol>
+</svg>
 
-    <!-------------------- Scroll-Top Area (Start) -------------------->
-    <a href="#home" class="scroll-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-    <!-------------------- Scroll-Top Area (End) -------------------->
+<div class="app">
 
-
-
-    <!-------------------- Header Area (Start) -------------------->
-    <header class="header">
-
-        <!-- Logo -->
-        <a class="logo" href="#home">
-            <!--<h2> Meny </h2>-->
-            <img src="assets/images/logo.png" alt="Meny Mendonça - logo" />
+    <!-- ===================== Sidebar (desktop) ===================== -->
+    <aside class="sidebar" aria-label="Navegação">
+        <a class="brand" href="#inicio" aria-label="Meny Mendonça — início">
+            <img src="/assets/images/logo.png" alt="Meny Mendonça">
         </a>
-        <!-- Logo End -->
 
-        <!-- Navbar -->
-        <nav class="navbar">
-            <a href="#home">Página inicial</a>
-            <a href="#social-spotlight">ao vivo</a>
-            <a href="#about">Sobre</a>
-            <a href="#portfolio">momentos</a>
-            <a href="#blog">destaques</a>
-            <a href="#agenda">eventos</a>
-            <a href="#contact">Redes Sociais</a>
+        <a class="live-card live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer" data-live-link>
+            <img src="/assets/images/About/About-Image.png" alt="" data-avatar>
+            <div><strong><span class="live-dot"></span>AO VIVO AGORA</strong><span>Toque para assistir no TikTok</span></div>
+        </a>
+
+        <nav class="side-nav">
+            <a class="nav-item" href="#inicio" data-route="inicio"><svg class="i"><use href="#i-home"/></svg>Para você</a>
+            <a class="nav-item" href="#videos" data-route="videos"><svg class="i"><use href="#i-video"/></svg>Destaques</a>
+            <a class="nav-item" href="#momentos" data-route="momentos"><svg class="i"><use href="#i-image"/></svg>Momentos</a>
+            <a class="nav-item" href="#musicas" data-route="musicas"><svg class="i"><use href="#i-music"/></svg>Músicas</a>
+            <a class="nav-item" href="#eventos" data-route="eventos"><svg class="i"><use href="#i-calendar"/></svg>Eventos</a>
+            <a class="nav-item" href="#perfil" data-route="perfil"><svg class="i"><use href="#i-user"/></svg>Sobre mim</a>
+            <a class="nav-item" href="#contato" data-route="contato"><svg class="i"><use href="#i-mail"/></svg>Mensagem</a>
         </nav>
 
-        <!-- Menubar -->
-        <div class="fas fa-bars" id="menu-btn"></div>
-
-    </header>
-    <!-------------------- Header Area (End) -------------------->
-
-
-
-    <!-------------------- Home Area (Start) -------------------->
-    <section class="home" id="home">
-
-        <div class="box-container">
-
-            <div class="content">
-                <div class="text">
-                    <span class="hero-badge" id="home-badge">streaming • música • presença</span>
-                    <h2>olá!</h2>
-                    <h1>Eu sou <span class="typing-frame"><span class="typing-text"></span></span></h1>
-                    <p id="home-paragrafo1">Com mais de 40 anos vividos, encantando as pessoas com a minha voz nos
-                        momentos, dedico-me
-                        também ao streaming há quatro anos, onde transformo transmissões em momentos de pura alegria
-                        para o público.</p>
-                    <p class="hero-line" id="home-paragrafo2">Uma presença acolhedora, voz marcante e conteúdo pensado
-                        para aproximar
-                        pessoas.</p>
-                    <a href="#about" class="btn">sobre mim <i class="fas fa-user"></i></a>
-                </div>
-            </div>
-
-            <div class="image">
-                <img src="assets/images/Home/Home-Image.png" alt="Home-Image" width="440" height="440" id="home-imagem">
-            </div>
-
+        <div class="side-card">
+            <h4>Redes sociais</h4>
+            <div class="social-list" data-socials></div>
         </div>
 
-    </section>
+        <p class="side-foot">desenvolvido por FSO</p>
+    </aside>
 
-    <!-------------------- Home Area (End) -------------------->
+    <!-- ===================== Palco ===================== -->
+    <main class="stage">
 
-
-    <!-------------------- Social Highlight (Start) -------------------->
-    <section class="social-spotlight" id="social-spotlight">
-
-        <div class="heading">
-            <h2>acompanhe <span>ao vivo</span></h2>
-            <p class="section-lead">Entradas rápidas para os canais mais ativos, com foco em vídeos curtos, lives e
-                conteúdos completos.</p>
-        </div>
-
-        <div class="spotlight-grid">
-            <a class="spotlight-card spotlight-card--tiktok" id="tiktok-spotlight-card" target="_blank"
-                rel="noopener noreferrer" href="https://www.tiktok.com/@meny.menycita">
-                <span class="live-badge" id="live-badge">
-                    <span class="live-badge__dot"></span> AO VIVO
-                </span>
-                <span class="spotlight-card__icon fab fa-tiktok"></span>
-                <h3>TikTok</h3>
-                <p id="tiktok-card-desc">Clipes curtos, bastidores e chamadas para as lives.</p>
-                <strong id="tiktok-card-cta">abrir perfil</strong>
-            </a>
-
-            <a class="spotlight-card spotlight-card--youtube" target="_blank" rel="noopener noreferrer"
-                href="https://www.youtube.com/@menymendonca4269">
-                <span class="spotlight-card__icon fab fa-youtube"></span>
-                <h3>YouTube</h3>
-                <p>Conteúdos completos, vídeos fixos e materiais mais longos.</p>
-                <strong>abrir canal</strong>
-            </a>
-
-            <a class="spotlight-card spotlight-card--instagram" target="_blank" rel="noopener noreferrer"
-                href="https://www.instagram.com/meny.meny.meny">
-                <span class="spotlight-card__icon fab fa-instagram"></span>
-                <h3>Instagram</h3>
-                <p>Atualizações rápidas, fotos e destaques do dia a dia.</p>
-                <strong>ver stories</strong>
-            </a>
-
-            <a class="spotlight-card spotlight-card--blog" href="#blog">
-                <span class="spotlight-card__icon fas fa-bolt"></span>
-                <h3>Destaques</h3>
-                <p>Veja os carrosseis atualizados do TikTok e do YouTube.</p>
-                <strong>ir para o blog</strong>
-            </a>
-        </div>
-
-    </section>
-    <!-------------------- Social Highlight (End) -------------------->
-
-
-
-    <!-------------------- About Area (Start) -------------------->
-    <section class="about" id="about">
-
-        <div class="box-container">
-
-            <div class="image">
-                <img src="assets/images/About/About-Image.png" alt="Foto de Meny Mendonça" loading="lazy" width="320"
-                    height="400" id="about-imagem" />
-            </div>
-
-            <div class="content">
-
-                <h2 id="about-titulo">Meu nome é meny mendonça.</h2>
-                <p id="about-paragrafo">Recifense de coração vibrante, há mais de 20 anos transformo sonhos em realidade
-                    como empreendedora e
-                    encantando as pessoas com a minha voz nos momentos vagos. Mãe dedicada e apaixonada pela vida,
-                    encontrei no streaming - onde estou há mais 4 anos - uma nova forma de espalhar leveza. Minha
-                    missão?
-                    Levar alegria a cada tela e mostrar que a vida, quando vivida com um sorriso, é muito mais bonita.
-                </p>
-
-                <div class="about-info">
-
-                    <div class="info">
-                        <h4>idade: <span id="idade"></span></h4>
-                        <h4>Sexo: <span id="about-sexo">Feminino</span></h4>
-                        <h4>Idioma: <span id="about-idioma">português</span></h4>
-                        <h4>Trabalho: <span id="about-trabalho">Streaming, empreendedora</span></h4>
-                    </div>
-
-                    <div class="counting">
-
-                        <div class="box">
-                            <h1 class="count" data-count="4" id="about-contador1-numero">4+</h1>
-                            <h3 id="about-contador1-texto">anos de<br /> Streaming </h3>
-                        </div>
-
-                        <div class="box">
-                            <h1 class="count" data-count="20" id="about-contador2-numero">20+</h1>
-                            <h3 id="about-contador2-texto">anos<br />cantando</h3>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-    <!-------------------- About Area (end) -------------------->
-
-
-    <!-------------------- Portfolio Area (Start) -------------------->
-    <section class="portfolio" id="portfolio">
-
-        <div class="heading">
-            <h2>meus <span>momentos</span></h2>
-            <p class="section-lead">Memórias, bastidores e registros que ajudam a contar minha história com mais
-                contexto visual.</p>
-        </div>
-
-        <div class="gallery">
-
-            <ul class="controls">
-                <li class="button"><button type="button" class="btn active" data-filter="all"
-                        aria-pressed="true">Todos</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="família"
-                        aria-pressed="false">família</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="passeios"
-                        aria-pressed="false">passeio</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="lives"
-                        aria-pressed="false">lives</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="amigos"
-                        aria-pressed="false">amigos</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="inesquecíveis"
-                        aria-pressed="false">inesquecíveis</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="viagens"
-                        aria-pressed="false">viagens</button></li>
-                <li class="button"><button type="button" class="btn" data-filter="diversos"
-                        aria-pressed="false">diversos</button></li>
-            </ul>
-
-            <div class="box-container" id="portfolio-container">
-
-            </div>
-
-        </div>
-
-    </section>
-    <!-------------------- Portfolio Area (End) -------------------->
-
-
-
-    <!-------------------- Blog Area (Start) -------------------->
-    <section class="blog" id="blog">
-
-        <div class="heading">
-            <h2>meus <span>destaques</span></h2>
-            <p class="section-lead">Atualizações pensadas para levar o público do blog para o TikTok e o YouTube.</p>
-        </div>
-
-        <div class="social-grid">
-            <article class="social-panel social-panel--tiktok" id="tiktok-panel">
-                <div class="social-panel__header">
-                    <div>
-                        <div class="platform-tag-row">
-                            <span class="platform-tag platform-tag--tiktok">TikTok</span>
-                            <span class="live-badge live-badge--inline" id="blog-live-badge">
-                                <span class="live-badge__dot"></span> AO VIVO
-                            </span>
-                        </div>
-                        <h3>vídeos <br /> curtos</h3>
-                        <p id="tiktok-panel-desc">Destaques TikTok.</p>
-                    </div>
-
-                    <a class="btn social-panel__btn" id="tiktok-panel-cta" target="_blank" rel="noopener noreferrer"
-                        href="https://www.tiktok.com/@meny.menycita">seguir no tiktok</a>
-                </div>
-
-                <div class="swiper-container blog-slider blog-slider--tiktok">
-                    <div class="swiper-wrapper" id="blog-tiktok-dinamico">
-                        <!-- Slides serao inseridos aqui via JS (assets/js/blog.js) -->
-                    </div>
-
-                    <div class="swiper-pagination swiper-pagination-tiktok"></div>
-                </div>
-            </article>
-
-            <article class="social-panel social-panel--youtube">
-                <div class="social-panel__header">
-                    <div>
-                        <div class="platform-tag-row">
-                            <span class="platform-tag platform-tag--youtube">YouTube</span>
-                        </div>
-                        <h3>vídeos <br /> completos</h3>
-                        <p>Destaques YouTube.</p>
-                    </div>
-
-                    <a class="btn social-panel__btn" target="_blank" rel="noopener noreferrer"
-                        href="https://www.youtube.com/@menymendonca4269">seguir no youtube</a>
-                </div>
-
-                <div class="swiper-container blog-slider blog-slider--youtube">
-                    <div class="swiper-wrapper" id="blog-youtube-dinamico">
-                        <!-- Slides serao inseridos aqui via JS (assets/js/blog.js) -->
-                    </div>
-
-                    <div class="swiper-pagination swiper-pagination-youtube"></div>
-                </div>
-            </article>
-        </div>
-
-    </section>
-
-    <!-------------------- Blog Area (End) -------------------->
-
-
-    <!-------------------- Agenda Area (Start) -------------------->
-    <section class="agenda" id="agenda">
-
-        <div class="heading">
-            <h2 id="tituloSite">meus <span>eventos</span></h2>
-            <p class="section-lead">Veja os próximos compromissos, transmissões e datas importantes em um calendário
-                mais fácil de acompanhar.</p>
-        </div>
-
-        <div class="agenda-layout">
-            <aside class="agenda-sidebar">
-                <div class="agenda-card agenda-card--accent">
-                    <span class="agenda-card__eyebrow">Próxima agenda</span>
-                    <h3>Transmissões, eventos e encontros</h3>
-                    <p>Use esta área para organizar lives, participações especiais e datas de divulgação.</p>
-                </div>
-
-                <div class="agenda-card">
-                    <h4>O que você encontra aqui</h4>
-                    <ul>
-                        <li>Datas de lives e eventos</li>
-                        <li>Compromissos com o público</li>
-                        <li>Atualizações integradas ao Google Agenda</li>
-                    </ul>
-                </div>
-
-                <a class="btn agenda-cta" href="#contact">quero acompanhar</a>
-            </aside>
-
-            <div class="calendar-wrapper">
-                <div class="calendar" id="calendar"></div>
-            </div>
-        </div>
-
-        <div class="modalEvento" id="modalEvento">
-
-            <div class="modal-conteudo">
-
-                <button class="fecharModal" id="fecharModal">×</button>
-                <h3 id="modalTitulo"></h3>
-                <p id="modalData"></p>
-                <p id="modalDescricao"></p>
-
-                <a class="btnGoogle" id="btnGoogle" target="_blank" class="btn-google">
-                    Abrir no Google Agenda
+        <!-- FEED (Para você / Destaques / Momentos) -->
+        <section class="view" data-view="feed">
+            <div class="top-tabs" role="tablist" aria-label="Filtrar feed">
+                <a class="live-pill" id="livePill" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer">
+                    <span class="live-dot"></span> <span class="txt-full">AO VIVO</span><span class="txt-short">LIVE</span>
                 </a>
-
+                <button type="button" role="tab" data-tab="momentos">Momentos</button>
+                <button type="button" role="tab" data-tab="inicio">Para você</button>
+                <button type="button" role="tab" data-tab="videos">Destaques</button>
             </div>
 
-        </div>
-    </section>
-    <!-------------------- Agenda Area (End) -------------------->
+            <div class="feed" id="feed" aria-label="Feed">
+                <div class="skeleton"><div class="player"></div></div>
+            </div>
 
+            <div class="nav-arrows">
+                <button type="button" id="prevBtn" aria-label="Anterior"><svg class="i"><use href="#i-up"/></svg></button>
+                <button type="button" id="nextBtn" aria-label="Próximo"><svg class="i"><use href="#i-down"/></svg></button>
+            </div>
+        </section>
 
-
-    <!-------------------- Contact Area (Start) -------------------->
-    <section class="contact" id="contact">
-
-        <div class="heading">
-            <h2>Minhas <span>Redes sociais</span></h2>
-        </div>
-
-        <div class="box-container">
-
-            <div class="contact-info">
-
-                <h3>onde me encontrar</h3>
-
-                <div class="info-item">
-                    <h4>TikTok:</h4>
-                    <div class="detail">
-                        <div class="fab fa-tiktok"></div>
-                        <a class="linkedin" target="_blank"
-                            href="https://www.tiktok.com/@meny.menycita">@meny.menycita</a>
+        <!-- SOBRE MIM (perfil) -->
+        <section class="view page" data-view="perfil" hidden>
+<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
+            <div class="page-inner">
+                <div class="profile-head">
+                    <div class="profile-cover" id="home-imagem" style="background-image:url('/assets/images/Home/Home-Image.png')" aria-hidden="true"></div>
+                    <div class="pic-wrap">
+                        <img class="pic" id="about-imagem" src="/assets/images/About/About-Image.png" alt="Foto de Meny Mendonça">
+                        <a class="live-tag live-only" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer">AO VIVO</a>
                     </div>
+                    <h1 id="about-titulo">Meny Mendonça</h1>
+                    <span class="handle">cantora · streamer · empreendedora</span>
+                    <span class="badge-line" id="home-badge">streaming • música • presença</span>
                 </div>
 
-                <div class="info-item">
-                    <h4>YouTube:</h4>
-                    <div class="detail">
-                        <div class="fab fa-youtube"></div>
-                        <a class="github" target="_blank"
-                            href="https://www.youtube.com/@menymendonca4269">@menymendonca4269</a>
-                    </div>
+                <div class="stats">
+                    <div class="stat"><strong id="stat1-num">4+</strong><span id="stat1-txt">anos de streaming</span></div>
+                    <div class="stat"><strong id="stat2-num">20+</strong><span id="stat2-txt">anos cantando</span></div>
+                    <div class="stat"><strong id="stat3-num">—</strong><span>vídeos e momentos</span></div>
                 </div>
 
-                <div class="info-item">
-                    <h4>Instagram:</h4>
-                    <div class="detail">
-                        <div class="fab fa-instagram"></div>
-                        <a class="github" target="_blank"
-                            href="https://www.instagram.com/meny.meny.meny">meny.meny.meny</a>
+                <div class="profile-actions">
+                    <button type="button" class="btn btn-primary" data-open-socials><svg class="i"><use href="#i-plus"/></svg>Seguir</button>
+                    <a class="btn btn-ghost" href="#contato"><svg class="i"><use href="#i-send"/></svg>Mensagem</a>
+                    <a class="btn btn-ghost" href="#eventos"><svg class="i"><use href="#i-calendar"/></svg>Agenda</a>
+                </div>
+
+                <div class="roles" id="roles"></div>
+
+                <div class="bio">
+                    <p id="home-paragrafo1">Com mais de 40 anos vividos, encantando as pessoas com a minha voz nos momentos, dedico-me também ao streaming há quatro anos, onde transformo transmissões em momentos de pura alegria para o público.</p>
+                    <p id="about-paragrafo">Recifense de coração vibrante, há mais de 20 anos transformo sonhos em realidade como empreendedora e encantando as pessoas com a minha voz nos momentos vagos. Mãe dedicada e apaixonada pela vida, encontrei no streaming - onde estou há mais 4 anos - uma nova forma de espalhar leveza. Minha missão? Levar alegria a cada tela e mostrar que a vida, quando vivida com um sorriso, é muito mais bonita.</p>
+                    <p id="home-paragrafo2">Uma presença acolhedora, voz marcante e conteúdo pensado para aproximar pessoas.</p>
+                </div>
+
+                <dl class="info-grid">
+                    <div><dt>Idade</dt><dd id="idade">—</dd></div>
+                    <div><dt>Sexo</dt><dd id="about-sexo">Feminino</dd></div>
+                    <div><dt>Idioma</dt><dd id="about-idioma">português</dd></div>
+                    <div><dt>Trabalho</dt><dd id="about-trabalho">Streaming, empreendedora</dd></div>
+                </dl>
+
+                <div class="profile-tabs" role="tablist">
+                    <button type="button" class="active" data-grid="videos"><svg class="i"><use href="#i-grid"/></svg>Destaques</button>
+                    <button type="button" data-grid="momentos"><svg class="i"><use href="#i-image"/></svg>Momentos</button>
+                </div>
+                <div class="grid" id="profileGrid"></div>
+
+                <p class="visits">
+                    <svg class="i"><use href="#i-eye"/></svg> visitas: <strong id="contador-visitas">…</strong>
+                    <a href="/admin.html">admin</a>
+                </p>
+            </div>
+        </section>
+
+        <!-- MÚSICAS -->
+        <section class="view page" data-view="musicas" hidden>
+            <a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
+            <div class="page-inner">
+                <h2 class="page-title">minhas <span>músicas</span></h2>
+                <p class="page-lead">Músicas que eu canto e indico — toque para ouvir onde preferir.</p>
+                <a class="playlist-card" id="playlistCard" target="_blank" rel="noopener noreferrer" hidden>
+                    <span class="pl-icon"><svg class="i"><use href="#i-music"/></svg></span>
+                    <span><strong id="playlistTitulo">Minha playlist</strong><small id="playlistOnde">Ouvir a playlist completa</small></span>
+                    <svg class="i"><use href="#i-external"/></svg>
+                </a>
+                <div id="musicList"><div class="empty"><p>Carregando músicas…</p></div></div>
+            </div>
+        </section>
+
+        <!-- EVENTOS -->
+        <section class="view page" data-view="eventos" hidden>
+<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
+            <div class="page-inner">
+                <h2 class="page-title">meus <span>eventos</span></h2>
+                <p class="page-lead">Próximas lives, transmissões e datas importantes.</p>
+                <div id="eventList"><div class="empty"><p>Carregando agenda…</p></div></div>
+            </div>
+        </section>
+
+        <!-- CONTATO -->
+        <section class="view page" data-view="contato" hidden>
+<a class="live-banner live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer"><span class="live-dot"></span> Estou AO VIVO agora no TikTok — <u>assistir</u></a>
+            <div class="page-inner">
+                <h2 class="page-title">minhas <span>redes sociais</span></h2>
+                <p class="page-lead">Onde me encontrar — ou deixe sua mensagem que eu te respondo logo, logo.</p>
+
+                <div class="contact-socials" data-socials-cards></div>
+
+                <form class="form" id="contactForm" novalidate>
+                    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+                    <div class="row">
+                        <label>Nome<input type="text" name="name" required autocomplete="name"></label>
+                        <label>E-mail<input type="email" name="email" required autocomplete="email"></label>
                     </div>
+                    <label>Assunto<input type="text" name="subject" required></label>
+                    <label>Mensagem<textarea name="comment" rows="6"></textarea></label>
+                    <button type="submit" class="btn btn-primary"><svg class="i"><use href="#i-send"/></svg>Enviar mensagem</button>
+                    <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- ===================== Barra inferior (mobile) ===================== -->
+<nav class="bottom-nav" aria-label="Navegação principal">
+    <a class="nav-item" href="#inicio" data-route="inicio"><svg class="i"><use href="#i-home"/></svg>Início</a>
+    <a class="nav-item" href="#eventos" data-route="eventos"><svg class="i"><use href="#i-calendar"/></svg>Eventos</a>
+    <button type="button" class="create" data-open-socials aria-label="Seguir nas redes sociais"><svg class="i"><use href="#i-plus"/></svg></button>
+    <a class="nav-item" href="#musicas" data-route="musicas"><svg class="i"><use href="#i-music"/></svg>Músicas</a>
+    <a class="nav-item" href="#perfil" data-route="perfil"><svg class="i"><use href="#i-user"/></svg>Sobre</a>
+</nav>
+
+<!-- ===================== Diálogos ===================== -->
+<dialog class="sheet" id="socialSheet" aria-labelledby="socialSheetTitle">
+    <div class="grab"></div>
+    <h3><span id="socialSheetTitle">Me acompanhe</span>
+        <button type="button" class="close-btn" data-close aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+    </h3>
+    <a class="social-row live-row live-only flex" href="https://www.tiktok.com/@meny.menycita/live" target="_blank" rel="noopener noreferrer">
+        <span class="live-dot"></span><span>Assistir a live agora<small>@meny.menycita · TikTok</small></span>
+        <svg class="i"><use href="#i-external"/></svg>
+    </a>
+    <div class="social-list" data-socials data-detailed></div>
+    <a class="social-row msg-row" href="#contato" data-close-sheet>
+        <svg class="i" style="color:var(--green);font-size:2rem;width:2.8rem"><use href="#i-mail"/></svg>
+        <span>Mandar uma mensagem<small>formulário de contato do site</small></span>
+        <svg class="i"><use href="#i-right"/></svg>
+    </a>
+</dialog>
+
+<dialog class="sheet music-sheet" id="musicSheet" aria-labelledby="msTitulo">
+    <div class="grab"></div>
+    <div class="ms-head">
+        <img id="msCapa" alt="">
+        <div>
+            <h3 id="msTitulo"></h3>
+            <p id="msArtista"></p>
+        </div>
+        <button type="button" class="close-btn" data-close aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="ms-player" id="msPlayer" hidden></div>
+    <p class="ms-label">Ouvir em</p>
+    <div class="ms-links" id="msLinks"></div>
+    <div class="ms-actions">
+        <button type="button" class="btn btn-ghost" id="msTocar" hidden><svg class="i fill"><use href="#i-play"/></svg>Tocar aqui</button>
+        <button type="button" class="btn btn-primary" id="msShare"><svg class="i fill"><use href="#i-share"/></svg>Compartilhar</button>
+    </div>
+    <a class="ms-all" id="msTodas" target="_blank" rel="noopener noreferrer" hidden>ver em todas as plataformas</a>
+</dialog>
+
+<dialog class="sheet" id="eventSheet" aria-labelledby="evTitle">
+    <div class="grab"></div>
+    <h3><span id="evTitle"></span>
+        <button type="button" class="close-btn" data-close aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+    </h3>
+    <p class="when"><svg class="i"><use href="#i-clock"/></svg><span id="evWhen"></span></p>
+    <p class="desc" id="evDesc"></p>
+    <a class="btn btn-primary" id="evLink" target="_blank" rel="noopener noreferrer"><svg class="i"><use href="#i-calendar"/></svg>Abrir no Google Agenda</a>
+</dialog>
+
+<dialog class="lightbox" id="lightbox" aria-label="Foto ampliada">
+    <button type="button" class="close-btn" data-close aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="lb-inner" data-close-bg>
+        <img id="lbImg" alt="">
+        <p class="cap" id="lbCap"></p>
+    </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+    "use strict";
+
+    /* =========================================================
+       Configuração
+       ========================================================= */
+    // avatar = mesma foto do perfil (seção Sobre do painel admin)
+    const PERFIL = { nome: "Meny Mendonça", avatar: "/assets/images/About/About-Image.png" };
+    function definirAvatar(url) {
+        if (!url) return;
+        PERFIL.avatar = url;
+        document.querySelectorAll(".avatar img, img[data-avatar]").forEach(img => { img.src = url; });
+    }
+
+    // Todas as redes com o mesmo peso — nenhuma é "a principal".
+    const REDES = [
+        { id: "youtube",   nome: "YouTube",   icone: "fa-youtube",   handle: "@menymendonca4269", url: "https://www.youtube.com/@menymendonca4269", acao: "vídeos completos e lives" },
+        { id: "tiktok",    nome: "TikTok",    icone: "fa-tiktok",    handle: "@meny.menycita",    url: "https://www.tiktok.com/@meny.menycita",   acao: "clipes curtos e lives" },
+        { id: "instagram", nome: "Instagram", icone: "fa-instagram", handle: "@meny.meny.meny",   url: "https://www.instagram.com/meny.meny.meny", acao: "fotos e stories" },
+    ];
+    const rede = id => REDES.find(r => r.id === id);
+
+    const FALLBACK_IMG = "/assets/images/Home/Home-Image.png";
+    const FALLBACK_PLAT = { youtube: "/assets/images/Blogs/youtube.jpg", tiktok: "/assets/images/Blogs/tiktok.jpg" };
+    const TITULO_TIKTOK = "Vídeo TikTok";
+
+    // Reserva (blog1.json) — usada só se as functions não responderem.
+    const RESERVA = [
+        ["Parte 3", "https://www.youtube.com/watch?v=46s5p1wRXQc", "2025-06-23"],
+        ["Parte 2", "https://www.youtube.com/watch?v=q0-b5rgV954", "2025-06-18"],
+        ["live 14/06", "https://www.youtube.com/watch?v=qrEdZjUM7e0", "2025-06-17"],
+        ["Batalha musical Victor Camarote (Reginaldo Rossi)", "https://www.youtube.com/watch?v=fHrptX1C3jk", "2025-04-23"],
+        ["Serestada!!", "https://www.youtube.com/watch?v=oj6iI2HiSMo", "2025-03-31"],
+        ["BATALHA MUSICAL (Fagner)", "https://www.youtube.com/watch?v=5oilWZ4ShSA", "2025-03-22"],
+        ["Continuação da Live de fim de ano", "https://www.youtube.com/watch?v=7LrA5k_VVpU", "2025-01-02"],
+        ["Live Especial Fim de ano", "https://www.youtube.com/watch?v=HS4-HV1cWIY", "2024-12-26"],
+        ["Talvez seja amor", "https://www.youtube.com/watch?v=y27EYZWvEa8", "2024-08-26"],
+    ].map(([title, url, date]) => ({ platform: "YouTube", title, url, date }));
+
+    /* =========================================================
+       Utilidades
+       ========================================================= */
+    const $ = (s, el = document) => el.querySelector(s);
+    const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+    const icon = (id, cls = "") => `<svg class="i ${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+    const esc = t => String(t ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    const limpar = t => String(t || "").replace(/<[^>]*>?/g, "").replace(/\s+/g, " ").trim();
+    const destacarTags = t => t
+        .replace(/(^|\s)(#[\p{L}0-9_]+)/gu, '$1<span class="tag">$2</span>')
+        .replace(/(^|\s)(@[\p{L}0-9_.]+)/gu, '$1<span class="tag">$2</span>');
+    const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null && v !== "") el.textContent = v; };
+
+    const tempoRelativo = iso => {
+        const d = new Date(iso);
+        if (isNaN(d)) return "";
+        const dias = Math.floor((Date.now() - d) / 864e5);
+        if (dias < 1) return "hoje";
+        if (dias < 7) return `há ${dias}d`;
+        if (dias < 30) return `há ${Math.floor(dias / 7)} sem`;
+        return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: dias > 365 ? "numeric" : undefined });
+    };
+
+    const idYouTube = url => (String(url || "").match(/(?:v=|shorts\/|youtu\.be\/|embed\/)([\w-]{11})/) || [])[1] || null;
+    const idTikTok = url => (String(url || "").match(/\/video\/(\d+)/) || [])[1] || null;
+    const thumbSegura = url => {
+        if (!url) return "";
+        try { if (/tiktokcdn/i.test(new URL(url).hostname)) return `/.netlify/functions/tiktok-thumbnail?url=${encodeURIComponent(url)}`; }
+        catch { /* caminho local */ }
+        return url;
+    };
+
+    const store = {
+        get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+        set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* sem storage */ } },
+    };
+    const curtidos = new Set(store.get("meny-curtidos", []));
+    const salvos = new Set(store.get("meny-salvos", []));
+
+    const toastEl = $("#toast");
+    let toastTimer;
+    const toast = msg => {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+    };
+
+    async function jsonOu(url, def, opts) {
+        try {
+            const r = await fetch(url, { cache: "no-store", ...opts });
+            if (!r.ok) return def;
+            return await r.json();
+        } catch { return def; }
+    }
+
+    /* =========================================================
+       Redes sociais (sidebar, folha "Seguir", página de contato)
+       ========================================================= */
+    function renderRedes() {
+        $$("[data-socials]").forEach(box => {
+            const det = box.hasAttribute("data-detailed");
+            box.innerHTML = REDES.map(r => `
+                <a class="social-row" href="${r.url}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab ${r.icone}" aria-hidden="true"></i>
+                    <span>${r.nome}${det ? `<small>${r.handle} · ${r.acao}</small>` : ""}</span>
+                    ${icon("external")}
+                </a>`).join("");
+        });
+        $$("[data-socials-cards]").forEach(box => {
+            box.innerHTML = REDES.map(r => `
+                <a href="${r.url}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab ${r.icone}" aria-hidden="true"></i>
+                    <strong>${r.nome}</strong><span>${r.handle}</span>
+                </a>`).join("");
+        });
+    }
+
+    /* =========================================================
+       Dados
+       ========================================================= */
+    // Mesma regra do blog.js / feeds-update.js: sem querystring, sem "/" final.
+    const chaveUrl = url => String(url || "").trim().split(/[?#]/)[0].replace(/\/+$/, "");
+    const ehUrlTikTok = url => /(^|\.)tiktok\.com/i.test((() => { try { return new URL(url).hostname; } catch { return ""; } })());
+    const ehFotoTikTok = url => /\/photo\//i.test(url || "");
+
+    function extrairTituloLimpo(legenda, limite = 70) {
+        const t = String(legenda || "").replace(/#[\p{L}0-9_]+/gu, "").replace(/@[\p{L}0-9_.]+/gu, "").replace(/\s+/g, " ").trim();
+        return t.length > limite ? `${t.slice(0, limite)}…` : t;
+    }
+
+    function embedDe(item) {
+        if (item.platform === "youtube" && item.ytId) {
+            return `https://www.youtube-nocookie.com/embed/${item.ytId}?autoplay=1&playsinline=1&rel=0`;
+        }
+        if (item.platform === "tiktok" && item.ttId && !item.foto) {
+            // Player oficial de incorporação do TikTok (vertical 9:16)
+            return `https://www.tiktok.com/player/v1/${item.ttId}?autoplay=1&rel=0&music_info=1&description=0`;
+        }
+        return null;
+    }
+
+    // feeds-update.js grava "TikTok" como título quando não há legenda;
+    // tratamos esses rótulos genéricos como "sem título".
+    function tituloOuPadrao(t, platform, url) {
+        const generico = !t || /^(tiktok|youtube|vídeo tiktok|vídeo)$/i.test(t);
+        if (!generico) return t;
+        if (platform === "tiktok") return ehFotoTikTok(url) ? "Fotos no TikTok" : TITULO_TIKTOK;
+        return "Vídeo";
+    }
+
+    // No TikTok o "author" salvo é o nome de exibição (com emojis); o @ real
+    // está na própria URL (tiktok.com/@usuario/video/...).
+    function autorDe(platform, url, autor) {
+        if (platform === "tiktok") {
+            const m = String(url).match(/tiktok\.com\/(@[\w.]+)/i);
+            if (m) return m[1];
+        }
+        if (/^@[\w.]+$/.test(autor)) return autor;
+        return rede(platform).handle;
+    }
+
+    function normalizarVideo(p, plataforma) {
+        const bruto = typeof p === "string" ? { url: p } : (p || {});
+        const urlOriginal = String(bruto.url || bruto.link || "").trim();
+        if (!urlOriginal) return null;
+        const platform = (String(bruto.platform || plataforma).toLowerCase().includes("tiktok") || ehUrlTikTok(urlOriginal)) ? "tiktok" : "youtube";
+        // YouTube guarda o ID na querystring (watch?v=...), então só o
+        // TikTok tem a querystring removida.
+        const url = platform === "tiktok" ? chaveUrl(urlOriginal) : urlOriginal;
+        const ytId = platform === "youtube" ? idYouTube(urlOriginal) : null;
+        const ttId = platform === "tiktok" ? idTikTok(url) : null;
+        let thumb = thumbSegura(bruto.thumbnail);
+        if (!thumb && ytId) thumb = `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`;
+        const autor = String(bruto.author || bruto.autor || "").trim();
+        const item = {
+            key: ytId ? "yt:" + ytId : url, tipo: "video", platform, url, ytId, ttId,
+            foto: platform === "tiktok" && ehFotoTikTok(url),
+            vertical: platform === "tiktok" || /shorts\//.test(urlOriginal),
+            thumb: thumb || FALLBACK_PLAT[platform],
+            semThumb: !thumb,
+            title: tituloOuPadrao(limpar(bruto.titulo || bruto.title), platform, url),
+            desc: limpar(bruto.description || bruto.descricao || bruto.content),
+            author: autorDe(platform, urlOriginal, autor),
+            date: bruto.date,
+        };
+        item.embed = embedDe(item);
+        return item;
+    }
+
+    // Junta duas fontes do mesmo vídeo mantendo o melhor dado de cada uma
+    // (mesma ideia do mesclarPosts do blog.js).
+    function mesclar(lista) {
+        const mapa = new Map();
+        lista.filter(Boolean).forEach(v => {
+            const e = mapa.get(v.key);
+            if (!e) { mapa.set(v.key, v); return; }
+            const m = { ...e,
+                title: (v.title && v.title !== TITULO_TIKTOK && v.title !== "Vídeo") ? v.title : e.title,
+                thumb: !v.semThumb ? v.thumb : e.thumb,
+                semThumb: e.semThumb && v.semThumb,
+                desc: v.desc || e.desc,
+                author: e.author || v.author,
+                date: e.date || v.date,
+                ttId: e.ttId || v.ttId,
+            };
+            m.embed = embedDe(m);
+            mapa.set(v.key, m);
+        });
+        return [...mapa.values()];
+    }
+
+    // Cartão "siga no perfil" — garante que cada rede apareça no feed
+    // mesmo quando ela ainda não tem vídeos carregados.
+    function cartaoPerfil(platform) {
+        const r = rede(platform);
+        const textos = {
+            tiktok: ["Meus vídeos curtos estão no TikTok", "Clipes, bastidores e chamadas para as lives."],
+            youtube: ["Vídeos completos no YouTube", "Lives inteiras e conteúdos mais longos."],
+        }[platform];
+        return {
+            key: "perfil:" + platform, tipo: "perfil", platform, url: r.url, embed: null,
+            vertical: true, thumb: FALLBACK_PLAT[platform], title: textos[0], desc: textos[1],
+            author: r.handle, date: null,
+        };
+    }
+
+    function normalizarMomento(m) {
+        return {
+            key: `momento:${m.imagem || ""}|${m.titulo || ""}`, tipo: "foto", platform: "momentos",
+            url: m.imagem, embed: null, vertical: true,
+            thumb: m.imagem || FALLBACK_IMG,
+            title: limpar(m.titulo) || "Momento",
+            categoria: limpar(m.categoria),
+            desc: m.categoria ? `#${String(m.categoria).replace(/\s+/g, "")}` : "",
+            author: PERFIL.nome, date: m.data || m.date,
+        };
+    }
+
+    const dados = { videos: [], momentos: [] };
+
+    const fontes = { feeds: false };
+    async function carregarFeed() {
+        const [yt, tt, ttManual, mom] = await Promise.all([
+            jsonOu("/.netlify/functions/feeds-api?platform=youtube", null),
+            jsonOu("/.netlify/functions/feeds-api?platform=tiktok", null),
+            jsonOu("/.netlify/functions/tiktok-manual-api", null),
+            jsonOu("/.netlify/functions/momentos-api", null),
+        ]);
+        fontes.feeds = yt !== null || tt !== null;
+        if (!fontes.feeds) {
+            console.warn("[feed] Netlify Functions não responderam — usando vídeos de reserva. Rode com `netlify dev` para ver os dados reais.");
+        }
+
+        const ytLista = Array.isArray(yt) && yt.length ? yt : RESERVA;
+        const manual = Array.isArray(ttManual) ? ttManual : (Array.isArray(ttManual?.videos) ? ttManual.videos : []);
+        const ttLista = [...(Array.isArray(tt) ? tt : []), ...manual];
+
+        const porData = (a, b) => new Date(b.date || 0) - new Date(a.date || 0);
+        const yts = mesclar(ytLista.map(p => normalizarVideo(p, "youtube"))).sort(porData);
+        const tts = mesclar(ttLista.map(p => normalizarVideo(p, "tiktok"))).filter(v => v.platform === "tiktok").sort(porData);
+
+        if (!tts.length) tts.push(cartaoPerfil("tiktok"));
+        if (!yts.length) yts.push(cartaoPerfil("youtube"));
+
+        // Intercala as plataformas (1 YouTube, 1 TikTok, ...) para nenhuma
+        // dominar o topo do feed só porque tem mais itens ou é mais recente.
+        const videos = [];
+        for (let i = 0; i < Math.max(yts.length, tts.length); i++) {
+            if (yts[i]) videos.push(yts[i]);
+            if (tts[i]) videos.push(tts[i]);
+        }
+        dados.videos = videos;
+        dados.momentos = (Array.isArray(mom?.items) ? mom.items : []).map(normalizarMomento);
+    }
+
+    // TikToks sem capa/título/ID (ex.: recém-cadastrados no painel ou links
+    // curtos vt.tiktok.com) são completados pelo oEmbed, via a function
+    // tiktok-oembed — igual ao blog.js. Posts de foto não têm oEmbed.
+    async function enriquecerTikTok() {
+        const alvo = dados.videos.filter(v => v.platform === "tiktok" && v.tipo === "video" && !v.foto
+            && (v.semThumb || !v.ttId || v.title === TITULO_TIKTOK || !v.desc));
+        await Promise.all(alvo.map(async v => {
+            const meta = await jsonOu(`/.netlify/functions/tiktok-oembed?url=${encodeURIComponent(v.url)}`, null);
+            if (!meta) return;
+            if (v.semThumb && meta.thumbnail_url) { v.thumb = thumbSegura(meta.thumbnail_url); v.semThumb = false; }
+            if (!v.ttId && meta.embed_product_id) v.ttId = String(meta.embed_product_id);
+            if (v.title === TITULO_TIKTOK && meta.title) v.title = extrairTituloLimpo(meta.title) || v.title;
+            if (!v.desc && meta.title) v.desc = limpar(meta.title);
+            if (meta.author_unique_id && !/tiktok\.com\/@/i.test(v.url)) v.author = "@" + meta.author_unique_id;
+            v.embed = embedDe(v);
+            atualizarPost(v);
+        }));
+        if (alvo.length) renderGrid();
+    }
+
+    /* =========================================================
+       FEED
+       ========================================================= */
+    const feed = $("#feed");
+    let lista = [];
+    let feedModo = "inicio";
+    let categoriaMomento = "all";
+    let plataformaVideos = "all";
+
+    function montarLista(modo) {
+        if (modo === "videos") {
+            return plataformaVideos === "all" ? [...dados.videos] : dados.videos.filter(v => v.platform === plataformaVideos);
+        }
+        if (modo === "momentos") {
+            return categoriaMomento === "all" ? [...dados.momentos]
+                : dados.momentos.filter(m => m.categoria.toLowerCase() === categoriaMomento);
+        }
+        // Para você: vídeos (já intercalados) com um momento a cada 2 vídeos
+        const mom = [...dados.momentos];
+        const out = [];
+        dados.videos.forEach((v, i) => {
+            out.push(v);
+            if ((i + 1) % 2 === 0 && mom.length) out.push(mom.shift());
+        });
+        return out.concat(mom);
+    }
+
+    function nomeFonte(item) {
+        return item.platform === "momentos" ? "Momentos" : rede(item.platform).nome;
+    }
+    function iconeFonte(item) {
+        return item.platform === "momentos" ? icon("image") : `<i class="fab ${rede(item.platform).icone}" aria-hidden="true"></i>`;
+    }
+
+    function htmlPost(item, i) {
+        const desc = item.desc ? destacarTags(esc(item.desc)) : "";
+        const liked = curtidos.has(item.key), saved = salvos.has(item.key);
+        const daRede = item.tipo !== "foto";          // vídeo ou cartão de perfil
+        const r = daRede ? rede(item.platform) : null;
+        const toca = item.tipo === "video" && item.embed;
+        const fallback = daRede ? FALLBACK_PLAT[item.platform] : FALLBACK_IMG;
+        const centro = toca ? icon("play", "fill play") : item.tipo === "foto" ? icon("expand") : icon("external");
+        const fonteTxt = item.tipo === "perfil" ? `abrir perfil no ${r.nome}`
+            : item.foto ? `ver fotos no ${r.nome}` : daRede ? `ver no ${r.nome}` : "";
+        return `
+        <article class="post" data-i="${i}" data-key="${esc(item.key)}" aria-label="${esc(item.title)}">
+            <div class="player ${item.vertical ? "vertical" : ""} ${item.platform}">
+                <div class="bg" style="background-image:url('${esc(item.thumb)}')"></div>
+                <img class="thumb" src="${esc(item.thumb)}" alt="" loading="${i < 2 ? "eager" : "lazy"}"
+                     onerror="this.onerror=null;this.src='${fallback}';this.previousElementSibling.style.backgroundImage='url(${fallback})'">
+                <span class="center-btn" aria-hidden="true">${centro}</span>
+                <div class="shade"></div>
+                <div class="caption">
+                    <span class="chip">${iconeFonte(item)}${nomeFonte(item)}</span><br>
+                    <span class="author">${esc(daRede ? item.author : PERFIL.nome)} ${icon("check")}
+                        ${item.date ? `<span class="date">· ${esc(tempoRelativo(item.date))}</span>` : ""}</span>
+                    <p class="title">${esc(item.title)}</p>
+                    ${desc ? `<p class="desc">${desc}</p>${item.desc.length > 90 ? `<button class="more" type="button">mais</button>` : ""}` : ""}
+                    ${fonteTxt ? `<a class="source" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">${icon("external")} ${fonteTxt}</a>` : ""}
                 </div>
             </div>
 
-            <form method="post" class="contact-form" id="contactUs-Form">
-                <h3 id="formTitulo">Deixe sua mensagem por aqui que eu te respondo logo, logo.</h3>
+            <div class="rail">
+                <button type="button" class="avatar" data-open-socials aria-label="Seguir ${PERFIL.nome} nas redes">
+                    <img src="${PERFIL.avatar}" alt="">
+                    <span class="plus">${icon("plus")}</span>
+                    <span class="live-tag live-only">LIVE</span>
+                </button>
+                <button type="button" class="act act-like ${liked ? "on" : ""}" aria-pressed="${liked}">
+                    <span class="ic">${icon("heart", "fill")}</span><span>Curtir</span>
+                </button>
+                ${daRede
+                    ? `<a class="act" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" aria-label="Comentar no ${r.nome}">
+                          <span class="ic">${icon("comment")}</span><span>Comentar</span></a>`
+                    : `<a class="act" href="#contato">
+                          <span class="ic">${icon("comment")}</span><span>Recado</span></a>`}
+                <button type="button" class="act act-save ${saved ? "on" : ""}" aria-pressed="${saved}">
+                    <span class="ic">${icon("bookmark", saved ? "fill" : "")}</span><span>Salvar</span>
+                </button>
+                <button type="button" class="act act-share">
+                    <span class="ic">${icon("share", "fill")}</span><span>Enviar</span>
+                </button>
+            </div>
+        </article>`;
+    }
 
-                <!-- Honeypot anti-spam: campo invisível para humanos, bots costumam preencher -->
-                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+    // Atualiza um post já na tela (depois do enriquecimento do TikTok)
+    // sem recarregar o feed nem perder a posição de rolagem.
+    function atualizarPost(item) {
+        const i = lista.indexOf(item);
+        if (i < 0) return;
+        const el = feed.querySelector(`.post[data-i="${i}"]`);
+        if (!el || el.querySelector("iframe")) return;
+        el.insertAdjacentHTML("afterend", htmlPost(item, i));
+        const novo = el.nextElementSibling;
+        io?.unobserve(el);
+        el.remove();
+        io?.observe(novo);
+    }
 
-                <input type="text" name="name" class="box" id="name" placeholder="nome" required />
-                <input type="email" name="email" class="box" id="email" placeholder="email" required />
-                <input type="text" name="subject" class="box" id="subject" placeholder="assunto" required />
-                <textarea cols="30" rows="10" name="comment" id="comment" class="box" placeholder="mensagem"></textarea>
-                <button type="submit" class="btn" name="submit" id="submit">enviar mensagem</button>
+    function htmlPlataformas() {
+        const ops = [["all", "todos"], ["youtube", "YouTube"], ["tiktok", "TikTok"]];
+        return `<div class="pills feed-pills">
+            ${ops.map(([k, t]) => `<button type="button" class="pill ${k === plataformaVideos ? "active" : ""}" data-plat="${k}">${t}</button>`).join("")}
+        </div>`;
+    }
 
-                <span class="alert" id="msg"></span>
+    function htmlCategorias() {
+        const cats = [...new Set(dados.momentos.map(m => m.categoria.toLowerCase()).filter(Boolean))];
+        if (!cats.length) return "";
+        return `<div class="pills feed-pills">
+            ${["all", ...cats].map(c => `<button type="button" class="pill ${c === categoriaMomento ? "active" : ""}" data-cat="${esc(c)}">${c === "all" ? "todos" : esc(c)}</button>`).join("")}
+        </div>`;
+    }
 
-            </form>
-
-        </div>
-
-    </section>
-    <!-------------------- Contact Area (End) -------------------->
-
-
-
-    <!-------------------- Footer Area (Start) -------------------->
-    <footer>
-        <div class="social">
-            <a target="_blank" href="https://www.tiktok.com/@meny.menycita" class="fab fa-tiktok"></a>
-            <a target="_blank" href="https://www.youtube.com/@menymendonca4269" class="fab fa-youtube"></a>
-            <a target="_blank" href="https://www.instagram.com/meny.meny.meny" class="fab fa-instagram"></a>
-        </div>
-
-        <div class="content">
-            <p>desenvolvido por <span>FSO</span> | todos os direitos reservados
-                <a href="#" id="btnLogin" class="admin-link-footer">admin</a>
-            </p>
-
-            <p class="visit-counter">
-                <i class="fas fa-eye"></i> visitas: <strong id="contador-visitas">...</strong>
-            </p>
-        </div>
-    </footer>
-    <!-------------------- Footer Area (End) -------------------->
-
-    <!-- Script do contador -->
-    <script>
-        (async function () {
-            const el = document.getElementById("contador-visitas");
-            if (!el) return;
-
-            try {
-                const resp = await fetch("/.netlify/functions/contador", {
-                    method: "POST",
-                });
-
-                if (!resp.ok) {
-                    const data = await resp.json().catch(() => ({}));
-                    console.warn("Contador indisponível:", data.erro || resp.statusText);
-                    el.textContent = "-";
-                    return;
-                }
-
-                const data = await resp.json().catch(() => ({}));
-                el.textContent = Number(data.total || 0).toLocaleString("pt-BR");
-            } catch (err) {
-                console.warn("Falha ao buscar contador:", err);
-                el.textContent = "-";
-            }
-        })();
-    </script>
-
-    <!-- Conteúdo dinâmico das seções Home e Sobre (textos, fotos e contadores) -->
-    <script>
-        // Expomos uma Promise global (em vez de só rodar um IIFE solto)
-        // porque o script do Typed.js, mais abaixo, precisa esperar essa
-        // busca terminar antes de decidir quais frases digitar — assim
-        // evitamos condição de corrida entre "conteúdo padrão do HTML" e
-        // "conteúdo vindo do painel admin".
-        window.MenyConteudoPromise = (async function () {
-            const padrao = {
-                home: { typedStrings: ["cantora", "streaming ", "mãe"] },
-                about: {},
-            };
-
-            try {
-                const resp = await fetch("/.netlify/functions/conteudo-api", { cache: "no-store" });
-                if (!resp.ok) return padrao;
-
-                const dados = await resp.json();
-                if (!dados) return padrao;
-
-                const home = dados.home || {};
-                const about = dados.about || {};
-
-                // ---------- Home ----------
-                const badgeEl = document.getElementById("home-badge");
-                if (badgeEl && home.badge) badgeEl.textContent = home.badge;
-
-                const p1El = document.getElementById("home-paragrafo1");
-                if (p1El && home.paragrafo1) p1El.textContent = home.paragrafo1;
-
-                const p2El = document.getElementById("home-paragrafo2");
-                if (p2El && home.paragrafo2) p2El.textContent = home.paragrafo2;
-
-                const homeImgEl = document.getElementById("home-imagem");
-                if (homeImgEl && home.imagem) homeImgEl.src = home.imagem;
-
-                // ---------- About ----------
-                const aboutTituloEl = document.getElementById("about-titulo");
-                if (aboutTituloEl && about.titulo) aboutTituloEl.textContent = about.titulo;
-
-                const aboutParagrafoEl = document.getElementById("about-paragrafo");
-                if (aboutParagrafoEl && about.paragrafo) aboutParagrafoEl.textContent = about.paragrafo;
-
-                const aboutImgEl = document.getElementById("about-imagem");
-                if (aboutImgEl && about.imagem) aboutImgEl.src = about.imagem;
-
-                const sexoEl = document.getElementById("about-sexo");
-                if (sexoEl && about.sexo) sexoEl.textContent = about.sexo;
-
-                const idiomaEl = document.getElementById("about-idioma");
-                if (idiomaEl && about.idioma) idiomaEl.textContent = about.idioma;
-
-                const trabalhoEl = document.getElementById("about-trabalho");
-                if (trabalhoEl && about.trabalho) trabalhoEl.textContent = about.trabalho;
-
-                // Os contadores usam "|" como separador de quebra de linha
-                // (definido no painel admin), convertido aqui para <br/>.
-                const contadores = Array.isArray(about.contadores) ? about.contadores : [];
-
-                [1, 2].forEach((n, i) => {
-                    const c = contadores[i];
-                    if (!c) return;
-
-                    const numEl = document.getElementById(`about-contador${n}-numero`);
-                    const txtEl = document.getElementById(`about-contador${n}-texto`);
-
-                    if (numEl && c.numero != null && c.numero !== "") {
-                        numEl.dataset.count = c.numero;
-                        numEl.textContent = c.numero + "+";
-                    }
-
-                    if (txtEl && c.texto) {
-                        txtEl.innerHTML = String(c.texto)
-                            .split("|")
-                            .map((parte) => parte.trim())
-                            .join("<br />");
-                    }
-                });
-
-                return {
-                    home: {
-                        typedStrings:
-                            Array.isArray(home.typedStrings) && home.typedStrings.length
-                                ? home.typedStrings
-                                : padrao.home.typedStrings,
-                    },
-                    about,
-                };
-            } catch (err) {
-                console.warn("Conteúdo dinâmico indisponível, usando textos padrão do HTML:", err);
-                return padrao;
-            }
-        })();
-    </script>
-
-
-
-    <!-- JQuery -->
-    <script src="assets/vendors/jquery/jquery-3.6.0.js"></script>
-
-    <!-- SWIPER JS -->
-    <script src="assets/vendors/swiper/swiper.js"></script>
-
-    <!-- Magnific-Popup JS -->
-    <script src="assets/vendors/magnific-popup/jquery.magnific-popup.js"></script>
-
-    <!-- Typed JS -->
-    <script src="assets/vendors/typed/typed.js"></script>
-
-    <!-- Momentos JS -->
-    <script src="assets/js/momentos.js"></script>
-
-    <!-- Custom Script File -->
-    <script src="assets/js/script.js"></script>
-    <script src="assets/js/scroll-spy.js"></script>
-    <script src="assets/js/blog.js"></script>
-
-    <!-- counter-up.js só é carregado depois que os data-count dos
-         contadores já foram atualizados pelo conteúdo dinâmico (Sobre),
-         pra ele nunca ler o número antigo que vinha hardcoded no HTML. -->
-    <script>
-        window.MenyConteudoPromise.then(() => {
-            const s = document.createElement("script");
-            s.src = "assets/js/counter-up.js";
-            document.body.appendChild(s);
+    function renderFeed(focoKey) {
+        lista = montarLista(feedModo);
+        feed.classList.toggle("modo-momentos", feedModo === "momentos");
+        $$(".top-tabs [data-tab]").forEach(b => {
+            const on = b.dataset.tab === feedModo;
+            b.classList.toggle("active", on);
+            b.setAttribute("aria-selected", on);
         });
-    </script>
+        $(".view[data-view=feed] .pills")?.remove();
+        if (feedModo === "momentos") $(".view[data-view=feed]").insertAdjacentHTML("afterbegin", htmlCategorias());
+        if (feedModo === "videos") $(".view[data-view=feed]").insertAdjacentHTML("afterbegin", htmlPlataformas());
 
-    <!---------------- Custom Script ---------------->
+        if (!lista.length) {
+            feed.innerHTML = `<div class="empty"><div>${icon("seed")}<p>Nada por aqui ainda.<br>Volte em breve!</p></div></div>`;
+            atual = 0; atualizarSetas();
+            return;
+        }
+        feed.innerHTML = lista.map(htmlPost).join("");
+        feed.scrollTop = 0;
+        observar();
+        if (focoKey) {
+            const i = lista.findIndex(x => x.key === focoKey);
+            if (i > 0) feed.querySelector(`.post[data-i="${i}"]`).scrollIntoView();
+        }
+    }
 
-    <!-- Typed Script -->
-    <script>
-        // Espera o conteúdo dinâmico (se houver) antes de decidir quais
-        // frases digitar, pra não iniciar com o array padrão e depois
-        // trocar no meio da digitação.
-        (async function () {
-            const dados = await window.MenyConteudoPromise;
-            const strings =
-                dados && dados.home && Array.isArray(dados.home.typedStrings) && dados.home.typedStrings.length
-                    ? dados.home.typedStrings
-                    : ['cantora', 'streaming ', 'mãe'];
+    /* ---------- Player ---------- */
+    function pararTodos() {
+        $$(".player iframe", feed).forEach(f => {
+            f.parentElement.querySelector(".center-btn").hidden = false;
+            f.remove();
+        });
+    }
+    // O player do TikTok só roda incorporado em site https (produção).
+    // No "netlify dev" (http://localhost) ele responde "Server error" —
+    // nesse caso abrimos o vídeo direto no TikTok.
+    const EMBED_TIKTOK_OK = location.protocol === "https:";
 
-            new Typed('.typing-text', {
-                strings,
-                typeSpeed: 120,
-                loop: true
+    function fecharPlayer(player) {
+        player.querySelectorAll("iframe, .open-ext").forEach(el => el.remove());
+        const b = player.querySelector(".center-btn");
+        if (b) b.hidden = false;
+    }
+    function pararTodos() {
+        $$(".player", feed).forEach(p => { if (p.querySelector("iframe")) fecharPlayer(p); });
+    }
+    function abrir(post) {
+        const item = lista[+post.dataset.i];
+        const player = post.querySelector(".player");
+        if (item.tipo === "foto") { abrirLightbox(item); return; }
+        const externo = item.tipo === "perfil" || !item.embed || (item.platform === "tiktok" && !EMBED_TIKTOK_OK);
+        if (externo) {
+            if (item.platform === "tiktok" && item.embed && !EMBED_TIKTOK_OK) toast("Abrindo no TikTok (o player só roda no site publicado)");
+            window.open(item.url, "_blank", "noopener");
+            return;
+        }
+        if (player.querySelector("iframe")) return;
+        pararTodos();
+        const f = document.createElement("iframe");
+        f.src = item.embed;
+        f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+        f.allowFullscreen = true;
+        f.referrerPolicy = "strict-origin-when-cross-origin";
+        f.title = item.title;
+        player.appendChild(f);
+        // Atalho sempre visível caso a rede recuse o player incorporado
+        player.insertAdjacentHTML("beforeend",
+            `<a class="open-ext chip" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">${icon("external")} abrir no ${rede(item.platform).nome}</a>`);
+        player.querySelector(".center-btn").hidden = true;
+    }
+
+    /* ---------- Curtir / salvar / compartilhar ---------- */
+    function pulse(btn) { btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }
+    function alternarCurtida(post, forcar) {
+        const item = lista[+post.dataset.i];
+        const btn = post.querySelector(".act-like");
+        const on = forcar ?? !curtidos.has(item.key);
+        on ? curtidos.add(item.key) : curtidos.delete(item.key);
+        store.set("meny-curtidos", [...curtidos]);
+        btn.classList.toggle("on", on);
+        btn.setAttribute("aria-pressed", on);
+        if (on) pulse(btn);
+    }
+    function coracao(player, x, y) {
+        player.insertAdjacentHTML("beforeend", `<svg class="i fill burst" style="left:${x}px;top:${y}px" aria-hidden="true"><use href="#i-heart"/></svg>`);
+        const h = player.lastElementChild;
+        h.addEventListener("animationend", () => h.remove());
+    }
+
+    let ultimoToque = 0, timerToque;
+    feed.addEventListener("click", async e => {
+        const post = e.target.closest(".post");
+        if (!post) return;
+        const item = lista[+post.dataset.i];
+
+        if (e.target.closest(".act-like")) { alternarCurtida(post); return; }
+
+        const saveBtn = e.target.closest(".act-save");
+        if (saveBtn) {
+            const on = !salvos.has(item.key);
+            on ? salvos.add(item.key) : salvos.delete(item.key);
+            store.set("meny-salvos", [...salvos]);
+            saveBtn.classList.toggle("on", on);
+            saveBtn.setAttribute("aria-pressed", on);
+            saveBtn.querySelector(".i").classList.toggle("fill", on);
+            if (on) pulse(saveBtn);
+            toast(on ? "Salvo nos favoritos" : "Removido dos favoritos");
+            return;
+        }
+
+        if (e.target.closest(".act-share")) {
+            const link = item.tipo === "foto" ? new URL(item.url, location.href).href : item.url;
+            try {
+                if (navigator.share) await navigator.share({ title: item.title, url: link });
+                else { await navigator.clipboard.writeText(link); toast("Link copiado!"); }
+            } catch { /* cancelado */ }
+            return;
+        }
+
+        const more = e.target.closest(".more");
+        if (more) {
+            const open = post.querySelector(".desc").classList.toggle("open");
+            more.textContent = open ? "menos" : "mais";
+            return;
+        }
+
+        if (e.target.closest("a, button")) return;
+
+        const player = e.target.closest(".player");
+        if (!player) return;
+
+        // toque = abrir · duplo toque = curtir
+        const agora = Date.now();
+        if (agora - ultimoToque < 300) {
+            clearTimeout(timerToque);
+            const r = player.getBoundingClientRect();
+            coracao(player, e.clientX - r.left, e.clientY - r.top);
+            alternarCurtida(post, true);
+            ultimoToque = 0;
+            return;
+        }
+        ultimoToque = agora;
+        timerToque = setTimeout(() => abrir(post), 300);
+    });
+
+    document.addEventListener("click", e => {
+        const cat = e.target.closest("[data-cat]");
+        if (cat) { categoriaMomento = cat.dataset.cat; renderFeed(); return; }
+        const plat = e.target.closest("[data-plat]");
+        if (plat) { plataformaVideos = plat.dataset.plat; renderFeed(); }
+    });
+
+    /* ---------- Visibilidade / setas / teclado ---------- */
+    let io, atual = 0;
+    function observar() {
+        io?.disconnect();
+        io = new IntersectionObserver(entries => {
+            entries.forEach(en => {
+                if (en.isIntersecting) { atual = +en.target.dataset.i; atualizarSetas(); }
+                else {
+                    if (en.target.querySelector("iframe")) fecharPlayer(en.target.querySelector(".player"));
+                }
             });
-        })();
-    </script>
+        }, { root: feed, threshold: 0.6 });
+        $$(".post", feed).forEach(p => io.observe(p));
+        atual = 0; atualizarSetas();
+    }
+    const prevBtn = $("#prevBtn"), nextBtn = $("#nextBtn");
+    function atualizarSetas() {
+        prevBtn.disabled = atual <= 0;
+        nextBtn.disabled = atual >= lista.length - 1;
+    }
+    const irPara = i => feed.querySelector(`.post[data-i="${i}"]`)?.scrollIntoView({ behavior: "smooth" });
+    prevBtn.addEventListener("click", () => irPara(atual - 1));
+    nextBtn.addEventListener("click", () => irPara(atual + 1));
+    document.addEventListener("keydown", e => {
+        if ($(".view[data-view=feed]").hidden || e.target.closest("input, textarea") || $("dialog[open]")) return;
+        if (e.key === "ArrowDown") { e.preventDefault(); irPara(atual + 1); }
+        if (e.key === "ArrowUp") { e.preventDefault(); irPara(atual - 1); }
+    });
 
-    <!-- agenda Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
+    /* =========================================================
+       Sobre mim (conteudo-api + idade + contador) e grade
+       ========================================================= */
+    let gridModo = "videos";
+    function renderGrid() {
+        const itens = gridModo === "videos" ? dados.videos.filter(v => v.tipo === "video") : dados.momentos;
+        $$(".profile-tabs button").forEach(b => b.classList.toggle("active", b.dataset.grid === gridModo));
+        const box = $("#profileGrid");
+        if (!itens.length) { box.innerHTML = `<div class="empty" style="grid-column:1/-1"><p>Nada publicado ainda.</p></div>`; return; }
+        box.innerHTML = itens.map(it => `
+            <a class="tile" href="#${gridModo}" data-key="${esc(it.key)}" aria-label="${esc(it.title)}">
+                <img src="${esc(it.thumb)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${it.tipo === "foto" ? FALLBACK_IMG : FALLBACK_PLAT[it.platform]}'">
+                <span class="meta">${iconeFonte(it)}<span>${esc(it.title)}</span></span>
+            </a>`).join("");
+        $("#stat3-num").textContent = dados.videos.filter(v => v.tipo === "video").length + dados.momentos.length;
+    }
+    $$(".profile-tabs button").forEach(b => b.addEventListener("click", () => { gridModo = b.dataset.grid; renderGrid(); }));
+    $("#profileGrid").addEventListener("click", e => {
+        const t = e.target.closest(".tile");
+        if (!t) return;
+        e.preventDefault();
+        categoriaMomento = "all";
+        plataformaVideos = "all";
+        irParaRota(gridModo, t.dataset.key);
+    });
 
-            const modalEvento = document.getElementById("modalEvento");
-            const fecharModal = document.getElementById("fecharModal");
-            const calendarEl = document.getElementById("calendar");
+    /* ---------- Tema (escolhido no painel, aba Aparência) ---------- */
+    function aplicarTemaSite(escolha) {
+        if (!window.MenyTemas) return;
+        const t = MenyTemas.aplicar(escolha || {});
+        // Tema claro: o feed de vídeos continua escuro (como um palco)
+        const palco = $(".view[data-view=feed]");
+        const vars = MenyTemas.variaveisPalco(t);
+        Object.keys(MenyTemas.variaveis(t)).forEach(k => palco.style.removeProperty(k));
+        if (vars) Object.keys(vars).forEach(k => palco.style.setProperty(k, vars[k]));
+        try { localStorage.setItem("meny-tema", JSON.stringify({ id: t.id, destaque: t.personalizado ? t.destaque : null })); } catch { /* sem storage */ }
+    }
+    try { aplicarTemaSite(JSON.parse(localStorage.getItem("meny-tema") || "null")); } catch { aplicarTemaSite(null); }
 
-            if (!calendarEl || typeof FullCalendar === "undefined") {
-                return;
-            }
+    async function carregarSobre() {
+        const d = await jsonOu("/.netlify/functions/conteudo-api", null);
+        if (!d) return;                       // sem API: fica o texto padrão do HTML
+        aplicarTemaSite(d.tema);
+        const home = d.home || {}, about = d.about || {};
 
-            const isMobile = window.matchMedia("(max-width: 600px)").matches;
+        // Campo presente mas vazio no painel = esconder o bloco na página.
+        const aplicar = (id, valor) => {
+            const el = document.getElementById(id);
+            if (!el || valor === undefined || valor === null) return;
+            const txt = String(valor).trim();
+            const bloco = el.closest(".info-grid > div") || el;
+            bloco.hidden = !txt;
+            if (txt) el.textContent = txt;
+        };
 
-            const calendar = new FullCalendar.Calendar(
-                calendarEl,
-                {
-                    locale: "pt-br",
-                    initialView: isMobile ? "listWeek" : "dayGridMonth",
-                    firstDay: 0,
-                    height: "auto",
+        // ---- Página inicial (aba "Início" do admin)
+        aplicar("home-badge", home.badge);
+        aplicar("home-paragrafo1", home.paragrafo1);
+        aplicar("home-paragrafo2", home.paragrafo2);
+        if (home.imagem) $("#home-imagem").style.backgroundImage = `url("${String(home.imagem).replace(/"/g, "%22")}")`;
+        const papeis = (Array.isArray(home.typedStrings) ? home.typedStrings : []).map(p => String(p).trim()).filter(Boolean);
+        $("#roles").innerHTML = (papeis.length ? papeis : ["cantora", "streaming", "mãe"])
+            .map(p => `<span class="chip">${esc(p)}</span>`).join("");
 
-                    buttonText: {
-                        today: "Hoje",
-                        month: "Mês",
-                        week: "Semana",
-                        day: "Dia",
-                        list: "Lista"
-                    },
+        // ---- Sobre (aba "Sobre" do admin)
+        if (about.titulo) setText("about-titulo", about.titulo.replace(/^meu nome é\s*/i, "").replace(/[.!]+$/, ""));
+        aplicar("about-paragrafo", about.paragrafo);
+        aplicar("about-sexo", about.sexo);
+        aplicar("about-idioma", about.idioma);
+        aplicar("about-trabalho", about.trabalho);
+        if (about.imagem) { $("#about-imagem").src = about.imagem; definirAvatar(about.imagem); }
 
-                    headerToolbar: {
-                        left: "prev,next today",
-                        center: "title",
-                        right: isMobile
-                            ? "listWeek,dayGridMonth"
-                            : "dayGridMonth,timeGridWeek,timeGridDay"
-                    },
-
-                    windowResize(view) {
-                        const mobileNow = window.matchMedia("(max-width: 600px)").matches;
-                        if (mobileNow && view.view.type !== "listWeek" && view.view.type !== "timeGridDay") {
-                            calendar.changeView("listWeek");
-                        }
-                    },
-
-                    dayHeaderFormat: { weekday: "short" },
-
-                    events: async function (fetchInfo, successCallback, failureCallback) {
-
-                        try {
-
-                            const response = await fetch("/.netlify/functions/calendar");
-
-                            if (!response.ok) {
-                                successCallback([]);
-                                return;
-                            }
-
-                            const data = await response.json();
-                            const items = Array.isArray(data.items) ? data.items : [];
-
-                            const events = items.map(event => ({
-                                title: event.summary,
-                                start: event.start?.dateTime || event.start?.date,
-                                end: event.end?.dateTime || event.end?.date,
-                                description: event.description,
-                                url: event.htmlLink
-                            }));
-
-                            successCallback(events);
-
-                        } catch (error) {
-
-                            console.warn("Calendário indisponível:", error);
-                            successCallback([]);
-
-                        }
-
-                    },
-
-                    eventClick(info) {
-                        info.jsEvent.preventDefault();
-
-                        document.getElementById("modalTitulo").innerText = info.event.title;
-
-                        document.getElementById("modalDescricao").innerText =
-                            info.event.extendedProps.description || "Sem descrição";
-
-                        document.getElementById("modalData").innerText =
-                            info.event.start.toLocaleString("pt-BR", {
-                                dateStyle: "full",
-                                timeStyle: "short"
-                            });
-
-                        // botão Google Agenda
-                        const btnGoogle = document.getElementById("btnGoogle");
-                        if (info.event.url) {
-                            btnGoogle.href = info.event.url;
-                            btnGoogle.style.display = "inline-block";
-                        } else {
-                            btnGoogle.style.display = "none";
-                        }
-
-                        modalEvento.style.display = "flex";
-                    }
-                }
-            );
-
-            calendar.render();
-
-            fecharModal.onclick = () => {
-                modalEvento.style.display = "none";
-            };
-
+        // Contadores: número vazio no admin = esconder aquele contador
+        const cont = Array.isArray(about.contadores) ? about.contadores : [];
+        [1, 2].forEach((n, i) => {
+            const c = cont[i];
+            if (!c) return;
+            const box = document.getElementById(`stat${n}-num`).parentElement;
+            const temNumero = c.numero !== null && c.numero !== undefined && c.numero !== "";
+            box.hidden = !temNumero;
+            if (temNumero) setText(`stat${n}-num`, `${c.numero}+`);
+            if (c.texto) setText(`stat${n}-txt`, String(c.texto).replace(/<br\s*\/?>/gi, "|").split("|").map(s => s.trim()).filter(Boolean).join(" "));
         });
-    </script>
-    <!--Fim agenda-->
+    }
 
-    <!-- Contact-Form Script -->
-    <script>
-        const form = document.getElementById("contactUs-Form");
-        const msg = document.getElementById("msg");
+    async function carregarIdade() {
+        const d = await jsonOu("/.netlify/functions/idade", null);
+        const bloco = document.getElementById("idade").closest(".info-grid > div");
+        if (d?.oculta) { bloco.hidden = true; return; }   // "não mostrar idade" no painel
+        if (d?.idade != null) setText("idade", `${d.idade} anos`);
+    }
 
-        form.addEventListener("submit", async function (e) {
-            e.preventDefault(); // impede recarregar a página
+    // Conta a visita uma vez por sessão do navegador; nas demais só lê (GET),
+    // pra quem recarrega a página não contar em dobro.
+    async function carregarVisitas() {
+        let jaContou = false;
+        try { jaContou = sessionStorage.getItem("meny-visita") === "1"; } catch { /* sem storage */ }
+        const d = await jsonOu("/.netlify/functions/contador", null, { method: jaContou ? "GET" : "POST" });
+        if (!jaContou) { try { sessionStorage.setItem("meny-visita", "1"); } catch { /* sem storage */ } }
+        $("#contador-visitas").textContent = d?.total != null ? Number(d.total).toLocaleString("pt-BR") : "—";
+    }
 
-            const formData = new FormData(form);
+    /* =========================================================
+       Eventos (Google Agenda via /calendar)
+       ========================================================= */
+    let eventos = [];
+    async function carregarEventos() {
+        const d = await jsonOu("/.netlify/functions/calendar", { items: [] });
+        eventos = (Array.isArray(d.items) ? d.items : []).map(ev => ({
+            title: ev.summary || "Evento",
+            start: new Date(ev.start?.dateTime || ev.start?.date),
+            allDay: !ev.start?.dateTime,
+            desc: limpar(ev.description),
+            url: ev.htmlLink,
+        })).filter(ev => !isNaN(ev.start)).sort((a, b) => a.start - b.start);
 
+        const box = $("#eventList");
+        if (!eventos.length) {
+            box.innerHTML = `<div class="empty"><div>${icon("calendar")}<p>Nenhum evento agendado no momento.<br>Siga nas redes para saber da próxima live.</p><br>
+                <button type="button" class="btn btn-primary" data-open-socials>${icon("plus")}Seguir</button></div></div>`;
+            return;
+        }
+        const hoje = new Date().toDateString();
+        let mesAtual = "";
+        box.innerHTML = eventos.map((ev, i) => {
+            const mes = ev.start.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+            const cab = mes !== mesAtual ? `<h3 class="month">${mes}</h3>` : "";
+            mesAtual = mes;
+            const hora = ev.allDay ? "dia todo" : ev.start.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+            const semana = ev.start.toLocaleDateString("pt-BR", { weekday: "long" });
+            return `${cab}
+            <button type="button" class="event ${ev.start.toDateString() === hoje ? "today" : ""}" data-ev="${i}">
+                <span class="day"><strong>${ev.start.getDate()}</strong><span>${ev.start.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "")}</span></span>
+                <span>
+                    <h3>${esc(ev.title)}</h3>
+                    <p>${icon("clock")} ${semana} · ${hora}</p>
+                </span>
+                <span class="go">${icon("right")}</span>
+            </button>`;
+        }).join("");
+    }
+    $("#eventList").addEventListener("click", e => {
+        const b = e.target.closest("[data-ev]");
+        if (!b) return;
+        const ev = eventos[+b.dataset.ev];
+        $("#evTitle").textContent = ev.title;
+        $("#evWhen").textContent = ev.start.toLocaleString("pt-BR", ev.allDay ? { dateStyle: "full" } : { dateStyle: "full", timeStyle: "short" });
+        $("#evDesc").textContent = ev.desc || "Sem descrição.";
+        const link = $("#evLink");
+        link.hidden = !ev.url;
+        if (ev.url) link.href = ev.url;
+        $("#eventSheet").showModal();
+    });
+
+    /* =========================================================
+       Contato (Formspree — mesmo endpoint do site)
+       ========================================================= */
+    const form = $("#contactForm"), formMsg = $("#formMsg");
+    form.addEventListener("submit", async e => {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+            formMsg.className = "form-msg err";
+            formMsg.textContent = "Preencha nome, e-mail válido e assunto.";
+            form.querySelector(":invalid")?.focus();
+            return;
+        }
+        const btn = form.querySelector("button[type=submit]");
+        btn.disabled = true;
+        formMsg.className = "form-msg";
+        formMsg.textContent = "Enviando…";
+        try {
+            const r = await fetch("https://formspree.io/f/meelonvr", { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
+            if (!r.ok) throw new Error();
+            formMsg.className = "form-msg ok";
+            formMsg.textContent = "Mensagem enviada com sucesso!";
+            form.reset();
+        } catch {
+            formMsg.className = "form-msg err";
+            formMsg.textContent = "Erro ao enviar. Tente novamente mais tarde.";
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
+    /* =========================================================
+       Diálogos
+       ========================================================= */
+    document.addEventListener("click", e => {
+        if (e.target.closest("[data-open-socials]")) { $("#socialSheet").showModal(); return; }
+        if (e.target.closest("[data-close]")) { e.target.closest("dialog").close(); return; }
+        if (e.target.closest("[data-close-sheet]")) { e.target.closest("dialog").close(); }
+        if (e.target.matches("dialog") || e.target.matches("[data-close-bg]")) e.target.closest("dialog").close();
+    });
+    function abrirLightbox(item) {
+        $("#lbImg").src = item.thumb;
+        $("#lbImg").alt = item.title;
+        $("#lbCap").textContent = item.title + (item.categoria ? ` · ${item.categoria}` : "");
+        $("#lightbox").showModal();
+    }
+
+    /* =========================================================
+       Músicas (musicas-api; links preenchidos no painel via Odesli)
+       ========================================================= */
+    const PLATAFORMAS_MUSICA = {
+        spotify:      { nome: "Spotify",       icone: "fab fa-spotify" },
+        youtube:      { nome: "YouTube",       icone: "fab fa-youtube" },
+        youtubeMusic: { nome: "YouTube Music", icone: "fab fa-youtube" },
+        deezer:       { nome: "Deezer",        icone: "fab fa-deezer" },
+        appleMusic:   { nome: "Apple Music",   icone: "fab fa-apple" },
+        amazonMusic:  { nome: "Amazon Music",  icone: "fab fa-amazon" },
+        soundcloud:   { nome: "SoundCloud",    icone: "fab fa-soundcloud" },
+        tidal:        { nome: "Tidal",         icone: null },
+        audiomack:    { nome: "Audiomack",     icone: null },
+    };
+    const iconePlat = (k) => PLATAFORMAS_MUSICA[k]?.icone
+        ? `<i class="${PLATAFORMAS_MUSICA[k].icone}" aria-hidden="true"></i>` : icon("music");
+    let musicas = [];
+    let musicaPendente = null, musicasCarregadas = false, musicaAberta = null;
+    const NOMES_PLAYLIST = { "open.spotify.com": "Spotify", "www.youtube.com": "YouTube", "youtube.com": "YouTube", "music.youtube.com": "YouTube Music", "www.deezer.com": "Deezer", "deezer.com": "Deezer", "music.apple.com": "Apple Music", "music.amazon.com.br": "Amazon Music", "music.amazon.com": "Amazon Music", "soundcloud.com": "SoundCloud" };
+
+    async function carregarMusicas() {
+        const d = await jsonOu("/.netlify/functions/musicas-api", { items: [], playlist: null });
+        musicas = Array.isArray(d?.items) ? d.items.filter(m => m && m.titulo && m.links && Object.keys(m.links).length) : [];
+        musicasCarregadas = true;
+
+        const card = $("#playlistCard");
+        if (d?.playlist?.url) {
+            card.href = d.playlist.url;
+            $("#playlistTitulo").textContent = d.playlist.titulo || "Minha playlist";
+            let onde = "Ouvir a playlist completa";
             try {
-                const response = await fetch("https://formspree.io/f/meelonvr", {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
+                const host = new URL(d.playlist.url).hostname;
+                onde += " no " + (NOMES_PLAYLIST[host] || host.replace(/^www\./, ""));
+            } catch { /* url estranha: fica o texto genérico */ }
+            $("#playlistOnde").textContent = onde;
+            card.hidden = false;
+        }
 
-                if (response.ok) {
-                    msg.textContent = "Mensagem enviada com sucesso";
-                    form.reset();
+        const box = $("#musicList");
+        if (!musicas.length) {
+            box.innerHTML = `<div class="empty"><div>${icon("music")}<p>Nenhuma música por aqui ainda.<br>Volte em breve!</p></div></div>`;
+        } else {
+            box.innerHTML = musicas.map((m, i) => `
+                <button type="button" class="song" data-musica="${esc(m.id)}">
+                    <span class="n">${i + 1}</span>
+                    <img src="${esc(m.capa || FALLBACK_IMG)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
+                    <span class="t"><strong>${esc(m.titulo)}</strong><span>${esc(m.artista || PERFIL.nome)}</span></span>
+                    <span class="plats">${Object.keys(PLATAFORMAS_MUSICA).filter(k => m.links[k] && k !== "youtubeMusic").slice(0, 4).map(iconePlat).join("")}</span>
+                    <span class="go">${icon("right")}</span>
+                </button>`).join("");
+        }
+        if (musicaPendente) abrirMusicaPendente();
+    }
 
-                    setTimeout(() => {
-                        msg.textContent = "";
-                    }, 4000);
-                } else {
-                    msg.textContent = "Erro ao enviar. Tente novamente mais tarde.";
+    function abrirMusicaPendente() {
+        const id = musicaPendente;
+        musicaPendente = null;
+        const m = musicas.find(x => x.id === id);
+        if (m) abrirMusica(m);
+        else toast("Essa música não está mais na lista");
+    }
 
-                    setTimeout(() => {
-                        msg.textContent = "";
-                    }, 4000);
-                }
-            } catch (error) {
-                msg.textContent = "Erro de conexão.";
-            }
+    function abrirMusica(m) {
+        musicaAberta = m;
+        $("#msCapa").src = m.capa || FALLBACK_IMG;
+        $("#msTitulo").textContent = m.titulo;
+        $("#msArtista").textContent = m.artista || PERFIL.nome;
+        $("#msLinks").innerHTML = Object.keys(PLATAFORMAS_MUSICA).filter(k => m.links[k]).map(k => `
+            <a href="${esc(m.links[k])}" target="_blank" rel="noopener noreferrer">${iconePlat(k)}${PLATAFORMAS_MUSICA[k].nome}</a>`).join("");
+        const yt = idYouTube(m.links.youtube || m.links.youtubeMusic || "");
+        const tocar = $("#msTocar");
+        tocar.hidden = !yt;
+        tocar.dataset.yt = yt || "";
+        $("#msPlayer").hidden = true;
+        $("#msPlayer").innerHTML = "";
+        const todas = $("#msTodas");
+        todas.hidden = !m.pagina;
+        if (m.pagina) todas.href = m.pagina;
+        if (!$("#musicSheet").open) $("#musicSheet").showModal();
+    }
 
-        });
-    </script>
+    $("#musicList").addEventListener("click", e => {
+        const b = e.target.closest("[data-musica]");
+        if (!b) return;
+        const m = musicas.find(x => x.id === b.dataset.musica);
+        if (m) abrirMusica(m);
+    });
+    $("#msTocar").addEventListener("click", () => {
+        const yt = $("#msTocar").dataset.yt;
+        if (!yt) return;
+        pararTodos();
+        $("#msPlayer").innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${esc(yt)}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="${esc(musicaAberta?.titulo || "Música")}"></iframe>`;
+        $("#msPlayer").hidden = false;
+        $("#msTocar").hidden = true;
+    });
+    $("#msShare").addEventListener("click", async () => {
+        if (!musicaAberta) return;
+        const link = `${location.origin}/#musica/${encodeURIComponent(musicaAberta.id)}`;
+        const texto = `${musicaAberta.titulo}${musicaAberta.artista ? " — " + musicaAberta.artista : ""}`;
+        try {
+            if (navigator.share) await navigator.share({ title: texto, text: `Ouça "${texto}"`, url: link });
+            else { await navigator.clipboard.writeText(link); toast("Link da música copiado!"); }
+        } catch { /* cancelado */ }
+    });
+    // fechou a folha: para o player
+    $("#musicSheet").addEventListener("close", () => { $("#msPlayer").innerHTML = ""; });
 
-    <script>
-        (async function () {
-            const el = document.getElementById("idade");
-            if (!el) return;
+    /* =========================================================
+       Rotas (#inicio, #videos, #momentos, #eventos, #perfil, #contato)
+       ========================================================= */
+    const ROTAS_FEED = ["inicio", "videos", "momentos"];
+    let focoPendente = null;
+    function irParaRota(rota, foco) {
+        focoPendente = foco || null;
+        if (location.hash === "#" + rota) aplicarRota(); else location.hash = rota;
+    }
+    function aplicarRota() {
+        let rota = location.hash.slice(1);
+        // compatibilidade com links antigos (#about, #agenda, #contact...)
+        rota = { home: "inicio", blog: "videos", portfolio: "momentos", agenda: "eventos", about: "perfil", contact: "contato", "social-spotlight": "inicio" }[rota] || rota;
+        // link direto de uma música: #musica/<id>
+        if (rota.startsWith("musica/")) { musicaPendente = decodeURIComponent(rota.slice(7)); rota = "musicas"; }
+        if (![...ROTAS_FEED, "eventos", "perfil", "contato", "musicas"].includes(rota)) rota = "inicio";
 
-            try {
-                const resp = await fetch("/.netlify/functions/idade");
-                const data = await resp.json();
+        const view = ROTAS_FEED.includes(rota) ? "feed" : rota;
+        $$(".view").forEach(v => { v.hidden = v.dataset.view !== view; });
+        if (view !== "feed") pararTodos();
+        $$("[data-route]").forEach(a => a.classList.toggle("active",
+            a.dataset.route === rota || (view === "feed" && a.dataset.route === "inicio" && !!a.closest(".bottom-nav"))));
 
-                if (!resp.ok) {
-                    console.warn("Idade indisponível:", data.erro);
-                    el.textContent = "";
-                    return;
-                }
+        const titulos = { inicio: "Para você", videos: "Destaques", momentos: "Momentos", eventos: "Eventos", perfil: "Sobre mim", contato: "Redes sociais", musicas: "Músicas" };
+        document.title = (typeof aoVivo !== "undefined" && aoVivo ? "🔴 AO VIVO · " : "") + `Meny | ${titulos[rota]}`;
 
-                el.textContent = data.idade;
-            } catch (err) {
-                console.warn("Falha ao buscar idade:", err);
-                el.textContent = "";
-            }
-        })();
-    </script>
+        if (view === "feed" && (rota !== feedModo || focoPendente || !feed.querySelector(".post"))) {
+            feedModo = rota;
+            if (carregado) renderFeed(focoPendente);
+        }
+        focoPendente = null;
+        if (rota === "musicas" && musicaPendente && musicasCarregadas) abrirMusicaPendente();
+    }
+    $$(".top-tabs [data-tab]").forEach(b => b.addEventListener("click", () => {
+        if (b.dataset.tab === "momentos") categoriaMomento = "all";
+        irParaRota(b.dataset.tab);
+    }));
+    window.addEventListener("hashchange", aplicarRota);
 
-    <script>
-        (function () {
-            const hash = window.location.hash;
+    /* =========================================================
+       AO VIVO — mesmo servidor socket.io que o site já usava
+       (tiktok-live-97o2.onrender.com, evento "liveStatus").
+       Quando online: selo no feed, anel vermelho no avatar e na foto
+       do perfil, card na sidebar, faixa nas páginas, 1ª opção do
+       "Me acompanhe" e o avatar passa a abrir a live direto.
+       ========================================================= */
+    const LIVE_URL = "https://www.tiktok.com/@meny.menycita/live";
+    let aoVivo = false;
+    const tituloBase = () => document.title.replace(/^🔴 AO VIVO · /, "");
+    function aplicarLive(online) {
+        aoVivo = !!online;
+        document.body.classList.toggle("is-live", aoVivo);
+        $("#livePill").classList.toggle("on", aoVivo);
+        document.title = (aoVivo ? "🔴 AO VIVO · " : "") + tituloBase();
+    }
+    // com live no ar, tocar no avatar leva direto pra live (como no TikTok)
+    document.addEventListener("click", e => {
+        if (!aoVivo) return;
+        const av = e.target.closest(".avatar");
+        if (!av) return;
+        e.preventDefault(); e.stopImmediatePropagation();
+        window.open(LIVE_URL, "_blank", "noopener");
+    }, true);
 
-            if (
-                hash.includes("invite_token") ||
-                hash.includes("recovery_token") ||
-                hash.includes("confirmation_token")
-            ) {
-                // O login (Netlify Identity) vive em /admin.html,
-                // nao existe uma pagina separada "/login/".
-                window.location.href = "/admin.html" + hash;
-            }
-        })();
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const btn = document.getElementById("btnLogin");
-
-            if (!btn || !window.netlifyIdentity) return;
-
-            btn.addEventListener("click", function (e) {
-                e.preventDefault();
-                window.location.href = "/admin.html";
+    (function statusLive() {
+        const s = document.createElement("script");
+        s.src = "https://cdn.socket.io/4.7.5/socket.io.min.js";
+        s.async = true;
+        s.onload = () => {
+            if (typeof window.io !== "function") return;
+            // O servidor fica no Render (plano gratuito "dorme"): tenta
+            // reconectar sem limite, com espera crescente até 30s.
+            const socket = window.io("https://tiktok-live-97o2.onrender.com", {
+                transports: ["websocket", "polling"], timeout: 20000,
+                reconnection: true, reconnectionDelay: 3000, reconnectionDelayMax: 30000,
             });
+            socket.on("liveStatus", d => aplicarLive(d?.online));
+            socket.on("disconnect", () => aplicarLive(false));
+            document.addEventListener("visibilitychange", () => {
+                if (document.visibilityState === "visible" && !socket.connected) socket.connect();
+            });
+        };
+        document.head.appendChild(s);
+    })();
 
-        });
-    </script>
+    /* =========================================================
+       Início
+       ========================================================= */
+    let carregado = false;
+    renderRedes();
+    aplicarRota();
+    carregarSobre();
+    carregarIdade();
+    carregarVisitas();
+    carregarEventos();
+    carregarMusicas();
+    carregarFeed().then(() => {
+        carregado = true;
+        const foco = focoPendente;
+        renderFeed(foco);
+        renderGrid();
+        enriquecerTikTok();
+    });
 
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+    }
+})();
+</script>
 </body>
-
 </html>
