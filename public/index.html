@@ -141,6 +141,17 @@
         }
         .brand { display: flex; align-items: center; gap: 1rem; padding: 0 .6rem; }
         .brand img { height: 4.4rem; width: auto; }
+        /* Logo na cor do tema: o logo.png tem uma cor só, então vira "máscara"
+           pintada com a cor de destaque. Navegador sem suporte: logo original. */
+        .brand .logo-tema { display: none; height: 4.4rem; aspect-ratio: 156 / 70; background: var(--green); }
+        @supports ((-webkit-mask-image: none) or (mask-image: none)) {
+            .brand .logo-tema {
+                display: block;
+                -webkit-mask: url("/assets/images/logo.png") center / contain no-repeat;
+                mask: url("/assets/images/logo.png") center / contain no-repeat;
+            }
+            .brand .logo-img { display: none; }
+        }
 
         .side-nav { display: flex; flex-direction: column; gap: .2rem; }
         .nav-item {
@@ -177,9 +188,23 @@
 
         .stage { position: relative; height: 100dvh; overflow: hidden; }
         .view { height: 100%; }
-        /* o feed é sempre um "palco" escuro; no tema claro ele recebe as
-           cores escuras via JS (MenyTemas.variaveisPalco) */
+        /* Feed: segue o tema. No tema claro, só o cartão do vídeo/foto (e o que
+           fica por cima dele) recebe as cores escuras do "palco" — via JS
+           (MenyTemas.variaveisPalco -> <style id="palco-tema">). No celular o
+           cartão ocupa a tela toda, então o feed inteiro fica escuro. */
         .view[data-view=feed] { background: var(--black); color: var(--white); }
+        /* tema claro no computador: abas sem a faixa escura (o fundo é claro);
+           o escurecido fica só no topo do cartão, para as abas terem leitura */
+        @media (min-width: 861px) {
+            html[data-tema-claro] .top-tabs { background: none; }
+            html[data-tema-claro] .top-tabs button { text-shadow: 0 1px 6px rgba(0,0,0,.55); }
+            html[data-tema-claro] .player::after {
+                content: ""; position: absolute; inset: 0 0 auto 0; height: 11rem; z-index: 4; pointer-events: none;
+                background: linear-gradient(180deg, rgba(0,0,0,.55), transparent);
+            }
+            html[data-tema-claro] .player { box-shadow: 0 1.6rem 4.8rem rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.06); }
+            html[data-tema-claro] .skeleton .player::after { display: none; }
+        }
         .page { height: 100%; overflow-y: auto; padding: 3.2rem 2rem 6rem; }
         .page-inner { max-width: 72rem; margin: 0 auto; }
 
@@ -789,7 +814,8 @@
     <!-- ===================== Sidebar (desktop) ===================== -->
     <aside class="sidebar" aria-label="Navegação">
         <a class="brand" href="#inicio" aria-label="Meny Mendonça — início">
-            <img src="/assets/images/logo.png" alt="Meny Mendonça">
+            <span class="logo-tema" role="img" aria-label="Meny Mendonça"></span>
+            <img class="logo-img" src="/assets/images/logo.png" alt="Meny Mendonça">
         </a>
 
         <a class="live-card live-only flex" href="https://www.tiktok.com/@meny.menycita/live" data-live-link target="_blank" rel="noopener noreferrer" data-live-link>
@@ -1770,11 +1796,18 @@
     function aplicarTemaSite(escolha) {
         if (!window.MenyTemas) return;
         const t = MenyTemas.aplicar(escolha || {});
-        // Tema claro: o feed de vídeos continua escuro (como um palco)
-        const palco = $(".view[data-view=feed]");
+        // Tema claro: o fundo do feed fica claro e só o cartão do vídeo/foto
+        // (e as abas/filtros por cima dele) usa as cores escuras do "palco".
+        // No celular o cartão ocupa a tela, então o feed inteiro fica escuro.
         const vars = MenyTemas.variaveisPalco(t);
-        Object.keys(MenyTemas.variaveis(t)).forEach(k => palco.style.removeProperty(k));
-        if (vars) Object.keys(vars).forEach(k => palco.style.setProperty(k, vars[k]));
+        let estilo = document.getElementById("palco-tema");
+        if (!estilo) { estilo = document.createElement("style"); estilo.id = "palco-tema"; document.head.appendChild(estilo); }
+        if (vars) {
+            const bloco = Object.entries(vars).map(([k, v]) => `${k}: ${v};`).join(" ");
+            estilo.textContent =
+                `.view[data-view=feed] .player, .view[data-view=feed] .top-tabs, .view[data-view=feed] .feed-pills { ${bloco} color: var(--white); }\n` +
+                `@media (max-width: 860px) { .view[data-view=feed] { ${bloco} } }`;
+        } else estilo.textContent = "";
         try { localStorage.setItem("meny-tema", JSON.stringify({ id: t.id, destaque: t.personalizado ? t.destaque : null })); } catch { /* sem storage */ }
     }
     try { aplicarTemaSite(JSON.parse(localStorage.getItem("meny-tema") || "null")); } catch { aplicarTemaSite(null); }
